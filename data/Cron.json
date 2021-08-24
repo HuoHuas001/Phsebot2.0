@@ -1,0 +1,7 @@
+[
+    {
+        "cron":"*/5 * * * * ?",
+        "type":"runcmd",
+        "cmd":"say hello"
+    }
+]

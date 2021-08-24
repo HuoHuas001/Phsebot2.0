@@ -1,0 +1,22 @@
+#正则语言包文件，不触发请设置为false
+
+#ServerVersion可用变量：%Version%
+ServerVersion: "[服务器] 服务器版本 %Version%"
+
+#ServerStart可用变量：无
+ServerStart: "[服务器] 服务器启动成功"
+
+#OpenWorld可用变量：%World%
+OpenWorld: "[服务器] 正在加载%World%"
+
+#PortOpen可用变量：%Port%
+PortOpen: "[服务器] 正在打开端口：%Port%"
+
+#ServerStopping可用变量：无
+ServerStopping: "[服务器] 正在请求关闭服务器"
+
+#ServerStoped可用变量：无
+ServerStoped: "[服务器] 服务器关闭完成"
+
+#Crashed可用变量：无
+Crashed: "[服务器] 服务器已崩溃，请管理员查看后台日志"
