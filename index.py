@@ -120,12 +120,15 @@ def motdServer(ip,port,group):
 def Botruncmd(text):
     result=text+'\r\n'
     cmd = result
+    #开服
     if text == 'start':
         if not StartedServer:
             runserver()
         else:
             for i in config['Group']:
                 sendGroupMsg(i,Language['ServerRunning'])
+
+    #Motd请求
     elif 'motd' in text:
         print(text)
         print('chufa')
@@ -148,6 +151,8 @@ def Botruncmd(text):
 
         m = threading.Thread(target=motdServer,args=(addr,port,group))
         m.start()
+
+    #执行指令
     else:
         if StartedServer:
             obj.stdin.write(cmd.encode('utf8'))
@@ -487,11 +492,12 @@ menuBar = Menu(win)
 win.config(menu=menuBar)
  
 # Add menu items
-def _msgBox1():
-    mBox.showinfo('提示', '展望未来')
+def configw():
+    pw = PopupDialog(win)
+    win.wait_window(pw)
+
 fileMenu = Menu(menuBar, tearoff=0)
-fileMenu.add_command(label="配置",command=_msgBox1)
-fileMenu.add_command(label="主页",command=_msgBox1)
+fileMenu.add_command(label="配置",command=configw)
 fileMenu.add_separator()
 fileMenu.add_command(label="退出", command=_quit)
 menuBar.add_cascade(label="显示", menu=fileMenu)
@@ -530,6 +536,7 @@ win.geometry('742x397')
 #======================
 # Start GUI
 #======================
+
 loginQQ()
 
 def writeconfig():
@@ -629,6 +636,14 @@ def usegroupregular():
 
 gmsp = threading.Thread(target=usegroupregular)
 gmsp.start()
+def on_closing():
+    if mBox.askyesno('退出','您即将关闭Phsebot，确认吗？'):
+        print('[INFO] 退出')
+        win.destroy()
+        os._exit(0)
+
+win.protocol("WM_DELETE_WINDOW", on_closing)
+
 try:
     win.mainloop()
 except KeyboardInterrupt:

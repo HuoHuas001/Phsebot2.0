@@ -21,3 +21,6 @@ Key: "INITKEY8Gj5l2Hh"
 
 #发消息的QQ号
 Bot: 3544175039
+
+#崩服自动重启
+AutoRestart: true
