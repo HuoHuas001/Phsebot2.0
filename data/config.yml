@@ -1,8 +1,8 @@
 #服务端文件
-ServerFile: ""
+ServerFile: bedrock_server.exe
 
 #服务端目录
-ServerPath: ""
+ServerPath: E:\MCServer\bds1.17.10
 
 #管理员列表
 Admin:

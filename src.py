@@ -64,7 +64,7 @@ def sendGroupMsg2(group,text):
         "sessionKey":sessionKey,
         "target":group,
         "messageChain":[
-            { "type":"Plain", "text":text },
+            { "type":"Plain", "text":text.replace('\\n','\n')},
         ]
     }
     r = requests.post(url+'/sendGroupMessage',json=msgjson)

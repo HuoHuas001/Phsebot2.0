@@ -105,9 +105,17 @@ def runcmd():
     obj.stdin.flush()
     nameEntered.delete(0, 'end')
 
-def motdServer(ip,port,msg):
-    motd = requests.get('http://motdpe.blackbe.xyz/api.php?ip=%s&port=1%s' % (ip,port))
+def motdServer(ip,port,group):
+    motd = requests.get('http://motdpe.blackbe.xyz/api.php?ip=%s&port=%s' % (ip,port))
     jmotd = json.loads(motd.text)
+    if jmotd['status'] == 'online':
+        sendmsg = Language['MotdSuccessful'].replace(r'%ip%',jmotd['ip']).replace(r'%port%',jmotd['port']).replace(r'%motd%',jmotd['motd'])\
+            .replace(r'%agreement%',jmotd['agreement']).replace(r'%version%',jmotd['version']).replace(r'%delay%',str(jmotd['delay'])+'ms')\
+                .replace(r'%online%',jmotd['online']).replace(r'%max%',jmotd['max']).replace(r'%gamemode%',jmotd['gamemode'])
+
+        sendGroupMsg(group,sendmsg.replace('\\n','\n'))
+    else:
+        sendGroupMsg(group,Language['MotdFaild'])
 
 def Botruncmd(text):
     result=text+'\r\n'
@@ -119,8 +127,27 @@ def Botruncmd(text):
             for i in config['Group']:
                 sendGroupMsg(i,Language['ServerRunning'])
     elif 'motd' in text:
+        print(text)
+        print('chufa')
         args = text.split(' ')
+        addr = ''
+        port = ''
+        group = int(args[-1])
+        args.remove(str(group))
+        #匹配域名
+        for i in args:
+            if re.search(r'(([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5])\.){3}([01]{0,1}\d{0,1}\d|2[0-4]\d|25[0-5])',i) or re.search(r'[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+.?',i):
+                addr = i
+        #赋值地址
+        if ':' in addr:
+            d = addr.split(':')
+            addr = d[0]
+            port = d[1]
+        else:
+            port = '19132'
 
+        m = threading.Thread(target=motdServer,args=(addr,port,group))
+        m.start()
     else:
         if StartedServer:
             obj.stdin.write(cmd.encode('utf8'))
@@ -232,7 +259,12 @@ def showinfo():
 
                         scr.see(END)
 
-    
+def stoperd():
+    answer = mBox.askyesno("强制停止服务器", "你确定吗？") 
+    if answer == True:
+        os.system('taskkill /f /im %s' % 'bedrock_server.exe')
+        for i in config['Group']:
+            sendGroupMsg(i,Language['ForcedStop'])
         
 def runserver():
     global obj,StartedServer,Sended
@@ -255,8 +287,7 @@ def runserver():
 def runfileserver():
     global obj
     scr.delete(1.0,'end')
-    obj = subprocess.Popen("cmd.exe /C Library\index.bat", stdin=subprocess.PIPE, 
-    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    obj = os.system("start Library\index.bat")
     runserverb.configure(state='disabled')
     runserverc.configure(state='disabled')
     stoper.configure(state='normal')
@@ -333,7 +364,7 @@ runserverc = ttk.Button(ServerUse,text=">",width=2,command=runfileserver)
 runserverc.grid(column=0,row=7,rowspan=2)
 ttk.Label(ServerUse, text="从文件启动",width=17).grid(column=1, row=7)
 
-stoper = ttk.Button(ServerUse,text=">",width=2,command=runcmd)   
+stoper = ttk.Button(ServerUse,text=">",width=2,command=stoperd)   
 stoper.grid(column=0,row=10,rowspan=2)
 ttk.Label(ServerUse, text="强制停止",width=17,foreground='red').grid(column=1, row=10)
 stoper.configure(state='disabled')
@@ -355,7 +386,7 @@ action.grid(column=2,row=1,rowspan=2,padx=6)'''
 #---------------Tab1控件介绍------------------#
  
  
-#---------------Tab2控件介绍------------------#
+'''#---------------Tab2控件介绍------------------#
 # We are creating a container tab3 to hold all other widgets -- Tab2
 monty2 = ttk.LabelFrame(tab2, text='控件示范区2')
 monty2.grid(column=0, row=0, padx=8, pady=4)
@@ -441,7 +472,7 @@ for i in range(2):
     canvas = 'canvas' + str(col)
     canvas = tk.Canvas(tab3, width=162, height=95, highlightthickness=0, bg='#FFFF00')
     canvas.grid(row=i, column=i)
-#---------------Tab3控件介绍------------------#
+#---------------Tab3控件介绍------------------#'''
  
  
 #----------------菜单栏介绍-------------------#    
@@ -456,14 +487,17 @@ menuBar = Menu(win)
 win.config(menu=menuBar)
  
 # Add menu items
+def _msgBox1():
+    mBox.showinfo('提示', '展望未来')
 fileMenu = Menu(menuBar, tearoff=0)
-fileMenu.add_command(label="新建")
+fileMenu.add_command(label="配置",command=_msgBox1)
+fileMenu.add_command(label="主页",command=_msgBox1)
 fileMenu.add_separator()
 fileMenu.add_command(label="退出", command=_quit)
-menuBar.add_cascade(label="文件", menu=fileMenu)
+menuBar.add_cascade(label="显示", menu=fileMenu)
  
  
-# Display a Message Box
+'''# Display a Message Box
 def _msgBox1():
     mBox.showinfo('Python Message Info Box', '通知：程序运行正常！')
 def _msgBox2():
@@ -484,7 +518,7 @@ msgMenu.add_command(label="警告 Box", command=_msgBox2)
 msgMenu.add_command(label="错误 Box", command=_msgBox3)
 msgMenu.add_separator()
 msgMenu.add_command(label="判断对话框", command=_msgBox4)
-menuBar.add_cascade(label="消息框", menu=msgMenu)
+menuBar.add_cascade(label="消息框", menu=msgMenu)'''
 #----------------菜单栏介绍-------------------#
  
  
@@ -497,6 +531,16 @@ win.geometry('742x397')
 # Start GUI
 #======================
 loginQQ()
+
+def writeconfig():
+    run = '''@echo off
+title BDS1.17.10
+cd %s
+%s'''
+    with open('Library\index.bat','w') as f:
+        f.write(run % (config['ServerPath'],config['ServerFile']))
+
+writeconfig()
 
 def usegroupregular():
     url = config['BotWSURL']
@@ -522,7 +566,6 @@ def usegroupregular():
                 regular['Group'].append({'regular':r,'perm':perm,'run':cmd})
         conn.close()
         j = json.loads(ws.recv())
-        print(j)
         if 'type' in j['data']:
             if j['data']['type'] == "GroupMessage":
                 group = j['data']["sender"]['group']['id']
@@ -537,7 +580,6 @@ def usegroupregular():
                     for b in regular['Group']:
                         p = re.findall(b['regular'],msg)
                         if p != []:
-                            print('wp',p)
                             if type(p[0]) == tuple:
                                 if len(p[0]) == 1:
                                     cmd = b['run'].replace('$1',p[0][0])
@@ -567,7 +609,10 @@ def usegroupregular():
                                             sendGroupMsg(g,cmd[2:].replace('\\n','\n'))
                                     #执行命令
                                     elif b['run'][:2] == '<<':
-                                        Botruncmd(cmd[2:])
+                                        if 'motd' in cmd[2:]:
+                                            Botruncmd(cmd[2:]+' '+str(group))
+                                        else:
+                                            Botruncmd(cmd[2:])
 
                             else:
                                 if b['run'][:2] == '>>':
@@ -575,7 +620,10 @@ def usegroupregular():
                                         sendGroupMsg(g,cmd[2:].replace('\\n','\n'))
                                 #执行命令
                                 elif b['run'][:2] == '<<':
-                                    Botruncmd(cmd[2:])
+                                    if 'motd' in cmd[2:]:
+                                        Botruncmd(cmd[2:]+' '+str(group))
+                                    else:
+                                        Botruncmd(cmd[2:])
                         else:
                             rt = {'Type':'None'}
 

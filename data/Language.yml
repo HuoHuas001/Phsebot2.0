@@ -29,3 +29,21 @@ ServerRunning: "[服务器] 服务器已在运行中"
 
 #ServerNotRunning可用变量：无
 ServerNotRunning: "[服务器] 服务器不在运行中."
+
+#MotdFaild可用变量：无
+MotdFaild: "Motd请求失败"
+
+#MotdSuccessful可用变量：
+  #%ip% IP地址
+  #%port% 端口
+  #%motd% 说明
+  #%agreement% 协议版本
+  #%version% 客户端版本
+  #%online% 在线玩家
+  #%max% 最大在线玩家
+  #%gamemode% 游戏模式
+  #%delay% 本机到服务器的延迟
+MotdSuccessful: '[MOTD] Motd成功\n服务器地址:%ip%:%port%\n说明:%motd%\n协议版本:%agreement%\n游戏版本:%version%\n在线:%online%/%max%\n游戏模式:%gamemode%\n延迟:%delay%'
+
+#ForcedStop可用变量：无
+ForcedStop: '[服务器] 服务器已被强制停止'
