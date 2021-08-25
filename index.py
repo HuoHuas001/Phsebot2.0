@@ -105,6 +105,30 @@ def runcmd():
     obj.stdin.flush()
     nameEntered.delete(0, 'end')
 
+def motdServer(ip,port,msg):
+    motd = requests.get('http://motdpe.blackbe.xyz/api.php?ip=%s&port=1%s' % (ip,port))
+    jmotd = json.loads(motd.text)
+
+def Botruncmd(text):
+    result=text+'\r\n'
+    cmd = result
+    if text == 'start':
+        if not StartedServer:
+            runserver()
+        else:
+            for i in config['Group']:
+                sendGroupMsg(i,Language['ServerRunning'])
+    elif 'motd' in text:
+        args = text.split(' ')
+
+    else:
+        if StartedServer:
+            obj.stdin.write(cmd.encode('utf8'))
+            obj.stdin.flush()
+        else:
+            for i in config['Group']:
+                sendGroupMsg(i,Language['ServerNotRunning'])
+
 def checkBDS():
     global StartedServer
     time.sleep(1)
@@ -136,6 +160,9 @@ def showinfo():
                         line = lines
                         try:
                             updateLine = lines[-1]
+                            back = useconsoleregular(updateLine)
+                            if back['Type'] == 'Cmd':
+                                Botruncmd(back['Cmd'])
                         except IndexError:
                             pass
 
@@ -222,6 +249,8 @@ def runserver():
     show.start()
     c = threading.Thread(target=checkBDS)
     c.start()
+    for i in config['Group']:
+        sendGroupMsg(i,Language['Starting'])
 
 def runfileserver():
     global obj
@@ -468,6 +497,90 @@ win.geometry('742x397')
 # Start GUI
 #======================
 loginQQ()
+
+def usegroupregular():
+    url = config['BotWSURL']
+    key = config['Key']
+    ws = create_connection(url+'/message?verifyKey=%s&qq=%i' % (key,config['Bot']))
+    while True:
+        rt = {}
+        regular = {'Console':[],'Group':[],'Msg':[]}
+        conn = sqlite3.connect('data/regular.db')
+        c = conn.cursor()
+        cursor = c.execute("SELECT *  from interactive")
+        cmd = ''
+        for row in cursor:
+            r = row[0]
+            by = row[1]
+            perm = row[2]
+            cmd = row[3]
+            if perm == '管理员':
+                perm = True
+            else:
+                perm = False
+            if by == '群消息':
+                regular['Group'].append({'regular':r,'perm':perm,'run':cmd})
+        conn.close()
+        j = json.loads(ws.recv())
+        print(j)
+        if 'type' in j['data']:
+            if j['data']['type'] == "GroupMessage":
+                group = j['data']["sender"]['group']['id']
+                senderqq = j['data']['sender']["id"]
+                msg = ''
+                for i in j['data']["messageChain"]:
+                    if i['type'] == 'Plain':
+                        msg = i["text"]
+                #验证是否是管理的群
+                if group in config['Group']:
+                    #验证正则
+                    for b in regular['Group']:
+                        p = re.findall(b['regular'],msg)
+                        if p != []:
+                            print('wp',p)
+                            if type(p[0]) == tuple:
+                                if len(p[0]) == 1:
+                                    cmd = b['run'].replace('$1',p[0][0])
+                                elif len(p[0]) == 2:
+                                    cmd = b['run'].replace('$1',p[0][0]).replace('$2',p[0][1])
+                                elif len(p[0]) == 3:
+                                    cmd = b['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2])
+                                elif len(p[0]) == 4:
+                                    cmd = b['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3])
+                                elif len(p[0]) == 5:
+                                    cmd = b['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4])
+                                elif len(p[0]) == 6:
+                                    cmd = b['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4]).replace('$6',p[0][5])
+                                elif len(p[0]) == 7:
+                                    cmd = b['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4]).replace('$6',p[0][5]).replace('$7',p[0][6])
+                                elif len(p[0]) == 8:
+                                    cmd = b['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4]).replace('$6',p[0][5]).replace('$7',p[0][6]).replace('$8',p[0][7])
+                                elif len(p[0]) == 9:
+                                    cmd = b['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4]).replace('$6',p[0][5]).replace('$7',p[0][6]).replace('$8',p[0][7]).replace('$9',p[0][8])
+                            elif type(p[0]) == str:
+                                cmd = b['run'].replace('$1',p[0])
+                            #发群消息
+                            if perm == True:
+                                if senderqq in config['Admin']:
+                                    if b['run'][:2] == '>>':
+                                        for g in config["Group"]:
+                                            sendGroupMsg(g,cmd[2:].replace('\\n','\n'))
+                                    #执行命令
+                                    elif b['run'][:2] == '<<':
+                                        Botruncmd(cmd[2:])
+
+                            else:
+                                if b['run'][:2] == '>>':
+                                    for g in config["Group"]:
+                                        sendGroupMsg(g,cmd[2:].replace('\\n','\n'))
+                                #执行命令
+                                elif b['run'][:2] == '<<':
+                                    Botruncmd(cmd[2:])
+                        else:
+                            rt = {'Type':'None'}
+
+gmsp = threading.Thread(target=usegroupregular)
+gmsp.start()
 try:
     win.mainloop()
 except KeyboardInterrupt:

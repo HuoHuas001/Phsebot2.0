@@ -1,0 +1,23 @@
+#服务端文件
+ServerFile: ""
+
+#服务端目录
+ServerPath: ""
+
+#管理员列表
+Admin:
+  - 2351078777
+
+#发消息的群聊
+Group:
+  - 615056067
+
+#Mah登录地址
+BotURL: "http://localhost:8080"
+BotWSURL: "ws://localhost:8080"
+
+#Mah登录Key
+Key: "INITKEY8Gj5l2Hh"
+
+#发消息的QQ号
+Bot: 3544175039

@@ -3,20 +3,21 @@ Active code page: 65001
 [Info] FastDlsymInited <201665>
 [Chakra] LiteLoader.dll Injected.
 [Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
-[2021-08-24 22:13:47 INFO][LL] Loading plugins 
-[2021-08-24 22:13:47 INFO][LL] Plugin BDSPyrunner.dll loaded 
+[2021-08-25 11:17:00 INFO][LL] Loading plugins 
+[2021-08-25 11:17:00 INFO][LL] Plugin BDSPyrunner.dll loaded 
 [CrashLogger] CrashLogger loaded.
-[2021-08-24 22:13:47 INFO][LL] Plugin CrashLogger.dll loaded 
-[2021-08-24 22:13:47 INFO][LL] Plugin hpmail.dll loaded 
-[2021-08-24 22:13:53 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
-[2021-08-24 22:13:53 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
-[2021-08-24 22:13:53 INFO][LL] Plugin LLMoney.dll loaded 
+[2021-08-25 11:17:00 INFO][LL] Plugin CrashLogger.dll loaded 
+[2021-08-25 11:17:00 INFO][LL] Plugin hpmail.dll loaded 
+[2021-08-25 11:17:09 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-08-25 11:17:09 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[2021-08-25 11:17:09 INFO][LL] Plugin LLMoney.dll loaded 
 [OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.0
 [OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.txt
 [OutputFilter] 作者：yqs112358   首发平台：MineBBS
 [OutputFilter] 欲联系作者可前往MineBBS论坛
-[2021-08-24 22:13:53 INFO][LL] Plugin OutputFilter.dll loaded 
-[2021-08-24 22:13:53 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
+[2021-08-25 11:17:09 INFO][LL] Plugin OutputFilter.dll loaded 
+[2021-08-25 11:17:09 INFO][LL] Plugin llmod_chat.dll loaded 
+[2021-08-25 11:17:09 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
      _       _  _         __   __  _                        _             
     | |     (_)| |        \ \ / / | |                      | |            
     | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
@@ -37,8 +38,9 @@ Active code page: 65001
 [LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
 [LiteXLoader.Lua][Info] Loading plugins...
 [LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.
-[2021-08-24 22:13:53 INFO][MONEY] Loaded version:  210714 
-[2021-08-24 22:13:53 INFO][LL] 7 plugin(s) loaded 
+[2021-08-25 11:17:10 INFO][MONEY] Loaded version:  210714 
+____Chat v1.3____Load successed! by.yanhy2000
+[2021-08-25 11:17:10 INFO][LL] 8 plugin(s) loaded 
 [BDSpyrunner] 1.7.4a loaded.
 [BDSpyrunner] loading Bed_war
 [INFO] Requests successful
@@ -48,29 +50,27 @@ Active code page: 65001
 [BDSpyrunner] loading AutoUpdate
 [INFO] 自动检测更新加载完成
 NO LOG FILE! - setting up server logging...
-[2021-08-24 22:13:55 INFO] Starting Server
-[2021-08-24 22:13:55 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.1
-[2021-08-24 22:13:55 INFO] Session ID 783979a6-94d0-417e-9c5d-499b1596abc0
-[2021-08-24 22:13:55 INFO] Level Name: Bedrock level
-[2021-08-24 22:13:55 INFO] Game mode: 0 Survival
-[2021-08-24 22:13:55 INFO] Difficulty: 1 EASY
+[2021-08-25 11:17:14 INFO] Starting Server
+[2021-08-25 11:17:14 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.1
+[2021-08-25 11:17:14 INFO] Session ID c26629b0-8e09-44c2-aea9-35364ccd040c
+[2021-08-25 11:17:15 INFO] Level Name: Bedrock level
+[2021-08-25 11:17:15 INFO] Game mode: 0 Survival
+[2021-08-25 11:17:15 INFO] Difficulty: 1 EASY
 [INFO] opening worlds/Bedrock level/db
 [INFO] IPv4 supported, port: 19132
 [INFO] IPv6 supported, port: 19133
-[INFO] IPv4 supported, port: 61445
-[INFO] IPv6 supported, port: 61446
+[INFO] IPv4 supported, port: 60288
+[INFO] IPv6 supported, port: 60289
 [LiteLoader] Registering cmds
 RegisteringCommand > mail
 RegisteringCommand > money
 RegisteringCommand > version
 [LiteXLoader.Js][Info] Builtin Cmds Registered.
 [LiteXLoader.Lua][Info] Builtin Cmds Registered.
-[2021-08-24 22:14:00 INFO][LL] LiteLoader is distributed under the GPLv3 License 
-[2021-08-24 22:14:00 INFO][LL] Github: https://git.io/JOyw4 | Version: 1.1.1 | Based on BedrockX Project 
-[2021-08-24 22:14:00 INFO][LL] 感谢旋律云(rhymc.com)对本项目的支持 | Thanks to [rhymc.com] for supporting this project 
+[2021-08-25 11:17:21 INFO][LL] LiteLoader is distributed under the GPLv3 License 
+[2021-08-25 11:17:21 INFO][LL] Github: https://git.io/JOyw4 | Version: 1.1.1 | Based on BedrockX Project 
+[2021-08-25 11:17:21 INFO][LL] 感谢旋律云(rhymc.com)对本项目的支持 | Thanks to [rhymc.com] for supporting this project 
 [INFO] Server started.
-[LiteXLoader.Js][Info] 提示：您的BDS版本不存在于当前主线维护版本中，自动更新将不会推送
-[LiteXLoader.Js][Info] 如果有需要，请前往LXL相关页面手动更新加载器
 [INFO] Server stop requested.
 [INFO] Stopping server...
 Quit correctly

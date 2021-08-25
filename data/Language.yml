@@ -20,3 +20,12 @@ ServerStoped: "[服务器] 服务器关闭完成"
 
 #Crashed可用变量：无
 Crashed: "[服务器] 服务器已崩溃，请管理员查看后台日志"
+
+#Starting可用变量：无
+Starting: "[服务器] 服务器正在启动，请稍后"
+
+#ServerRunning可用变量：无
+ServerRunning: "[服务器] 服务器已在运行中"
+
+#ServerNotRunning可用变量：无
+ServerNotRunning: "[服务器] 服务器不在运行中."
