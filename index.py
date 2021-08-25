@@ -2,6 +2,7 @@
 #======================
 # imports
 #======================
+from placehoder import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import scrolledtext
@@ -17,12 +18,107 @@ import os
 import re
 from croniter import croniter
 from datetime import datetime
+from motd import *
+from tkinter import *
 print('[INFO] 启动时间:',datetime.now())
 
 #全局变量
 StartedServer = False
 Used = False
+NormalStop = False
 Sended = []
+
+class MultiListbox(Frame):
+
+    def __init__(self,master,lists):
+        Frame.__init__(self,master)
+        self.lists = []
+        for l, w in lists:
+            frame = Frame(self)
+            frame.pack(side=LEFT, expand=YES, fill=BOTH)
+            Label(frame, text=l, borderwidth=1, relief=RAISED).pack(fill=X)
+            lb = Listbox(frame, width=w, borderwidth=0, selectborderwidth=0, relief=FLAT, exportselection=FALSE)
+            lb.pack(expand=YES, fill=BOTH)
+            self.lists.append(lb)
+            lb.bind("<B1-Motion>",lambda e, s=self: s._select(e.y))
+            lb.bind("<Button-1>",lambda e,s=self: s._select(e.y))
+            lb.bind("<Leave>",lambda e: "break")
+            lb.bind("<B2-Motion>",lambda e,s=self: s._b2motion(e.x,e.y))
+            lb.bind("<Button-2>",lambda e,s=self: s._button2(e.x,e.y))
+        frame = Frame(self)
+        frame.pack(side=LEFT, fill=Y)
+        Label(frame, borderwidth=1, relief=RAISED).pack(fill=X)
+        sb = Scrollbar(frame,orient=VERTICAL, command=self._scroll)
+        sb.pack(side=LEFT, fill=Y)
+        self.lists[0]["yscrollcommand"] = sb.set
+
+    def _select(self, y):
+        row = self.lists[0].nearest(y)
+        self.selection_clear(0, END)
+        self.selection_set(row)
+        return "break"
+
+    def _button2(self, x, y):
+        for l in self.lists:
+            l.scan_mark(x,y)
+        return "break"
+
+    def _b2motion(self, x, y):
+        for l in self.lists:
+            l.scan_dragto(x, y)
+        return "break"
+
+    def _scroll(self, *args):
+        for l in self.lists:
+            tk.apply(l.yview, args)
+        return "break"
+
+    def curselection(self):
+        return self.lists[0].curselection()
+
+    def delete(self, first, last=None):
+        for l in self.lists:
+            l.delete(first,last)
+
+    def get(self, first, last=None):
+        result = []
+        for l in self.lists:
+            result.append(l.get(first,last))
+        if last:
+            return tk.apply(map, [None] + result)
+        return result
+
+    def index(self, index):
+        self.lists[0],index(index)
+
+    def insert(self, index, *elements):
+        for e in elements:
+            i = 0
+            for l in self.lists:
+                l.insert(index, e[i])
+                i = i + 1
+
+    def size(self):
+        return self.lists[0].size()
+
+    def see(self, index):
+        for l in self.lists:
+            l.see(index)
+
+    def selection_anchor(self, index):
+        for l in self.lists:
+            l.selection_anchor(index)
+
+    def selection_clear(self, first, last=None):
+        for l in self.lists:
+            l.selection_clear(first,last)
+
+    def selection_includes(self, index):
+        return self.lists[0].seleciton_includes(index)
+
+    def selection_set(self, first, last=None):
+        for l in self.lists:
+            l.selection_set(first, last)
  
 #由于tkinter中没有ToolTip功能，所以自定义这个功能如下
 class ToolTip(object):
@@ -99,25 +195,29 @@ monty.grid(column=0, row=0, padx=7, pady=4)
  
 # Modified Button Click Function
 def runcmd():
+    global NormalStop
     result=nameEntered.get()+'\r\n'
     cmd = result.encode('utf8')
+    if cmd == b'stop\r\n':
+        NormalStop = True
     obj.stdin.write(cmd)
     obj.stdin.flush()
     nameEntered.delete(0, 'end')
 
 def motdServer(ip,port,group):
-    motd = requests.get('http://motdpe.blackbe.xyz/api.php?ip=%s&port=%s' % (ip,port))
-    jmotd = json.loads(motd.text)
+    motd = Server(ip,int(port))
+    jmotd = motd.motd()
     if jmotd['status'] == 'online':
-        sendmsg = Language['MotdSuccessful'].replace(r'%ip%',jmotd['ip']).replace(r'%port%',jmotd['port']).replace(r'%motd%',jmotd['motd'])\
-            .replace(r'%agreement%',jmotd['agreement']).replace(r'%version%',jmotd['version']).replace(r'%delay%',str(jmotd['delay'])+'ms')\
-                .replace(r'%online%',jmotd['online']).replace(r'%max%',jmotd['max']).replace(r'%gamemode%',jmotd['gamemode'])
+        sendmsg = Language['MotdSuccessful'].replace(r'%ip%',jmotd['ip']).replace(r'%port%',str(jmotd['port'])).replace(r'%motd%',jmotd['name'])\
+            .replace(r'%agreement%',jmotd['protocol']).replace(r'%version%',jmotd['version']).replace(r'%delay%',str(jmotd['delay'])+'ms')\
+                .replace(r'%online%',jmotd['online']).replace(r'%max%',jmotd['upperLimit']).replace(r'%gamemode%',jmotd['gamemode'])
 
         sendGroupMsg(group,sendmsg.replace('\\n','\n'))
     else:
         sendGroupMsg(group,Language['MotdFaild'])
 
 def Botruncmd(text):
+    global NormalStop
     result=text+'\r\n'
     cmd = result
     #开服
@@ -127,11 +227,34 @@ def Botruncmd(text):
         else:
             for i in config['Group']:
                 sendGroupMsg(i,Language['ServerRunning'])
+                
+    #正常关服
+    elif text == 'stop':
+        NormalStop = True
+        if StartedServer:
+            obj.stdin.write(cmd.encode('utf8'))
+            obj.stdin.flush()
+        else:
+            for i in config['Group']:
+                sendGroupMsg(i,Language['ServerNotRunning'])
+
+    #绑定XboxID
+    elif 'bindid' in text:
+        args = text.split(' ')
+        qqid = int(args[1])
+        group = int(args[-1])
+        name = args[2]
+        bind(qqid,name,group)
+
+    #解绑XboxID
+    elif 'unbind' in text:
+        args = text.split(' ')
+        qqid = int(args[1])
+        group = int(args[-1])
+        unbind(qqid,group)
 
     #Motd请求
     elif 'motd' in text:
-        print(text)
-        print('chufa')
         args = text.split(' ')
         addr = ''
         port = ''
@@ -166,7 +289,28 @@ def checkBDS():
     time.sleep(1)
     while True:
         time.sleep(0.5)
-        if not check("bedrock_server.exe"):
+        if not check("bedrock_server.exe") and NormalStop == True:
+            runserverb.configure(state='normal')
+            runserverc.configure(state='normal')
+            stoper.configure(state='disabled')
+            StartedServer = False
+            scr.insert('end','[INFO] 进程已停止')
+            ServerNow.configure(text='服务器状态：未启动')
+            GameFile.configure(text='服务器存档：')
+            GameVersion.configure(text='服务器版本：')
+            break
+        elif not check("bedrock_server.exe") and NormalStop == False and config['AutoRestart']:
+            for i in config['Group']:
+                sendGroupMsg(i,Language['AbendServer'])
+                sendGroupMsg(i,Language['RestartServer'])
+            ServerNow.configure(text='服务器状态：未启动')
+            GameFile.configure(text='服务器存档：')
+            GameVersion.configure(text='服务器版本：')
+            runserver()
+            break
+        elif not check("bedrock_server.exe") and NormalStop == False and config['AutoRestart'] == False:
+            for i in config['Group']:
+                sendGroupMsg(i,Language['AbendServer'])
             runserverb.configure(state='normal')
             runserverc.configure(state='normal')
             stoper.configure(state='disabled')
@@ -182,6 +326,7 @@ def showinfo():
     line = []
     updateLine = ''
     while StartedServer:
+        obj.stdin.flush()
         if os.path.isfile('console.txt'):
             with open('console.txt','r',encoding='utf8') as f:
                 lines = f.readlines()
@@ -193,6 +338,20 @@ def showinfo():
                         try:
                             updateLine = lines[-1]
                             back = useconsoleregular(updateLine)
+                            #玩家退服
+                            if re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != [] and Language['PlayerJoin'] != False:
+                                r = re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
+                                print(r)
+                                for g in config["Group"]:
+                                    sendGroupMsg(g,Language['PlayerLeft'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
+
+                            #玩家进服
+                            if re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != [] and Language['PlayerJoin'] != False:
+                                r = re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
+                                print(r)
+                                for g in config["Group"]:
+                                    sendGroupMsg(g,Language['PlayerJoin'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
+
                             if back['Type'] == 'Cmd':
                                 Botruncmd(back['Cmd'])
                         except IndexError:
@@ -272,7 +431,8 @@ def stoperd():
             sendGroupMsg(i,Language['ForcedStop'])
         
 def runserver():
-    global obj,StartedServer,Sended
+    global obj,StartedServer,Sended,NormalStop
+    NormalStop = False
     Sended = []
     StartedServer = True
     scr.delete(1.0,'end')
@@ -536,7 +696,8 @@ win.geometry('742x397')
 #======================
 # Start GUI
 #======================
-
+print('[INFO] Phsebot启动成功 作者：HuoHuaX')
+print('[INFO] 特别鸣谢：McPlus Yanhy2000')
 loginQQ()
 
 def writeconfig():
@@ -587,6 +748,7 @@ def usegroupregular():
                     for b in regular['Group']:
                         p = re.findall(b['regular'],msg)
                         if p != []:
+                            print(b['regular'],p)
                             if type(p[0]) == tuple:
                                 if len(p[0]) == 1:
                                     cmd = b['run'].replace('$1',p[0][0])
@@ -609,6 +771,7 @@ def usegroupregular():
                             elif type(p[0]) == str:
                                 cmd = b['run'].replace('$1',p[0])
                             #发群消息
+                            print(cmd)
                             if perm == True:
                                 if senderqq in config['Admin']:
                                     if b['run'][:2] == '>>':
@@ -616,8 +779,15 @@ def usegroupregular():
                                             sendGroupMsg(g,cmd[2:].replace('\\n','\n'))
                                     #执行命令
                                     elif b['run'][:2] == '<<':
+                                        print(cmd[2:])
                                         if 'motd' in cmd[2:]:
                                             Botruncmd(cmd[2:]+' '+str(group))
+                                        elif 'bindid' in cmd[2:]:
+                                            print(('%qqid%',str(senderqq))+' '+str(group))
+                                            Botruncmd(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
+                                        elif 'unbind' in cmd[2:]:
+                                            print(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
+                                            Botruncmd(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
                                         else:
                                             Botruncmd(cmd[2:])
 
@@ -629,6 +799,11 @@ def usegroupregular():
                                 elif b['run'][:2] == '<<':
                                     if 'motd' in cmd[2:]:
                                         Botruncmd(cmd[2:]+' '+str(group))
+                                    elif 'bind' in cmd[2:]:
+                                        Botruncmd(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
+                                    elif 'unbind' in cmd[2:]:
+                                        print(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
+                                        Botruncmd(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
                                     else:
                                         Botruncmd(cmd[2:])
                         else:

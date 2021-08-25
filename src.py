@@ -270,3 +270,19 @@ cd %s
         
     def cancel(self):
         self.destroy()
+
+#修改群名
+def changeName(member,group,name):
+    url = config["BotURL"]
+    namejson = {
+        "sessionKey": sessionKey,
+        "target": group,
+        "memberId": member,
+        "info": {
+            "name": name,
+        }
+    }
+    m = requests.post(url+'/memberInfo',json=namejson)
+    j = json.loads(m.text)
+    if j['code'] == 10:
+        print('[INFO] 已尝试修改群名片，但没有权限')

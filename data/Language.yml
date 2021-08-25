@@ -47,3 +47,30 @@ MotdSuccessful: '[MOTD] Motd成功\n服务器地址:%ip%:%port%\n说明:%motd%\n
 
 #ForcedStop可用变量：无
 ForcedStop: '[服务器] 服务器已被强制停止'
+
+#AbendServer可用变量：无
+AbendServer: '[服务器] 服务器异常终止'
+
+#RestartServer可用变量：无
+RestartServer: '[服务器] 服务器重新启动'
+
+#PlayerJoin可用变量：%player% %xuid%
+PlayerJoin: '[服务器] %player% 加入了服务器，其xuid为%xuid%'
+
+#PlayerLeft可用变量：%player% %xuid%
+PlayerLeft: '[服务器] %player% 加入了服务器，其xuid为%xuid%'
+
+#XboxIDBinded可用变量：%binderqq%
+XboxIDBinded: '这个XBOXID已被 QQ号为：%binderqq% 绑定'
+
+#QQBinded可用变量：%xboxid%
+QQBinded: 你已绑定xboxid：%xboxid%
+
+#BindSuccessful可用变量：%xboxid%
+BindSuccessful: 您已成功绑定%xboxid%
+
+#NotFoundXboxID可用变量：无
+NotFoundXboxID: 你没有已绑定的xboxid
+
+#unBindSuccessful可用变量：%xboxid%
+unBindSuccessful: 您已成功解绑%xboxid%

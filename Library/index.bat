@@ -1,3 +1,4 @@
 @echo off
-cd E:\MCServer\bedrock-server-1.17.11.01
+title BDS1.17.10
+cd E:\MCServer\bds1.17.10
 bedrock_server.exe
