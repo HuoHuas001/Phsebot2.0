@@ -290,7 +290,7 @@ def checkBDS():
     time.sleep(1)
     while True:
         time.sleep(0.5)
-        if not check("bedrock_server.exe") and NormalStop == True:
+        if not check(config['ServerFile']) and NormalStop == True:
             runserverb.configure(state='normal')
             runserverc.configure(state='normal')
             stoper.configure(state='disabled')
@@ -300,7 +300,7 @@ def checkBDS():
             GameFile.configure(text='服务器存档：')
             GameVersion.configure(text='服务器版本：')
             break
-        elif not check("bedrock_server.exe") and NormalStop == False and config['AutoRestart']:
+        elif not check(config['ServerFile']) and NormalStop == False and config['AutoRestart']:
             for i in config['Group']:
                 sendGroupMsg(i,Language['AbendServer'])
                 sendGroupMsg(i,Language['RestartServer'])
@@ -309,7 +309,7 @@ def checkBDS():
             GameVersion.configure(text='服务器版本：')
             runserver()
             break
-        elif not check("bedrock_server.exe") and NormalStop == False and config['AutoRestart'] == False:
+        elif not check(config['ServerFile']) and NormalStop == False and config['AutoRestart'] == False:
             for i in config['Group']:
                 sendGroupMsg(i,Language['AbendServer'])
             runserverb.configure(state='normal')
@@ -427,7 +427,7 @@ def showinfo():
 def stoperd():
     answer = mBox.askyesno("强制停止服务器", "你确定吗？") 
     if answer == True:
-        os.system('taskkill /f /im %s' % 'bedrock_server.exe')
+        os.system('taskkill /f /im %s' % config['ServerFile'])
         for i in config['Group']:
             sendGroupMsg(i,Language['ForcedStop'])
         
@@ -535,6 +535,10 @@ stoper.grid(column=0,row=10,rowspan=2)
 ttk.Label(ServerUse, text="强制停止",width=17,foreground='red').grid(column=1, row=10)
 stoper.configure(state='disabled')
 
+reload = ttk.Button(ServerUse,text=">",width=2,command=filereload)   
+reload.grid(column=0,row=12,rowspan=2)
+ttk.Label(ServerUse, text="重载文件",width=17).grid(column=1, row=12)
+
 ServerUse.grid(column=0, row=2, padx=5, pady=10,sticky='W')
 
 ttk.Label(infos, text="",width=20).grid(column=0, row=10)
@@ -629,7 +633,6 @@ loginQQ()
 
 def writeconfig():
     run = '''@echo off
-title BDS1.17.10
 cd %s
 %s'''
     with open('Library\index.bat','w') as f:
@@ -739,8 +742,7 @@ def usegroupregular():
 #解析cron
 def crontab():
     croncomment = []
-    with open('data/Cron.json','r',encoding='utf-8') as f:
-        cronl = json.loads(f.read())
+    cronl = cron
     str_time_now=datetime.now()
     for i in cronl:
         try:
@@ -797,8 +799,10 @@ gmsp.start()
 
 def on_closing():
     if mBox.askyesno('退出','您即将关闭Phsebot，确认吗？'):
-        print('[INFO] 退出')
+        print('[INFO] 正在执行Exit事件')
         win.destroy()
+        print('[INFO] 正在释放Mirai资源，请稍后')
+        releaseSession()
         os._exit(0)
 
 win.protocol("WM_DELETE_WINDOW", on_closing)

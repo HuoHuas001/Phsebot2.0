@@ -288,6 +288,19 @@ def changeName(member,group,name):
     if j['code'] == 10:
         print('[INFO] 已尝试修改群名片，但没有权限')
 
+#退出释放资源
+def releaseSession():
+    url = config["BotURL"]
+    requests.post(url+'/release',json={'sessionKey':sessionKey,'qq':config['Bot']})
+
+#重载所有文件
+def filereload():
+    global config,Language,cron
+    config = read_file('data/config.yml')
+    Language = read_file('data/Language.yml')
+    cron = read_file('data/Cron.json')
+    mBox.showinfo('重载文件','重载文件完成')
+
 class ComplexEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
