@@ -1,7 +1,6 @@
 [
     {
-        "cron":"*/5 * * * * ?",
-        "type":"runcmd",
-        "cmd":"say hello"
+        "cron":"*/1 * * * *",
+        "cmd":">>Cron测试"
     }
 ]

@@ -38,6 +38,7 @@ def bind(qqid,name,group):
     conn.commit()
     conn.close()
     sendGroupMsg(group,Language['BindSuccessful'].replace(r'%xboxid%',name))
+    changeName(qqid,group,name)
 
 #解除绑定
 def unbind(qqid,group):

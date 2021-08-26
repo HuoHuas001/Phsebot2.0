@@ -17,6 +17,7 @@ from src import *
 import os
 import re
 from croniter import croniter
+from croniter import CroniterNotAlphaError
 from datetime import datetime
 from motd import *
 from tkinter import *
@@ -29,7 +30,6 @@ NormalStop = False
 Sended = []
 
 class MultiListbox(Frame):
-
     def __init__(self,master,lists):
         Frame.__init__(self,master)
         self.lists = []
@@ -37,7 +37,7 @@ class MultiListbox(Frame):
             frame = Frame(self)
             frame.pack(side=LEFT, expand=YES, fill=BOTH)
             Label(frame, text=l, borderwidth=1, relief=RAISED).pack(fill=X)
-            lb = Listbox(frame, width=w, borderwidth=0, selectborderwidth=0, relief=FLAT, exportselection=FALSE)
+            lb = Listbox(frame, width=w, borderwidth=0, selectborderwidth=0, relief=FLAT, exportselection=FALSE,height=19)
             lb.pack(expand=YES, fill=BOTH)
             self.lists.append(lb)
             lb.bind("<B1-Motion>",lambda e, s=self: s._select(e.y))
@@ -70,7 +70,7 @@ class MultiListbox(Frame):
 
     def _scroll(self, *args):
         for l in self.lists:
-            tk.apply(l.yview, args)
+            l.yview(*args)
         return "break"
 
     def curselection(self):
@@ -85,7 +85,7 @@ class MultiListbox(Frame):
         for l in self.lists:
             result.append(l.get(first,last))
         if last:
-            return tk.apply(map, [None] + result)
+            return map(*[None] + result)
         return result
 
     def index(self, index):
@@ -119,6 +119,7 @@ class MultiListbox(Frame):
     def selection_set(self, first, last=None):
         for l in self.lists:
             l.selection_set(first, last)
+
  
 #由于tkinter中没有ToolTip功能，所以自定义这个功能如下
 class ToolTip(object):
@@ -551,93 +552,42 @@ action.grid(column=2,row=1,rowspan=2,padx=6)'''
 #---------------Tab1控件介绍------------------#
  
  
-'''#---------------Tab2控件介绍------------------#
+#---------------Tab2控件介绍------------------#
 # We are creating a container tab3 to hold all other widgets -- Tab2
-monty2 = ttk.LabelFrame(tab2, text='控件示范区2')
+monty2 = ttk.LabelFrame(tab2, text='正则表达式预览 (请使用滚动条拉取页面避免出现错位的情况)')
 monty2.grid(column=0, row=0, padx=8, pady=4)
-# Creating three checkbuttons
-chVarDis = tk.IntVar()
-check1 = tk.Checkbutton(monty2, text="失效选项", variable=chVarDis, state='disabled')
-check1.select()  
-check1.grid(column=0, row=0, sticky=tk.W)                 
- 
-chVarUn = tk.IntVar()
-check2 = tk.Checkbutton(monty2, text="遵从内心", variable=chVarUn)
-check2.deselect()   #Clears (turns off) the checkbutton.
-check2.grid(column=1, row=0, sticky=tk.W )                  
- 
-chVarEn = tk.IntVar()
-check3 = tk.Checkbutton(monty2, text="屈于现实", variable=chVarEn)
-check3.deselect()
-check3.grid(column=2, row=0, sticky=tk.W)                 
- 
-# GUI Callback function 
-def checkCallback(*ignoredArgs):
-    # only enable one checkbutton
-    if chVarUn.get(): check3.configure(state='disabled')
-    else:             check3.configure(state='normal')
-    if chVarEn.get(): check2.configure(state='disabled')
-    else:             check2.configure(state='normal') 
- 
-# trace the state of the two checkbuttons  #？？
-chVarUn.trace('w', lambda unused0, unused1, unused2 : checkCallback())    
-chVarEn.trace('w', lambda unused0, unused1, unused2 : checkCallback())   
- 
-# Radiobutton list
-values = ["富强民主", "文明和谐", "自由平等","公正法治","爱国敬业","诚信友善"]
- 
-# Radiobutton callback function
-def radCall():
-    radSel=radVar.get()
-    if   radSel == 0: monty2.configure(text='富强民主')
-    elif radSel == 1: monty2.configure(text='文明和谐')
-    elif radSel == 2: monty2.configure(text='自由平等')
-    elif radSel == 3: monty2.configure(text='公正法治')
-    elif radSel == 4: monty2.configure(text='爱国敬业')
-    elif radSel == 5: monty2.configure(text='诚信友善')
- 
-# create three Radiobuttons using one variable
-radVar = tk.IntVar()
- 
-# Selecting a non-existing index value for radVar
-radVar.set(99)    
- 
-# Creating all three Radiobutton widgets within one loop
-for col in range(4):
-    #curRad = 'rad' + str(col)  
-    curRad = tk.Radiobutton(monty2, text=values[col], variable=radVar, value=col, command=radCall)
-    curRad.grid(column=col, row=6, sticky=tk.W, columnspan=3)
-for col in range(4,6):
-    #curRad = 'rad' + str(col)  
-    curRad = tk.Radiobutton(monty2, text=values[col], variable=radVar, value=col, command=radCall)
-    curRad.grid(column=col-4, row=7, sticky=tk.W, columnspan=3)
- 
-style = ttk.Style()
-style.configure("BW.TLabel", font=("Times", "10",'bold'))
-ttk.Label(monty2, text="   社会主义核心价值观",style="BW.TLabel").grid(column=2, row=7,columnspan=2, sticky=tk.EW)
- 
-# Create a container to hold labels
-labelsFrame = ttk.LabelFrame(monty2, text=' 嵌套区域 ')
-labelsFrame.grid(column=0, row=8,columnspan=4)
- 
-# Place labels into the container element - vertically
-ttk.Label(labelsFrame, text="你才25岁，你可以成为任何你想成为的人。").grid(column=0, row=0)
-ttk.Label(labelsFrame, text="不要在乎一城一池的得失，要执着。").grid(column=0, row=1,sticky=tk.W)
- 
-# Add some space around each label
-for child in labelsFrame.winfo_children(): 
-    child.grid_configure(padx=8,pady=4)
+
+mlb = MultiListbox(monty2,(('正则', 60),('执行', 20),("权限", 10),("捕获",10)))
+'''for i in range(1000):
+    mlb.insert(END,('Important Message: %d' % i,'John Doe', '10/10/%4d' % (1900+i),""))
+'''
+conn = sqlite3.connect('data/regular.db')
+c = conn.cursor()
+cursor = c.execute("SELECT *  from interactive")
+cmd = ''
+for row in cursor:
+    r = row[0]
+    by = row[1]
+    perm = row[2]
+    cmd = row[3]
+    mlb.insert(END,(r,cmd,perm,by))
+conn.close()
+
+mlb.pack(expand=YES, fill=BOTH)
+
 #---------------Tab2控件介绍------------------#
  
- 
+
 #---------------Tab3控件介绍------------------#
-tab3 = tk.Frame(tab3, bg='#AFEEEE')
-tab3.pack()
-for i in range(2):
-    canvas = 'canvas' + str(col)
-    canvas = tk.Canvas(tab3, width=162, height=95, highlightthickness=0, bg='#FFFF00')
-    canvas.grid(row=i, column=i)
-#---------------Tab3控件介绍------------------#'''
+monty3 = ttk.LabelFrame(tab3, text='Cron预览 (请使用滚动条拉取页面避免出现错位的情况)')
+monty3.grid(column=0, row=0, padx=8, pady=4)
+mlc = MultiListbox(monty3,(('Crontab表达式', 50),('执行任务', 50)))
+with open('data/Cron.json','r',encoding='utf-8') as f:
+    cronl = json.loads(f.read())
+for i in cronl:
+    mlc.insert(END,(i['cron'],i['cmd']))
+mlc.pack(expand=YES, fill=BOTH)
+#---------------Tab3控件介绍------------------#
  
  
 #----------------菜单栏介绍-------------------#    
@@ -662,29 +612,6 @@ fileMenu.add_separator()
 fileMenu.add_command(label="退出", command=_quit)
 menuBar.add_cascade(label="显示", menu=fileMenu)
  
- 
-'''# Display a Message Box
-def _msgBox1():
-    mBox.showinfo('Python Message Info Box', '通知：程序运行正常！')
-def _msgBox2():
-    mBox.showwarning('Python Message Warning Box', '警告：程序出现错误，请检查！')
-def _msgBox3():
-    mBox.showwarning('Python Message Error Box', '错误：程序出现严重错误，请退出！')
-def _msgBox4():
-    answer = mBox.askyesno("Python Message Dual Choice Box", "你喜欢这篇文章吗？\n您的选择是：") 
-    if answer == True:
-        mBox.showinfo('显示选择结果', '您选择了“是”，谢谢参与！')
-    else:
-        mBox.showinfo('显示选择结果', '您选择了“否”，谢谢参与！')
- 
-# Add another Menu to the Menu Bar and an item
-msgMenu = Menu(menuBar, tearoff=0)
-msgMenu.add_command(label="通知 Box", command=_msgBox1)
-msgMenu.add_command(label="警告 Box", command=_msgBox2)
-msgMenu.add_command(label="错误 Box", command=_msgBox3)
-msgMenu.add_separator()
-msgMenu.add_command(label="判断对话框", command=_msgBox4)
-menuBar.add_cascade(label="消息框", menu=msgMenu)'''
 #----------------菜单栏介绍-------------------#
  
  
@@ -809,8 +736,65 @@ def usegroupregular():
                         else:
                             rt = {'Type':'None'}
 
+#解析cron
+def crontab():
+    croncomment = []
+    with open('data/Cron.json','r',encoding='utf-8') as f:
+        cronl = json.loads(f.read())
+    str_time_now=datetime.now()
+    for i in cronl:
+        try:
+            iter=croniter(i['cron'],str_time_now)
+            time = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
+            cmd = i['cmd']
+            croncomment.append({'time':time,'cmd':cmd,'cron':i['cron']})
+        except CroniterNotAlphaError:
+            print('[ERRO]',i['cron'],'无法被解析')
+    write_file('Temp/crontab.json',croncomment)
+    print('[INFO] 内置计划任务已开始运行')
+
+#运行计划任务
+def runcron():
+    while True:
+        now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        nowlist = now.split('-')
+        timelist = []
+        for i in nowlist:
+            timelist.append(int(i))
+        with open('Temp/crontab.json','r',encoding='utf-8') as f:
+            croncmd = json.loads(f.read())
+
+        for i in croncmd:
+            crontime = []
+            for t in i['time'].split('-'):
+                crontime.append(int(t))
+            #触发条件
+            if timelist[0] >= crontime[0] and timelist[1] >= crontime[1] and \
+                timelist[2] >= crontime[2] and timelist[3] >= crontime[3] and\
+                    timelist[4] >= crontime[4] and timelist[5] >= crontime[5]:
+                if i['cmd'][:2] == '>>':
+                    for g in config['Group']:
+                        sendGroupMsg(g,i['cmd'][2:])
+                elif i['cmd'][:2] == '<<':
+                    Botruncmd(i['cmd'][2:])
+
+                #执行完毕重新解析
+                str_time_now=datetime.now()
+                iter=croniter(i['cron'],str_time_now)
+                time = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
+                cmd = i['cmd']
+                croncmd.remove(i)
+                croncmd.append({'time':time,'cmd':cmd,'cron':i['cron']})
+                write_file('Temp/crontab.json',croncmd)
+        
+#生成计划任务
+crontab()
+croncmdt = threading.Thread(target=runcron)
+croncmdt.start()
+
 gmsp = threading.Thread(target=usegroupregular)
 gmsp.start()
+
 def on_closing():
     if mBox.askyesno('退出','您即将关闭Phsebot，确认吗？'):
         print('[INFO] 退出')
@@ -819,8 +803,9 @@ def on_closing():
 
 win.protocol("WM_DELETE_WINDOW", on_closing)
 
+
+
 try:
     win.mainloop()
 except KeyboardInterrupt:
-    print('[INFO] 退出程序...')
-    os._exit(0)
+    on_closing()

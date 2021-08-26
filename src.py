@@ -11,6 +11,7 @@ from tkinter import messagebox as mBox
 import os
 import tkinter as tk
 from tkinter import ttk
+from datetime import date, datetime
 
 def read_file(file):
     with open(file,'r',encoding='utf-8') as f:
@@ -286,3 +287,16 @@ def changeName(member,group,name):
     j = json.loads(m.text)
     if j['code'] == 10:
         print('[INFO] 已尝试修改群名片，但没有权限')
+
+class ComplexEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+def write_file(file,content):
+    with open(file,'w',encoding='utf-8') as f:
+        json.dump(content, f, indent=4, ensure_ascii=False, cls=ComplexEncoder)
