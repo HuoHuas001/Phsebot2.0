@@ -113,6 +113,12 @@ NotFoundXboxID: 你没有已绑定的xboxid
 unBindSuccessful: 您已成功解绑%xboxid%
 #NoPermission可用变量：无
 NoPermission: '你没有权限'
+#@未绑定白名单的成员
+AtNoXboxid: 
+  #此功能开关
+  Enable: false
+  #自动撤回未绑定成员的消息
+  Recall: false
 ```
 
 > ### 3.cron模板

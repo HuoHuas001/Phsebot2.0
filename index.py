@@ -333,6 +333,7 @@ def showinfo():
     global StartedServer,Version,Sended,World,ServerPort
     line = []
     updateLine = ''
+    
     while StartedServer:
         obj.stdin.flush()
         if os.path.isfile('console.txt'):
@@ -559,7 +560,7 @@ def filereload():
     config = read_file('data/config.yml')
     Language = read_file('data/Language.yml')
     cron = read_file('data/Cron.json')
-    conn = sqlite3.connect('data/regular.db')
+    conn = sq.connect('data/regular.db')
     c = conn.cursor()
     cursor = c.execute("SELECT *  from interactive")
     cmd = ''
@@ -603,7 +604,7 @@ monty2 = ttk.LabelFrame(tab2, text='正则表达式预览 (请使用滚动条拉
 monty2.grid(column=0, row=0, padx=8, pady=4)
 
 mlb = MultiListbox(monty2,(('正则', 57),('执行', 20),("权限", 10),("捕获",10)))
-conn = sqlite3.connect('data/regular.db')
+conn = sq.connect('data/regular.db')
 c = conn.cursor()
 cursor = c.execute("SELECT *  from interactive")
 cmd = ''
@@ -686,16 +687,19 @@ cd %s
 writeconfig()
 
 def usegroupregular():
+    global sessionKey
     url = config['BotWSURL']
     key = config['Key']
+    url2 = config["BotURL"]
     ws = create_connection(url+'/message?verifyKey=%s&qq=%i' % (key,config['Bot']))
     while True:
         rt = {}
         regular = {'Console':[],'Group':[],'Msg':[]}
-        conn = sqlite3.connect('data/regular.db')
+        conn = sq.connect('data/regular.db')
         c = conn.cursor()
         cursor = c.execute("SELECT *  from interactive")
         cmd = ''
+
         for row in cursor:
             r = row[0]
             by = row[1]
@@ -714,10 +718,23 @@ def usegroupregular():
                 group = j['data']["sender"]['group']['id']
                 senderqq = j['data']['sender']["id"]
                 sendername = j['data']['sender']["memberName"]
+                Sourceid = 0
                 msg = ''
-                for i in j['data']["messageChain"]:
-                    if i['type'] == 'Plain':
-                        msg = i["text"]
+                if len(j['data']["messageChain"]) == 1:
+                    for i in j['data']["messageChain"]:
+                        if i['type'] == 'Plain':
+                            msg = i["text"]
+                        elif i['type'] == 'Source':
+                            Sourceid = i['id']
+                else:
+                    msg = ''
+                    for i in j['data']["messageChain"]:
+                        if i['type'] == 'Plain':
+                            msg += i["text"]
+                        elif i['type'] == 'At':
+                            msg += str(i['target'])
+                        elif i['type'] == 'Source':
+                            Sourceid = i['id']
                 #验证是否是管理的群
                 if group in config['Group']:
                     #验证正则
@@ -781,11 +798,26 @@ def usegroupregular():
                                         Botruncmd(rps)
                         else:
                             rt = {'Type':'None'}
-
+                    
+                    #绑定xboxid
+                    if config['AtNoXboxid']['Enable']:
+                        qlist = []
+                        conn = sq.connect('data/xuid.db')
+                        c = conn.cursor()
+                        cursor = c.execute("SELECT *  from xboxid")
+                        for row in cursor:
+                            qq = row[0]
+                            qlist.append(qq)
+                        conn.close()
+                        if senderqq not in qlist:
+                            #撤回消息
+                            if config['AtNoXboxid']['Recall']:
+                                recallmsg(Sourceid)
+                            send_at(group,senderqq)
 def useconsoleregular(text):
     rt = {}
     regular = {'Console':[],'Group':[],'Msg':[]}
-    conn = sqlite3.connect('data/regular.db')
+    conn = sq.connect('data/regular.db')
     c = conn.cursor()
     cursor = c.execute("SELECT *  from interactive")
     cmd = ''

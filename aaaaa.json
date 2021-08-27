@@ -1,0 +1,20 @@
+{
+    "syncId": "-1", 
+    "data": {
+        "type": "GroupMessage", 
+        "messageChain": [
+            {
+                "type": "Source", 
+                "id": 22961, 
+                "time": 1630063251
+            }, {
+                "type": "Plain",
+                 "text": "绑定玩家id "
+            }, {
+                "type": "At", 
+                "target": 3544175039, 
+                "display": ""
+            }, {
+                "type": "Plain", 
+                "text": "   wssb"
+            }], "sender": {"id": 2351078777, "memberName": "wssb", "specialTitle": "", "permission": "ADMINISTRATOR", "joinTimestamp": 1629708932, "lastSpeakTimestamp": 1630063251, "muteTimeRemaining": 0, "group": {"id": 615056067, "name": "bot测试群|mcl售后群", "permission": "ADMINISTRATOR"}}}}

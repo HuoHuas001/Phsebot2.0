@@ -1,11 +1,33 @@
-Admin:
-- 2351078777
-AutoRestart: false
-Bot: 3544175039
-BotURL: http://localhost:8080
-BotWSURL: ws://localhost:8080
-Group:
-- 615056067
-Key: INITKEY8Gj5l2Hh
+#服务端文件
 ServerFile: bedrock_server.exe
-ServerPath: E:\MCServer\bedrock-server-1.17.11.01
+
+#服务端目录
+ServerPath: E:\MCServer\bds1.17.10
+
+#管理员列表
+Admin:
+  - 2351078777
+
+#发消息的群聊
+Group:
+  - 615056067
+
+#Mah登录地址
+BotURL: "http://localhost:8080"
+BotWSURL: "ws://localhost:8080"
+
+#Mah登录Key
+Key: "INITKEY8Gj5l2Hh"
+
+#发消息的QQ号
+Bot: 3544175039
+
+#崩服自动重启
+AutoRestart: true
+
+#@未绑定白名单的成员
+AtNoXboxid: 
+  #此功能开关
+  Enable: false
+  #自动撤回未绑定成员的消息
+  Recall: false
