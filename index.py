@@ -24,6 +24,7 @@ from motd import *
 from tkinter import *
 from PIL import ImageTk
 from json import JSONDecodeError
+from placehoder import *
 print('[INFO] 启动时间:',datetime.now())
 
 #全局变量
@@ -329,7 +330,7 @@ def checkBDS():
             break
 
 def showinfo():
-    global StartedServer,Version,Sended,World
+    global StartedServer,Version,Sended,World,ServerPort
     line = []
     updateLine = ''
     while StartedServer:
@@ -348,14 +349,12 @@ def showinfo():
                             #玩家退服
                             if re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != [] and Language['PlayerJoin'] != False:
                                 r = re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
-                                print(r)
                                 for g in config["Group"]:
                                     sendGroupMsg(g,Language['PlayerLeft'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
 
                             #玩家进服
                             if re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != [] and Language['PlayerJoin'] != False:
                                 r = re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
-                                print(r)
                                 for g in config["Group"]:
                                     sendGroupMsg(g,Language['PlayerJoin'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
 
@@ -372,6 +371,9 @@ def showinfo():
                             if 'INFO] Version' in i:
                                 Version = re.findall(r'Version\s(.+?)[\r\s]',i)[0]
                                 GameVersion.configure(text='服务器版本：'+Version)
+                                d = read_file('Temp/data.json')
+                                d['Version'] = Version
+                                write_file('Temp/data.json',d)
                                 if 'SendedVersion' not in Sended:
                                     Sended.append('SendedVersion')
                                     if Language['ServerVersion'] != False:
@@ -381,6 +383,9 @@ def showinfo():
                             if 'opening' in i:
                                 World = re.findall(r'opening\s(.+?)[\r\s]',i)[0]
                                 GameFile.configure(text='服务器存档：'+World)
+                                d = read_file('Temp/data.json')
+                                d['World'] = World
+                                write_file('Temp/data.json',d)
                                 if 'OpenWorld' not in Sended:
                                     Sended.append('OpenWorld')
                                     if Language['OpenWorld'] != False:
@@ -389,12 +394,15 @@ def showinfo():
 
                             #加载端口
                             if 'IPv4' in i:
-                                Port = re.findall(r'^\[INFO\]\sIPv4\ssupported,\sport:\s(.+?)$',i)[0]
+                                Port = int(re.findall(r'^\[INFO\]\sIPv4\ssupported,\sport:\s(.+?)$',i)[0])
+                                d = read_file('Temp/data.json')
+                                d['Port'] = Port
+                                write_file('Temp/data.json',d)
                                 if 'PortOpen' not in Sended:
                                     Sended.append('PortOpen')
                                     if Language['PortOpen'] != False:
                                         for b in config["Group"]:
-                                            sendGroupMsg(b,Language['PortOpen'].replace('%Port%',Port))
+                                            sendGroupMsg(b,Language['PortOpen'].replace('%Port%',str(Port)))
 
                             #开服完成
                             if 'Server started.' in i:
@@ -668,6 +676,13 @@ cd %s
     with open('Library\index.bat','w') as f:
         f.write(run % (config['ServerPath'],config['ServerFile']))
 
+    with open('Temp/data.json','w') as f:
+        f.write("""{
+    "Version":"",
+    "Port":0,
+    "World":""
+}
+        """)
 writeconfig()
 
 def usegroupregular():
@@ -698,6 +713,7 @@ def usegroupregular():
             if j['data']['type'] == "GroupMessage":
                 group = j['data']["sender"]['group']['id']
                 senderqq = j['data']['sender']["id"]
+                sendername = j['data']['sender']["memberName"]
                 msg = ''
                 for i in j['data']["messageChain"]:
                     if i['type'] == 'Plain':
@@ -708,7 +724,6 @@ def usegroupregular():
                     for b in regular['Group']:
                         p = re.findall(b['regular'],msg)
                         if p != []:
-                            print(b['regular'],p)
                             if type(p[0]) == tuple:
                                 if len(p[0]) == 1:
                                     cmd = b['run'].replace('$1',p[0][0])
@@ -731,45 +746,99 @@ def usegroupregular():
                             elif type(p[0]) == str:
                                 cmd = b['run'].replace('$1',p[0])
                             #发群消息
-                            print(cmd)
+                            rps = replacegroup(cmd[2:],sendername,senderqq)
                             if b['perm'] == True:
                                 if senderqq in config['Admin']:
                                     if b['run'][:2] == '>>':
                                         for g in config["Group"]:
-                                            sendGroupMsg(g,cmd[2:].replace('\\n','\n'))
+                                            sendGroupMsg(g,rps)
                                     #执行命令
                                     elif b['run'][:2] == '<<':
-                                        print(cmd[2:])
                                         if 'motd' in cmd[2:]:
-                                            Botruncmd(cmd[2:]+' '+str(group))
+                                            Botruncmd(rps+' '+str(group))
                                         elif 'bindid' in cmd[2:]:
-                                            print(('%qqid%',str(senderqq))+' '+str(group))
-                                            Botruncmd(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
+                                            Botruncmd(rps+' '+str(group))
                                         elif 'unbind' in cmd[2:]:
-                                            print(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
-                                            Botruncmd(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
+                                            Botruncmd(rps+' '+str(group))
                                         else:
-                                            Botruncmd(cmd[2:])
+                                            Botruncmd(rps)
                                 else:
                                     sendGroupMsg(group,Language['NoPermission'])
 
                             else:
                                 if b['run'][:2] == '>>':
                                     for g in config["Group"]:
-                                        sendGroupMsg(g,cmd[2:].replace('\\n','\n'))
+                                        sendGroupMsg(g,rps)
                                 #执行命令
                                 elif b['run'][:2] == '<<':
                                     if 'motd' in cmd[2:]:
-                                        Botruncmd(cmd[2:]+' '+str(group))
+                                        Botruncmd(rps+' '+str(group))
                                     elif 'bind' in cmd[2:]:
-                                        Botruncmd(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
+                                        Botruncmd(rps+' '+str(group))
                                     elif 'unbind' in cmd[2:]:
-                                        print(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
-                                        Botruncmd(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
+                                        Botruncmd(rps+' '+str(group))
                                     else:
-                                        Botruncmd(cmd[2:])
+                                        Botruncmd(rps)
                         else:
                             rt = {'Type':'None'}
+
+def useconsoleregular(text):
+    rt = {}
+    regular = {'Console':[],'Group':[],'Msg':[]}
+    conn = sqlite3.connect('data/regular.db')
+    c = conn.cursor()
+    cursor = c.execute("SELECT *  from interactive")
+    cmd = ''
+    for row in cursor:
+        r = row[0]
+        by = row[1]
+        perm = row[2]
+        cmd = row[3]
+        if perm == '管理员':
+            perm = True
+        else:
+            perm = False
+        if by == '控制台':
+            regular['Console'].append({'regular':r,'perm':perm,'run':cmd})
+    conn.close()
+
+    for i in regular['Console']:
+        p = re.findall(i['regular'],text)
+        #执行操作
+        if p != []:
+            if type(p[0]) == tuple:
+                if len(p[0]) == 1:
+                    cmd = i['run'].replace('$1',p[0][0])
+                elif len(p[0]) == 2:
+                    cmd = i['run'].replace('$1',p[0][0]).replace('$2',p[0][1])
+                elif len(p[0]) == 3:
+                    cmd = i['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2])
+                elif len(p[0]) == 4:
+                    cmd = i['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3])
+                elif len(p[0]) == 5:
+                    cmd = i['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4])
+                elif len(p[0]) == 6:
+                    cmd = i['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4]).replace('$6',p[0][5])
+                elif len(p[0]) == 7:
+                    cmd = i['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4]).replace('$6',p[0][5]).replace('$7',p[0][6])
+                elif len(p[0]) == 8:
+                    cmd = i['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4]).replace('$6',p[0][5]).replace('$7',p[0][6]).replace('$8',p[0][7])
+                elif len(p[0]) == 9:
+                    cmd = i['run'].replace('$1',p[0][0]).replace('$2',p[0][1]).replace('$3',p[0][2]).replace('$4',p[0][3]).replace('$5',p[0][4]).replace('$6',p[0][5]).replace('$7',p[0][6]).replace('$8',p[0][7]).replace('$9',p[0][8])
+            elif type(p[0]) == str:
+                cmd = i['run']
+            #发群消息
+            rps = replaceconsole(cmd[2:])
+            if i['run'][:2] == '>>':
+                for g in config["Group"]:
+                    sendGroupMsg(g,rps)
+                rt = {'Type':'Sended'}
+            #执行命令
+            elif i['run'][:2] == '<<':
+                rt = {'Type':'Cmd','Cmd':rps}
+        else:
+            rt = {'Type':'None'}
+    return rt
 
 #解析cron
 def crontab():
@@ -811,11 +880,12 @@ def runcron():
             if timelist[0] >= crontime[0] and timelist[1] >= crontime[1] and \
                 timelist[2] >= crontime[2] and timelist[3] >= crontime[3] and\
                     timelist[4] >= crontime[4] and timelist[5] >= crontime[5]:
+                rps = replaceconsole(i['cmd'][2:])
                 if i['cmd'][:2] == '>>':
                     for g in config['Group']:
-                        sendGroupMsg(g,i['cmd'][2:])
+                        sendGroupMsg(g,rps)
                 elif i['cmd'][:2] == '<<':
-                    Botruncmd(i['cmd'][2:])
+                    Botruncmd(rps)
 
                 #执行完毕重新解析
                 str_time_now=datetime.now()

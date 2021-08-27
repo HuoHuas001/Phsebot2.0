@@ -12,6 +12,8 @@ class Server:
     def motd(self):
         clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         ip = socket.getaddrinfo(self.ip, "https")[0][4][0]
+        if self.ip == "localhost":
+            ip = "127.0.0.1"
         serverAddress = (ip, self.port)
         clientSocket.connect(serverAddress)
         ts = time.time()
@@ -27,9 +29,10 @@ class Server:
         clientSocket.sendto(bytes(self.__msglist), serverAddress)
 
         while True:
-            receiveData = clientSocket.recv(10240)
-            receiveList = receiveData.decode('UTF-8', errors='ignore').split(";")
-            returnDict = {
+            try:
+                receiveData = clientSocket.recv(10240)
+                receiveList = receiveData.decode('UTF-8', errors='ignore').split(";")
+                returnDict = {
                 "status":'online',
                 "ip": self.ip,
                 "port": self.port,
@@ -44,6 +47,8 @@ class Server:
                 "port_ipv6": receiveList[11],
                 "delay": int((time.time() - ts) * 1000)
             }
-            clientSocket.close()
-            return returnDict
+                clientSocket.close()
+                return returnDict
+            except:
+                return {'status':'offline'}
 

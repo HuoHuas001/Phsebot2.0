@@ -1,5 +1,12 @@
 import sqlite3 as sq
+import psutil
 from src import *
+from motd import *
+
+#全局变量声明
+Version = ''
+World = ''
+ServerPort = 0
 
 def bind(qqid,name,group):
     qxlist = []
@@ -40,6 +47,17 @@ def bind(qqid,name,group):
     sendGroupMsg(group,Language['BindSuccessful'].replace(r'%xboxid%',name))
     changeName(qqid,group,name)
 
+#获取cpu状态
+def getcpupercent():
+    global cpup
+    cpup = 0
+    while True:
+        psutil.cpu_percent(None)
+        time.sleep(0.5)
+        cpup = str(psutil.cpu_percent(None))
+
+cp = threading.Thread(target=getcpupercent)
+cp.start()
 #解除绑定
 def unbind(qqid,group):
     "unBindSuccessful"
@@ -60,29 +78,86 @@ def unbind(qqid,group):
     if qqid in qlist:
         for i in qxlist:
             if i['qq'] == qqid:
-                print('sended')
                 sendGroupMsg(group,Language['unBindSuccessful'].replace(r'%xboxid%',i['id']))
         conn = sq.connect('data/xuid.db')
         c = conn.cursor()
         c.execute("DELETE from xboxid where qq=%i;" % (qqid,))
         conn.commit()
-        
+        changeName(qqid,group,'')
     else:
         sendGroupMsg(group,Language['NotFoundXboxID'])
 
-def replacestr(string,qqnick,qqid,xboxid):
-    """
-%cpu%	√	√	当前CPU占用率(%)
-%ram_1%	√	√	总物理内存(MB)
-%ram_2%	√	√	可用物理内存(MB)
-%ram_3%	√	√	已用物理内存(MB)
-%ram_4%	√	√	物理内存使用率(%)
-%qqnick%	√		发言人的群名片，未设置群名片则替换为昵称
-%qqid%	√		发言人的QQ号
-%xboxid%	√		发言人绑定的XboxID
-%server_motd%	√	√	服务器介绍（目前好像只有ez可以改）
-%server_version%	√	√	服务端版本
-%server_online%	√	√	服务器在线人数
-%server_maxonline%	√	√	服务器最大在线人数
-%server_levelname%	√	√	服务器当前存档名
-    """
+
+def replaceconsole(string):
+    with open('Temp/data.json','r') as f:
+        d = json.loads(f.read())
+        ServerPort = d['Port']
+        Version = d['Version']
+        World = d['World']
+    motdinfo = Server('127.0.0.1',ServerPort).motd()
+    if motdinfo['status'] == 'online':
+        server_motd = motdinfo['name']
+        server_version = Version
+        server_online = motdinfo['online']
+        server_maxonline = motdinfo['upperLimit']
+        server_levelname = World.replace('worlds/','')
+    else:
+        server_motd = '服务器未启动'
+        server_version = '服务器未启动'
+        server_online = '0'
+        server_maxonline = '0'
+        server_levelname = '服务器未启动'
+    # 系统的CPU利用率
+    cpu = str(cpup)+'%'
+    mem = psutil.virtual_memory()
+    ram_1 = str(mem.total)+'%'
+    ram_2 = str(int((mem.free/1024)/1024))+'MB'
+    ram_3 = str(int((mem.used/1024)/1024))+'MB'
+    ram_4 = str(mem.percent)+'%'
+    s = string.replace(r'%cpu%',cpu).replace(r'%ram_1%',ram_1).replace(r'%ram_2%',ram_2).replace(r'%ram_3%',ram_3)\
+            .replace(r'%ram_4%',ram_4).replace(r'%server_motd%',server_motd).replace(r'%server_version%',server_version)\
+                .replace(r'%server_online%',server_online).replace(r'server_maxonline',server_maxonline).replace(r'%server_levelname%',server_levelname).replace('\\n','\n')
+    return s
+
+def replacegroup(string,qqnick,qqid):
+    with open('Temp/data.json','r') as f:
+        d = json.loads(f.read())
+        ServerPort = d['Port']
+        Version = d['Version']
+        World = d['World']
+    motdinfo = Server('localhost',ServerPort).motd()
+    if motdinfo['status'] == 'online':
+        server_motd = motdinfo['name']
+        server_version = Version
+        server_online = motdinfo['online']
+        server_maxonline = motdinfo['upperLimit']
+        server_levelname = World.replace('worlds/','')
+    else:
+        server_motd = '服务器未启动'
+        server_version = '服务器未启动'
+        server_online = '0'
+        server_maxonline = '0'
+        server_levelname = '服务器未启动'
+    # 系统的CPU利用率
+    cpu = str(cpup)+'%'
+    mem = psutil.virtual_memory()
+    ram_1 = str(mem.total)+'%'
+    ram_2 = str(int((mem.free/1024)/1024))+'MB'
+    ram_3 = str(int((mem.used/1024)/1024))+'MB'
+    ram_4 = str(mem.percent)+'%'
+    #自动以qq号查找xboxid
+    conn = sq.connect('data/xuid.db')
+    c = conn.cursor()
+    cursor = c.execute("SELECT *  from xboxid")
+    xboxid = r'%xboxid%'
+    for row in cursor:
+        qq = row[0]
+        if qqid == qq:
+            xboxid = row[1]
+    conn.close()
+    #替换文本
+    s = string.replace(r'%qqnick%',qqnick).replace(r'%qqid%',str(qqid)).replace(r'%xboxid%',xboxid)\
+        .replace(r'%cpu%',cpu).replace(r'%ram_1%',ram_1).replace(r'%ram_2%',ram_2).replace(r'%ram_3%',ram_3)\
+            .replace(r'%ram_4%',ram_4).replace(r'%server_motd%',server_motd).replace(r'%server_version%',server_version)\
+                .replace(r'%server_online%',server_online).replace(r'%server_maxonline%',server_maxonline).replace(r'%server_levelname%',server_levelname).replace('\\n','\n')
+    return s

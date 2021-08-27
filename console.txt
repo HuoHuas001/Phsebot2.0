@@ -3,21 +3,21 @@ Active code page: 65001
 [Info] FastDlsymInited <201665>
 [Chakra] LiteLoader.dll Injected.
 [Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
-[2021-08-27 11:35:39 INFO][LL] Loading plugins 
-[2021-08-27 11:35:39 INFO][LL] Plugin BDSPyrunner.dll loaded 
+[2021-08-27 18:49:17 INFO][LL] Loading plugins 
+[2021-08-27 18:49:17 INFO][LL] Plugin BDSPyrunner.dll loaded 
 [CrashLogger] CrashLogger loaded.
-[2021-08-27 11:35:39 INFO][LL] Plugin CrashLogger.dll loaded 
-[2021-08-27 11:35:39 INFO][LL] Plugin hpmail.dll loaded 
-[2021-08-27 11:35:39 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
-[2021-08-27 11:35:39 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
-[2021-08-27 11:35:39 INFO][LL] Plugin LLMoney.dll loaded 
+[2021-08-27 18:49:17 INFO][LL] Plugin CrashLogger.dll loaded 
+[2021-08-27 18:49:17 INFO][LL] Plugin hpmail.dll loaded 
+[2021-08-27 18:49:17 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-08-27 18:49:17 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[2021-08-27 18:49:17 INFO][LL] Plugin LLMoney.dll loaded 
 [OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.0
 [OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.txt
 [OutputFilter] 作者：yqs112358   首发平台：MineBBS
 [OutputFilter] 欲联系作者可前往MineBBS论坛
-[2021-08-27 11:35:39 INFO][LL] Plugin OutputFilter.dll loaded 
-[2021-08-27 11:35:39 INFO][LL] Plugin llmod_chat.dll loaded 
-[2021-08-27 11:35:39 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
+[2021-08-27 18:49:17 INFO][LL] Plugin OutputFilter.dll loaded 
+[2021-08-27 18:49:18 INFO][LL] Plugin llmod_chat.dll loaded 
+[2021-08-27 18:49:18 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
      _       _  _         __   __  _                        _             
     | |     (_)| |        \ \ / / | |                      | |            
     | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
@@ -38,9 +38,9 @@ Active code page: 65001
 [LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
 [LiteXLoader.Lua][Info] Loading plugins...
 [LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.
-[2021-08-27 11:35:39 INFO][MONEY] Loaded version:  210714 
+[2021-08-27 18:49:18 INFO][MONEY] Loaded version:  210714 
 ____Chat v1.3____Load successed! by.yanhy2000
-[2021-08-27 11:35:39 INFO][LL] 8 plugin(s) loaded 
+[2021-08-27 18:49:18 INFO][LL] 8 plugin(s) loaded 
 [BDSpyrunner] 1.7.4a loaded.
 [BDSpyrunner] loading Bed_war
 [INFO] Requests successful
@@ -50,12 +50,28 @@ ____Chat v1.3____Load successed! by.yanhy2000
 [BDSpyrunner] loading AutoUpdate
 [INFO] 自动检测更新加载完成
 [BDSpyrunner] loading crash
-NO LOG FILE! - setting up server logging...
-[2021-08-27 11:35:41 INFO] Starting Server
-[2021-08-27 11:35:41 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.1
-[2021-08-27 11:35:41 INFO] Session ID a4df9619-9136-46a7-90b9-c61bf03f34dc
-[2021-08-27 11:35:41 INFO] Level Name: Bedrock level
-[2021-08-27 11:35:41 INFO] Game mode: 0 Survival
-[2021-08-27 11:35:41 INFO] Difficulty: 1 EASY
+[BDSpyrunner] loading bandie
+<built-in method read of _io.TextIOWrapper object at 0x000001EF01D51AC8>
+[]
+[INFO] 极限生存加载完毕NO LOG FILE! - setting up server logging...
+[2021-08-27 18:49:20 INFO] Starting Server
+[2021-08-27 18:49:20 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.1
+[2021-08-27 18:49:20 INFO] Session ID d50af4d4-4d17-4fe2-adba-10094a02e140
+[2021-08-27 18:49:20 INFO] Level Name: Bedrock level
+[2021-08-27 18:49:20 INFO] Game mode: 0 Survival
+[2021-08-27 18:49:20 INFO] Difficulty: 1 EASY
 [INFO] opening worlds/Bedrock level/db
-[CrashLogger] CrashLogger Daemon Process attached.
+[INFO] IPv4 supported, port: 19132
+[INFO] IPv6 supported, port: 19133
+[INFO] IPv4 supported, port: 58620
+[INFO] IPv6 supported, port: 58621
+[LiteLoader] Registering cmds
+RegisteringCommand > mail
+RegisteringCommand > money
+RegisteringCommand > version
+[LiteXLoader.Js][Info] Builtin Cmds Registered.
+[LiteXLoader.Lua][Info] Builtin Cmds Registered.
+[2021-08-27 18:49:22 INFO][LL] LiteLoader is distributed under the GPLv3 License 
+[2021-08-27 18:49:22 INFO][LL] Github: https://git.io/JOyw4 | Version: 1.1.1 | Based on BedrockX Project 
+[2021-08-27 18:49:22 INFO][LL] 感谢旋律云(rhymc.com)对本项目的支持 | Thanks to [rhymc.com] for supporting this project 
+[INFO] Server started.
