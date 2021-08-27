@@ -22,7 +22,6 @@ from croniter import CroniterBadCronError
 from datetime import datetime
 from motd import *
 from tkinter import *
-from PIL import ImageTk
 from json import JSONDecodeError
 from placehoder import *
 print('[INFO] 启动时间:',datetime.now())

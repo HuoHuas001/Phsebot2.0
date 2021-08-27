@@ -14,7 +14,7 @@
 ### 1.安装依赖库
 >bat运行如下命令
 ```bat
-> pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 ### 2.安装机器人
