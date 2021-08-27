@@ -14,7 +14,8 @@ from tkinter import ttk
 from datetime import date, datetime
 from placehoder import *
 import time
-
+import webbrowser
+BotVersion = 0.5
 
 
 def read_file(file):
@@ -313,3 +314,18 @@ def recallmsg(Sourceid):
         "target":Sourceid
     }
     requests.post(url+'/recall',json=recjson)
+
+def testupdate():
+    try:
+        print('[INFO] 正在请求更新')
+        update = json.loads(requests.get('https://api.github.com/repos/HuoHuas001/Phsebot/releases').text)
+        if float(update[0]["tag_name"]) > BotVersion:
+            if mBox.askyesno('提示','Phsebot有新版本了，是否去更新'):  
+                webbrowser.open("https://github.com/HuoHuas001/Phsebot/releases")
+        else:
+            print('[INFO] 该版本是最新版本')
+    except:
+        print('[ERRO] 获取更新时失败')
+
+    
+

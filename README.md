@@ -13,8 +13,8 @@
 
 ### 1.安装依赖库
 >bat运行如下命令
-```bat
- pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+运行包内的Setup.bat
 ```
 
 ### 2.安装机器人
@@ -25,7 +25,7 @@
 ### 3.启动Phsebot主程序
 > 请注意修改config.yml<br>
 
-> 双击 一键开启.bat 即可
+> 双击 Run.bat 即可
 
 ## 2.控制台使用教程
 ### 1.按下<kbd>Ctrl</kbd>+<kbd>C</kbd>来快速关闭程序
@@ -52,6 +52,12 @@ Key: "INITKEY8Gj5l2Hh"
 Bot: 123456789
 #崩服自动重启
 AutoRestart: true
+#@未绑定白名单的成员
+AtNoXboxid: 
+  #此功能开关
+  Enable: false
+  #自动撤回未绑定成员的消息
+  Recall: false
 ```
 
 >### 2.Language.yml模板
@@ -113,12 +119,8 @@ NotFoundXboxID: 你没有已绑定的xboxid
 unBindSuccessful: 您已成功解绑%xboxid%
 #NoPermission可用变量：无
 NoPermission: '你没有权限'
-#@未绑定白名单的成员
-AtNoXboxid: 
-  #此功能开关
-  Enable: false
-  #自动撤回未绑定成员的消息
-  Recall: false
+#AtNotXboxid可用变量：无
+AtNotXboxid: '还未绑定Xboxid'
 ```
 
 > ### 3.cron模板

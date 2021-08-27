@@ -32,6 +32,7 @@ Used = False
 NormalStop = False
 Sended = []
 
+
 class MultiListbox(Frame):
     def __init__(self,master,lists):
         Frame.__init__(self,master)
@@ -507,11 +508,12 @@ infos = ttk.LabelFrame(tab1, text='信息展示',width=500,height=100)
 infos.grid(column=1, row=0, padx=1, pady=10,)
 
 #QQ信息
-QQInfo = ttk.LabelFrame(infos, text='QQ信息')
+QQInfo = ttk.LabelFrame(infos, text='机器人信息')
 QQid = ttk.Label(QQInfo, text="账号：",width=20)
 QQid.grid(column=0, row=0,sticky='W')
 use = ttk.Label(QQInfo, text="授权状态：",width=20)
 use.grid(column=0, row=1,sticky='W')
+version = ttk.Label(QQInfo, text="Bot版本："+str(BotVersion),width=20).grid(column=0, row=2,sticky='W')
 QQInfo.grid(column=0, row=0, padx=5, pady=10,sticky='W')
 QQid.configure(text='账号：%i' % (config['Bot']))
 try:
@@ -944,7 +946,7 @@ def on_closing():
         os._exit(0)
 
 win.protocol("WM_DELETE_WINDOW", on_closing)
-
+testupdate()
 try:
     win.mainloop()
 except KeyboardInterrupt:
