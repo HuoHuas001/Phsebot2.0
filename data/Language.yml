@@ -74,3 +74,6 @@ NotFoundXboxID: 你没有已绑定的xboxid
 
 #unBindSuccessful可用变量：%xboxid%
 unBindSuccessful: 您已成功解绑%xboxid%
+
+#NoPermission可用变量：无
+NoPermission: '你没有权限'

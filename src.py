@@ -293,13 +293,7 @@ def releaseSession():
     url = config["BotURL"]
     requests.post(url+'/release',json={'sessionKey':sessionKey,'qq':config['Bot']})
 
-#重载所有文件
-def filereload():
-    global config,Language,cron
-    config = read_file('data/config.yml')
-    Language = read_file('data/Language.yml')
-    cron = read_file('data/Cron.json')
-    mBox.showinfo('重载文件','重载文件完成')
+
 
 class ComplexEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -313,3 +307,6 @@ class ComplexEncoder(json.JSONEncoder):
 def write_file(file,content):
     with open(file,'w',encoding='utf-8') as f:
         json.dump(content, f, indent=4, ensure_ascii=False, cls=ComplexEncoder)
+
+Version = ''
+World = ''

@@ -18,9 +18,12 @@ import os
 import re
 from croniter import croniter
 from croniter import CroniterNotAlphaError
+from croniter import CroniterBadCronError
 from datetime import datetime
 from motd import *
 from tkinter import *
+from PIL import ImageTk
+from json import JSONDecodeError
 print('[INFO] 启动时间:',datetime.now())
 
 #全局变量
@@ -191,8 +194,11 @@ tabControl.pack(expand=1, fill="both")  # Pack to make visible
  
 #---------------Tab1控件介绍------------------#
 # We are creating a container tab3 to hold all other widgets
-monty = ttk.LabelFrame(tab1, text='BDS控制台')
-monty.grid(column=0, row=0, padx=7, pady=4)
+'''monty = ttk.LabelFrame(tab1, text='BDS控制台')
+monty.grid(column=0, row=0, padx=7'''
+
+monty = ttk.LabelFrame(tab1, text='BDS控制台',width=500,height=100)
+monty.grid(column=0, row=0, padx=1, pady=10,)
  
 # Modified Button Click Function
 def runcmd():
@@ -290,7 +296,7 @@ def checkBDS():
     time.sleep(1)
     while True:
         time.sleep(0.5)
-        if not check(config['ServerFile']) and NormalStop == True:
+        if not check(config['ServerFile']) and NormalStop == True and StartedServer:
             runserverb.configure(state='normal')
             runserverc.configure(state='normal')
             stoper.configure(state='disabled')
@@ -300,7 +306,7 @@ def checkBDS():
             GameFile.configure(text='服务器存档：')
             GameVersion.configure(text='服务器版本：')
             break
-        elif not check(config['ServerFile']) and NormalStop == False and config['AutoRestart']:
+        elif not check(config['ServerFile']) and NormalStop == False and config['AutoRestart'] and StartedServer:
             for i in config['Group']:
                 sendGroupMsg(i,Language['AbendServer'])
                 sendGroupMsg(i,Language['RestartServer'])
@@ -309,7 +315,7 @@ def checkBDS():
             GameVersion.configure(text='服务器版本：')
             runserver()
             break
-        elif not check(config['ServerFile']) and NormalStop == False and config['AutoRestart'] == False:
+        elif not check(config['ServerFile']) and NormalStop == False and config['AutoRestart'] == False and StartedServer:
             for i in config['Group']:
                 sendGroupMsg(i,Language['AbendServer'])
             runserverb.configure(state='normal')
@@ -323,7 +329,7 @@ def checkBDS():
             break
 
 def showinfo():
-    global StartedServer,Version,Sended
+    global StartedServer,Version,Sended,World
     line = []
     updateLine = ''
     while StartedServer:
@@ -436,6 +442,8 @@ def runserver():
     NormalStop = False
     Sended = []
     StartedServer = True
+    nameEntered.configure(state='normal')
+    action.configure(state='normal')
     scr.delete(1.0,'end')
     runserverb.configure(state='disabled')
     runserverc.configure(state='disabled')
@@ -465,18 +473,20 @@ def runfileserver():
 #BDS控制台日志输出  
 scrolW  = 75; scrolH  =  21
 scr = scrolledtext.ScrolledText(monty, width=scrolW, height=scrolH, wrap=tk.WORD)
-scr.grid(column=0, row=0, sticky='WE', columnspan=3)
+scr.grid(column=0, row=0,columnspan=3)
 #scr.configure(state='disabled')
 
 #命令输入
 ttk.Label(monty, text="键入命令：").grid(column=0, row=2, sticky='W')
 name = tk.StringVar()
 nameEntered = ttk.Entry(monty, width=70, textvariable=name)
-nameEntered.grid(column=0, row=3, sticky='W')
+nameEntered.grid(column=0, row=2, sticky='W')
+nameEntered.configure(state='disabled')
 
 #执行命令
 action = ttk.Button(monty,text="执行",width=5,command=runcmd)   
-action.grid(column=2,row=3,rowspan=2)
+action.grid(column=1,row=2,rowspan=2)
+action.configure(state='disabled')
 
 
 createToolTip(action,'执行BDS命令')
@@ -523,32 +533,55 @@ ttk.Label(infos, text="",width=20).grid(column=0, row=6)
 #服务器操作
 ServerUse = ttk.LabelFrame(infos, text='服务器操作',width=500,height=100)
 runserverb = ttk.Button(ServerUse,text=">",width=2,command=runserver)   
-runserverb.grid(column=0,row=5,rowspan=2)
+runserverb.grid(column=0,row=5)
 ttk.Label(ServerUse, text="从配置启动",width=17).grid(column=1, row=5)
 
 runserverc = ttk.Button(ServerUse,text=">",width=2,command=runfileserver)   
-runserverc.grid(column=0,row=7,rowspan=2)
-ttk.Label(ServerUse, text="从文件启动",width=17).grid(column=1, row=7)
+runserverc.grid(column=0,row=6)
+ttk.Label(ServerUse, text="从文件启动",width=17).grid(column=1, row=6)
 
 stoper = ttk.Button(ServerUse,text=">",width=2,command=stoperd)   
-stoper.grid(column=0,row=10,rowspan=2)
-ttk.Label(ServerUse, text="强制停止",width=17,foreground='red').grid(column=1, row=10)
+stoper.grid(column=0,row=7)
+ttk.Label(ServerUse, text="强制停止",width=17,foreground='red').grid(column=1, row=7)
 stoper.configure(state='disabled')
 
+#重载所有文件
+def filereload():
+    global config,Language,cron
+    config = read_file('data/config.yml')
+    Language = read_file('data/Language.yml')
+    cron = read_file('data/Cron.json')
+    conn = sqlite3.connect('data/regular.db')
+    c = conn.cursor()
+    cursor = c.execute("SELECT *  from interactive")
+    cmd = ''
+    mlc.delete(END)
+    mlb.delete(END)
+    for row in cursor:
+        r = row[0]
+        by = row[1]
+        perm = row[2]
+        cmd = row[3]
+        mlb.insert(END,(r,cmd,perm,by))
+    conn.close()
+    with open('data/Cron.json','r',encoding='utf-8') as f:
+        cronl = json.loads(f.read())
+    for i in cronl:
+        mlc.insert(END,(i['cron'],i['cmd']))
+    crontab()
+    mBox.showinfo('重载文件','重载文件完成\nCrontab计划任务重新计时')
+    print('[INFO] 内置计划任务已重新计时')
+
 reload = ttk.Button(ServerUse,text=">",width=2,command=filereload)   
-reload.grid(column=0,row=12,rowspan=2)
-ttk.Label(ServerUse, text="重载文件",width=17).grid(column=1, row=12)
+reload.grid(column=0,row=8)
+ttk.Label(ServerUse, text="重载文件",width=17).grid(column=1, row=8)
 
 ServerUse.grid(column=0, row=2, padx=5, pady=10,sticky='W')
 
-ttk.Label(infos, text="",width=20).grid(column=0, row=10)
-ttk.Label(infos, text="",width=20).grid(column=0, row=11)
-ttk.Label(infos, text="",width=20).grid(column=0, row=12)
+
 
 
 # 一次性控制各控件之间的距离
-for child in monty.winfo_children(): 
-    child.grid_configure(padx=3,pady=1)
 for child in infos.winfo_children(): 
     child.grid_configure(padx=3,pady=1)
 '''# 单独控制个别控件之间的距离
@@ -561,10 +594,7 @@ action.grid(column=2,row=1,rowspan=2,padx=6)'''
 monty2 = ttk.LabelFrame(tab2, text='正则表达式预览 (请使用滚动条拉取页面避免出现错位的情况)')
 monty2.grid(column=0, row=0, padx=8, pady=4)
 
-mlb = MultiListbox(monty2,(('正则', 60),('执行', 20),("权限", 10),("捕获",10)))
-'''for i in range(1000):
-    mlb.insert(END,('Important Message: %d' % i,'John Doe', '10/10/%4d' % (1900+i),""))
-'''
+mlb = MultiListbox(monty2,(('正则', 57),('执行', 20),("权限", 10),("捕获",10)))
 conn = sqlite3.connect('data/regular.db')
 c = conn.cursor()
 cursor = c.execute("SELECT *  from interactive")
@@ -585,7 +615,7 @@ mlb.pack(expand=YES, fill=BOTH)
 #---------------Tab3控件介绍------------------#
 monty3 = ttk.LabelFrame(tab3, text='Cron预览 (请使用滚动条拉取页面避免出现错位的情况)')
 monty3.grid(column=0, row=0, padx=8, pady=4)
-mlc = MultiListbox(monty3,(('Crontab表达式', 50),('执行任务', 50)))
+mlc = MultiListbox(monty3,(('Crontab表达式', 50),('执行任务', 47)))
 with open('data/Cron.json','r',encoding='utf-8') as f:
     cronl = json.loads(f.read())
 for i in cronl:
@@ -621,7 +651,7 @@ menuBar.add_cascade(label="显示", menu=fileMenu)
  
 # Change the main windows icon
 win.iconbitmap(r'Library/Images/bot.ico')
-win.geometry('742x397')
+win.geometry('725x380')
 # Place cursor into name Entry
 #nameEntered.focus()      
 #======================
@@ -702,7 +732,7 @@ def usegroupregular():
                                 cmd = b['run'].replace('$1',p[0])
                             #发群消息
                             print(cmd)
-                            if perm == True:
+                            if b['perm'] == True:
                                 if senderqq in config['Admin']:
                                     if b['run'][:2] == '>>':
                                         for g in config["Group"]:
@@ -720,6 +750,8 @@ def usegroupregular():
                                             Botruncmd(cmd[2:].replace('%qqid%',str(senderqq))+' '+str(group))
                                         else:
                                             Botruncmd(cmd[2:])
+                                else:
+                                    sendGroupMsg(group,Language['NoPermission'])
 
                             else:
                                 if b['run'][:2] == '>>':
@@ -752,6 +784,8 @@ def crontab():
             croncomment.append({'time':time,'cmd':cmd,'cron':i['cron']})
         except CroniterNotAlphaError:
             print('[ERRO]',i['cron'],'无法被解析')
+        except CroniterBadCronError:
+            print('[ERRO]',i['cron'],'无法被解析')
     write_file('Temp/crontab.json',croncomment)
     print('[INFO] 内置计划任务已开始运行')
 
@@ -763,8 +797,11 @@ def runcron():
         timelist = []
         for i in nowlist:
             timelist.append(int(i))
-        with open('Temp/crontab.json','r',encoding='utf-8') as f:
-            croncmd = json.loads(f.read())
+        try:
+            with open('Temp/crontab.json','r',encoding='utf-8') as f:
+                croncmd = json.loads(f.read())
+        except JSONDecodeError:
+            croncmd = []
 
         for i in croncmd:
             crontime = []
@@ -806,8 +843,6 @@ def on_closing():
         os._exit(0)
 
 win.protocol("WM_DELETE_WINDOW", on_closing)
-
-
 
 try:
     win.mainloop()
