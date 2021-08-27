@@ -12,7 +12,8 @@
 > 小白开启请使用 小白一键开启.bat
 
 ### 1.安装依赖库
->bat运行如下命令
+>1.安装Python3.7.9 [下载地址](https://www.python.org/ftp/python/3.7.9/python-3.7.9.exe)
+>2.bat运行如下命令
 ```
 运行包内的Setup.bat
 ```
