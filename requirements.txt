@@ -1,5 +1,0 @@
-croniter==1.0.15
-psutil==5.8.0
-requests==2.26.0
-pyyaml==5.4.1
-websocket-client==1.1.1
