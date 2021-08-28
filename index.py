@@ -281,6 +281,7 @@ def Botruncmd(text):
             port = '19132'
 
         m = threading.Thread(target=motdServer,args=(addr,port,group))
+        m.setName('MotdServer')
         m.start()
 
     #执行指令
@@ -296,7 +297,7 @@ def checkBDS():
     global StartedServer
     time.sleep(1)
     while True:
-        time.sleep(0.5)
+        time.sleep(1)
         if not check(config['ServerFile']) and NormalStop == True and StartedServer:
             runserverb.configure(state='normal')
             runserverc.configure(state='normal')
@@ -335,6 +336,7 @@ def showinfo():
     updateLine = ''
     
     while StartedServer:
+        time.sleep(0.0005)
         obj.stdin.flush()
         if os.path.isfile('console.txt'):
             with open('console.txt','r',encoding='utf8') as f:
@@ -440,8 +442,10 @@ def showinfo():
                         scr.see(END)
 
 def stoperd():
+    global NormalStop
     answer = mBox.askyesno("强制停止服务器", "你确定吗？") 
     if answer == True:
+        NormalStop = True
         os.system('taskkill /f /im %s' % config['ServerFile'])
         for i in config['Group']:
             sendGroupMsg(i,Language['ForcedStop'])
@@ -461,8 +465,10 @@ def runserver():
     obj = subprocess.Popen("Library\index.bat > console.txt", stdin=subprocess.PIPE, 
     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     show = threading.Thread(target=showinfo)
+    show.setName('ShowBDSConsole')
     show.start()
     c = threading.Thread(target=checkBDS)
+    c.setName('CheckBDS')
     c.start()
     for i in config['Group']:
         sendGroupMsg(i,Language['Starting'])
@@ -476,6 +482,7 @@ def runfileserver():
     stoper.configure(state='normal')
     ServerNow.configure(text='服务器状态：已启动')
     c = threading.Thread(target=checkBDS)
+    c.setName('CheckBDS')
     c.start()
 
 
@@ -694,6 +701,7 @@ def usegroupregular():
     url2 = config["BotURL"]
     ws = create_connection(url+'/message?verifyKey=%s&qq=%i' % (key,config['Bot']))
     while True:
+        time.sleep(0.005)
         rt = {}
         regular = {'Console':[],'Group':[],'Msg':[]}
         conn = sq.connect('data/regular.db')
@@ -894,6 +902,7 @@ def crontab():
 #运行计划任务
 def runcron():
     while True:
+        time.sleep(0.05)
         now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         nowlist = now.split('-')
         timelist = []
@@ -914,28 +923,37 @@ def runcron():
                 timelist[2] >= crontime[2] and timelist[3] >= crontime[3] and\
                     timelist[4] >= crontime[4] and timelist[5] >= crontime[5]:
                 rps = replaceconsole(i['cmd'][2:])
+                #群消息
                 if i['cmd'][:2] == '>>':
                     for g in config['Group']:
                         sendGroupMsg(g,rps)
+                #控制台
                 elif i['cmd'][:2] == '<<':
                     Botruncmd(rps)
+                #运行程序
+                elif i['cmd'][:2] == '^^':
+                    os.system('start '+cmd[2:])
 
                 #执行完毕重新解析
                 str_time_now=datetime.now()
                 iter=croniter(i['cron'],str_time_now)
-                time = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
+                times = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
                 cmd = i['cmd']
                 croncmd.remove(i)
-                croncmd.append({'time':time,'cmd':cmd,'cron':i['cron']})
+                croncmd.append({'time':times,'cmd':cmd,'cron':i['cron']})
                 write_file('Temp/crontab.json',croncmd)
         
 #生成计划任务
 crontab()
-croncmdt = threading.Thread(target=runcron)
-croncmdt.start()
+if config['EnableCron']:
+    croncmdt = threading.Thread(target=runcron)
+    croncmdt.setName('Cron_Timer')
+    croncmdt.start()
 
-gmsp = threading.Thread(target=usegroupregular)
-gmsp.start()
+if config['EnableGroup']:
+    gmsp = threading.Thread(target=usegroupregular)
+    gmsp.setName('RecvGroupMsg')
+    gmsp.start()
 
 def on_closing():
     if mBox.askyesno('退出','您即将关闭Phsebot，确认吗？'):

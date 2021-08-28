@@ -69,10 +69,13 @@ def loginQQ():
     else:
         sessionKey = ''
         print('[ERROR] 在登录时出现了错误')
-
+num = 0
 def sendGroupMsg(group,text):
+    global num
     s = threading.Thread(target=sendGroupMsg2,args=(group,text))
+    s.setName('SendGroupMsg'+str(num))
     s.start()
+    num += 1
 
 def sendGroupMsg2(group,text):
     url = config["BotURL"]
@@ -259,44 +262,6 @@ def write_file(file,content):
     with open(file,'w',encoding='utf-8') as f:
         json.dump(content, f, indent=4, ensure_ascii=False, cls=ComplexEncoder)
 
-
-'''def AtNoXboxid():
-    url = config["BotURL"]
-    while True:
-        if config['AtNoXboxid'] > 0:
-            qlist = []
-            conn = sq.connect('data/xuid.db')
-            c = conn.cursor()
-            cursor = c.execute("SELECT *  from xboxid")
-            for row in cursor:
-                qq = row[0]
-                qlist.append(qq)
-            conn.close()
-            for i in config['Group']:
-                members = json.loads(requests.get(url+'/memberList?sessionKey=%s&target=%i' % (sessionKey,i)))
-                data = members['data']
-                if members['code'] == 0:
-                    NoID = []
-                    for d in data:
-                        qqid = d["id"]
-                        if qqid not in qlist and qqid != config['Bot']:
-                            NoID.append(qqid)
-                    msgjson = {
-                        "sessionKey":"YourSession",
-                        "target":i,
-                        "messageChain":[]
-                    }
-                    for n in NoID:
-                        ATjson = {"type": "At", "target": n, "display": ""}
-                        msgjson['messageChain'].append(ATjson)
-                    msgjson['messageChain'].append({"type":"Plain", "text":Language['AtNotXboxid']},) 
-                    requests.post(url+'/sendGroupMessage',json=msgjson)
-            time.sleep(config['AtNoXboxid'])
-        else:
-            break
-
-at = threading.Thread(target=AtNoXboxid)
-at.start()'''
 
 def send_at(group,senderqq):
     url = config["BotURL"]

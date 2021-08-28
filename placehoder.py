@@ -55,9 +55,12 @@ def getcpupercent():
         psutil.cpu_percent(None)
         time.sleep(0.5)
         cpup = str(psutil.cpu_percent(None))
+        time.sleep(2)
 
 cp = threading.Thread(target=getcpupercent)
+cp.setName('GetCpuPercent')
 cp.start()
+
 #解除绑定
 def unbind(qqid,group):
     "unBindSuccessful"
