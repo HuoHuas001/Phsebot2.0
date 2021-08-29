@@ -263,13 +263,15 @@ def write_file(file,content):
         json.dump(content, f, indent=4, ensure_ascii=False, cls=ComplexEncoder)
 
 
-def send_at(group,senderqq):
+def send_at(group,senderqq,msg):
     url = config["BotURL"]
     msgjson = {
         "sessionKey":sessionKey,
         "target":group,
-        "messageChain":[{"type": "At", "target": senderqq, "display": ""},{"type":"Plain", "text":Language['AtNotXboxid']}]
+        "messageChain":[{"type": "At", "target": senderqq, "display": ""}]
     }
+    if msg != False:
+        msgjson['messageChain'].append({"type":"Plain", "text":msg})
     requests.post(url+'/sendGroupMessage',json=msgjson)
 
 def recallmsg(Sourceid):
@@ -292,5 +294,4 @@ def testupdate():
     except:
         print('[ERRO] 获取更新时失败')
 
-    
 

@@ -80,3 +80,6 @@ NoPermission: '你没有权限'
 
 #AtNotXboxid可用变量：无
 AtNotXboxid: '还未绑定Xboxid'
+
+#ChangeNick可用变量：无
+ChangeNick: '请不要乱修改群名片'

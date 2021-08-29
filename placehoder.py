@@ -1,7 +1,7 @@
 import sqlite3 as sq
 import psutil
-from src import *
 from motd import *
+from src import *
 
 #全局变量声明
 Version = ''
@@ -27,14 +27,16 @@ def bind(qqid,name,group):
     if qqid in qlist:
         for i in qxlist:
             if qqid == i['qq']:
-                sendGroupMsg(group,Language['QQBinded'].replace(r'%xboxid%',i['id']))
+                if Language['QQBinded'] != False:
+                    sendGroupMsg(group,Language['QQBinded'].replace(r'%xboxid%',i['id']))
                 return False
 
     #检测Xboid是否绑定
     if name in xlist:
         for i in qxlist:
             if name == i['id']:
-                sendGroupMsg(group,Language['XboxIDBinded'].replace(r'%binderqq%',str(i['qq'])))
+                if Language['XboxIDBinded'] != False:
+                    sendGroupMsg(group,Language['XboxIDBinded'].replace(r'%binderqq%',str(i['qq'])))
                 return False
 
     #全部都不符合自动绑定
@@ -44,8 +46,10 @@ def bind(qqid,name,group):
       VALUES (%i,'%s')" % (qqid,name))
     conn.commit()
     conn.close()
-    sendGroupMsg(group,Language['BindSuccessful'].replace(r'%xboxid%',name))
-    changeName(qqid,group,name)
+    if Language['BindSuccessful'] != False:
+        sendGroupMsg(group,Language['BindSuccessful'].replace(r'%xboxid%',name))
+    if config['AtNoXboxid']['Rename']:
+        changeName(qqid,group,name)
 
 #获取cpu状态
 def getcpupercent():
@@ -81,14 +85,17 @@ def unbind(qqid,group):
     if qqid in qlist:
         for i in qxlist:
             if i['qq'] == qqid:
-                sendGroupMsg(group,Language['unBindSuccessful'].replace(r'%xboxid%',i['id']))
+                if Language['unBindSuccessful'] != False:
+                    sendGroupMsg(group,Language['unBindSuccessful'].replace(r'%xboxid%',i['id']))
         conn = sq.connect('data/xuid.db')
         c = conn.cursor()
         c.execute("DELETE from xboxid where qq=%i;" % (qqid,))
         conn.commit()
-        changeName(qqid,group,'')
+        if config['AtNoXboxid']['Rename']:
+            changeName(qqid,group,'')
     else:
-        sendGroupMsg(group,Language['NotFoundXboxID'])
+        if Language['NotFoundXboxID'] != False:
+            sendGroupMsg(group,Language['NotFoundXboxID'])
 
 
 def replaceconsole(string):

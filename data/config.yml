@@ -31,9 +31,17 @@ AtNoXboxid:
   Enable: false
   #自动撤回未绑定成员的消息
   Recall: false
+  #自动改名
+  Rename: false
 
 #是否启用Cron表达式
 EnableCron: true
 
 #是否监听群消息
 EnableGroup: true
+
+#是否检测昵称被玩家改变
+CheckNick:
+  Enable: true
+  WhiteList:
+    - 2351078777
