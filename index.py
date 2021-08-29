@@ -249,7 +249,7 @@ def Botruncmd(text):
             args = text.split(' ')
             qqid = int(args[1])
             group = int(args[-1])
-            name = re.search(r'\"(.*)\"',text)[0]
+            name = re.search(r'\"(.*)\"',text)[0].replace('"','')
             bind(qqid,name,group)
 
     #解绑XboxID
