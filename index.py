@@ -239,11 +239,18 @@ def Botruncmd(text):
 
     #绑定XboxID
     elif 'bindid' in text:
-        args = text.split(' ')
-        qqid = int(args[1])
-        group = int(args[-1])
-        name = args[2]
-        bind(qqid,name,group)
+        if '"' not in text:
+            args = text.split(' ')
+            qqid = int(args[1])
+            group = int(args[-1])
+            name = args[2]
+            bind(qqid,name,group)
+        else:
+            args = text.split(' ')
+            qqid = int(args[1])
+            group = int(args[-1])
+            name = re.search(r'\"(.*)\"',text)[0]
+            bind(qqid,name,group)
 
     #解绑XboxID
     elif 'unbind' in text:
