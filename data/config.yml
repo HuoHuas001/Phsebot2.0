@@ -7,6 +7,7 @@ ServerPath: E:\MCServer\bds1.17.10
 #管理员列表
 Admin:
   - 2351078777
+  - 1770627763
 
 #发消息的群聊
 Group:
@@ -32,7 +33,7 @@ AtNoXboxid:
   #自动撤回未绑定成员的消息
   Recall: false
   #自动改名
-  Rename: false
+  Rename: true
 
 #是否启用Cron表达式
 EnableCron: true
@@ -44,4 +45,7 @@ EnableGroup: true
 CheckNick:
   Enable: true
   WhiteList:
-    - 2351078777
+    - 123456
+
+#是否开启玩家退群自动删白名单
+LeftRemove: false

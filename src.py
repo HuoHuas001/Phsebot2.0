@@ -15,7 +15,7 @@ from datetime import date, datetime
 from placehoder import *
 import time
 import webbrowser
-BotVersion = 0.6
+BotVersion = 0.7
 
 
 def read_file(file):

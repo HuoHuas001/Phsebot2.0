@@ -616,11 +616,12 @@ for child in infos.winfo_children():
 action.grid(column=2,row=1,rowspan=2,padx=6)'''
 #---------------Tab1控件介绍------------------#
  
- 
+lbv=tk.StringVar()#绑定变量
 #---------------Tab2控件介绍------------------#
 # We are creating a container tab3 to hold all other widgets -- Tab2
 monty2 = ttk.LabelFrame(tab2, text='正则表达式预览 (请使用滚动条拉取页面避免出现错位的情况)')
 monty2.grid(column=0, row=0, padx=8, pady=4)
+
 
 mlb = MultiListbox(monty2,(('正则', 57),('执行', 20),("权限", 10),("捕获",10)))
 conn = sq.connect('data/regular.db')
@@ -638,7 +639,7 @@ conn.close()
 mlb.pack(expand=YES, fill=BOTH)
 
 #---------------Tab2控件介绍------------------#
- 
+
 
 #---------------Tab3控件介绍------------------#
 monty3 = ttk.LabelFrame(tab3, text='Cron预览 (请使用滚动条拉取页面避免出现错位的情况)')
@@ -863,7 +864,40 @@ def usegroupregular():
                                     if Language['ChangeNick'] != False:
                                         send_at(group,qqid,Language['ChangeNick'])
 
-
+            #检测成员离开群聊
+            elif 'MemberLeaveEventKick' == j['data']['type'] or "MemberLeaveEventQuit" == j['data']['type']:
+                memberid = j['data']['member']['id']
+                group = j['data']['member']['group']['id']
+                #验证管理群号
+                if group in config['Group'] and config['LeftRemove']:
+                    qxlist = []
+                    qlist = []
+                    xlist = []
+                    conn = sq.connect('data/xuid.db')
+                    c = conn.cursor()
+                    cursor = c.execute("SELECT *  from xboxid")
+                    for row in cursor:
+                        qq = row[0]
+                        xboxid = row[1]
+                        qxlist.append({'qq':qq,'id':xboxid})
+                        qlist.append(qq)
+                        xlist.append(xboxid)
+                    conn.close()
+                    if memberid in qlist:
+                        wl = read_file(config['ServerPath']+'\\whitelist.json')
+                        wlrun = False
+                        xboxid = r'%xboxid%'
+                        for x in qxlist:
+                            if x['qq'] == memberid:
+                                xboxid = x['id']
+                        for names in wl:
+                            if names['name'] == xboxid:
+                                wlrun = True
+                        if wlrun:
+                            if Language['LeftGroup'] != False:
+                                sendGroupMsg(group,Language['LeftGroup'].replace(r'%xboxid%',xboxid))
+                            Botruncmd('whitelist remove "%s"' % xboxid)
+                            
 
 def useconsoleregular(text):
     rt = {}

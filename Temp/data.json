@@ -1,6 +1,5 @@
 {
-    "Version":"",
-    "Port":0,
-    "World":""
+    "Version": "1.17.10.04",
+    "Port": 49835,
+    "World": "worlds/Bedrock"
 }
-        

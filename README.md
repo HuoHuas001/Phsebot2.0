@@ -59,6 +59,20 @@ AtNoXboxid:
   Enable: false
   #自动撤回未绑定成员的消息
   Recall: false
+#是否启用Cron表达式
+EnableCron: true
+
+#是否监听群消息
+EnableGroup: true
+
+#是否检测昵称被玩家改变
+CheckNick:
+  Enable: true
+  WhiteList:
+    - 123456
+
+#是否开启玩家退群自动删白名单
+LeftRemove: false
 ```
 
 >### 2.Language.yml模板
@@ -122,6 +136,10 @@ unBindSuccessful: 您已成功解绑%xboxid%
 NoPermission: '你没有权限'
 #AtNotXboxid可用变量：无
 AtNotXboxid: '还未绑定Xboxid'
+#ChangeNick可用变量：无
+ChangeNick: '请不要乱修改群名片'
+#LeftGroup可用变量：%xboxid%
+LeftGroup: '%xboxid% 离开了群聊，白名单自动删除'
 ```
 
 > ### 3.cron模板

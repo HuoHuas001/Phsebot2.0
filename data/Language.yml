@@ -83,3 +83,6 @@ AtNotXboxid: '还未绑定Xboxid'
 
 #ChangeNick可用变量：无
 ChangeNick: '请不要乱修改群名片'
+
+#LeftGroup可用变量：%xboxid%
+LeftGroup: '%xboxid% 离开了群聊，白名单自动删除'
