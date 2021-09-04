@@ -1,0 +1,88 @@
+Active code page: 65001
+[Info] Loading Symbols
+[Info] FastDlsymInited <201631>
+[Chakra] LiteLoader.dll Injected.
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
+[2021-09-04 13:36:05 INFO][LL] Loading plugins 
+[2021-09-04 13:36:05 INFO][LL] Plugin LLMoney.dll loaded 
+[2021-09-04 13:36:05 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-09-04 13:36:05 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[CrashLogger] CrashLogger loaded.
+[2021-09-04 13:36:05 INFO][LL] Plugin CrashLogger.dll loaded 
+[OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.0
+[OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.txt
+[OutputFilter] 作者：yqs112358   首发平台：MineBBS
+[OutputFilter] 欲联系作者可前往MineBBS论坛
+[2021-09-04 13:36:05 INFO][LL] Plugin OutputFilter.dll loaded 
+[2021-09-04 13:36:05 INFO][LL] Plugin TestProject.dll loaded 
+[2021-09-04 13:36:05 INFO][LL] Plugin hpmail.dll loaded 
+[2021-09-04 13:36:05 INFO][LL] Plugin BDSPyrunner.dll loaded 
+[2021-09-04 13:36:05 INFO][MONEY] Loaded version:  210714 
+     _       _  _         __   __  _                        _             
+    | |     (_)| |        \ \ / / | |                      | |            
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   
+
+
+      =========   LiteXLoader Script Plugin Loader   =========
+
+[LiteXLoader.Js][Info] LXL for Js loaded
+[LiteXLoader.Js][Info] Version 0.5.2
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded.
+[LiteXLoader.Js][Info] Loading plugins...
+[INFO] 底部显示加载成功 Powered by HuoHuaX
+[LiteXLoader.Js][Info] Scoreboard.js loaded.
+[LiteXLoader.Js][Info] 1 Js plugins loaded in all.
+[LiteXLoader.Lua][Info] LXL for Lua loaded
+[LiteXLoader.Lua][Info] Version 0.5.2
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
+[LiteXLoader.Lua][Info] Loading plugins...
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.
+[INFO] 测试插件加载成功
+[2021-09-04 13:36:06 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
+[2021-09-04 13:36:06 INFO][LL] 8 plugin(s) loaded 
+[BDSpyrunner] 1.7.4a loaded.
+[BDSpyrunner] loading Bed_war
+[INFO] Requests successful
+[INFO] Your BedWar-Plugin is up to date
+[INFO] 欢迎使用BedWar，这是一个Beta版，如果有bug，请向HuoHuaX反馈
+[INFO] BedWar Loaded.
+[BDSpyrunner] loading index
+[BDSpyrunner] loading AutoUpdate
+[INFO] 自动检测更新加载完成
+[BDSpyrunner] loading crash
+NO LOG FILE! - setting up server logging...
+[2021-09-04 13:36:07 INFO] Starting Server
+[2021-09-04 13:36:07 INFO] Version 1.17.10.04 with LiteLoaderBDS 1.1.1
+[2021-09-04 13:36:07 INFO] Session ID 35daa2af-8de3-40dc-98b8-1c237591d2a6
+[2021-09-04 13:36:07 INFO] Level Name: Bedrock level
+[2021-09-04 13:36:07 INFO] Game mode: 0 Survival
+[2021-09-04 13:36:07 INFO] Difficulty: 1 EASY
+[INFO] opening worlds/Bedrock level/db
+[INFO] IPv4 supported, port: 19132
+[INFO] IPv6 supported, port: 19133
+[INFO] IPv4 supported, port: 61208
+[INFO] IPv6 supported, port: 61209
+[LiteLoader] Registering cmds
+RegisteringCommand > money
+RegisteringCommand > mail
+RegisteringCommand > version
+[INFO] 服务器开服成功
+[LiteXLoader.Js][Info] Builtin Cmds Registered.
+[LiteXLoader.Lua][Info] Builtin Cmds Registered.
+[2021-09-04 13:36:09 INFO][LL] LiteLoader is distributed under the GPLv3 License 
+[2021-09-04 13:36:09 INFO][LL] Github: https://git.io/JOyw4 | Version: 1.1.1 | Based on BedrockX Project 
+[2021-09-04 13:36:09 INFO][LL] 感谢旋律云(rhymc.com)对本项目的支持 | Thanks to [rhymc.com] for supporting this project 
+[INFO] Server started.
+b'help\r\x00'
+§2--- Showing help page 1 of 23 (/help <page>) ---
+/? <page: int>
+/? [command: CommandName]
+/alwaysday [lock: Boolean]
+/camerashake add <player: target> [intensity: float] [seconds: float] [shakeType: CameraShakeType]
+/camerashake stop [player: target]
+/changesetting allow-cheats <value: Boolean>
+/changesetting difficulty <value: Difficulty>
+§2Tip: Use the <tab> key while typing a command to auto-complete the command or its arguments

@@ -20,7 +20,10 @@ from Library.motd import *
 
 from Library.Logger import log_error, log_info, log_warn
 from src import *
-
+StartedServer = False
+Used = False
+NormalStop = False
+Sended = []
 
 # 弹窗
 class Editregular(tk.Toplevel):
@@ -120,7 +123,7 @@ class Editregular(tk.Toplevel):
 
         #提交新的正则
         c.execute("INSERT INTO interactive (正则,捕获,权限,执行) \
-        VALUES ('%s','%s','%s','%s')" % (regular,run,admin,find))
+        VALUES ('%s','%s','%s','%s')" % (regular,find,admin,run))
         conn.commit()
         conn.close()
         update()
@@ -1125,10 +1128,6 @@ def useconsoleregular(text):
 if __name__ == '__main__':
     log_info('启动时间:'+str(datetime.now()))
     #全局变量
-    StartedServer = False
-    Used = False
-    NormalStop = False
-    Sended = []
     build_window()
     create_content()
     log_info('Phsebot启动成功 作者：HuoHuaX')

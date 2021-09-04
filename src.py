@@ -342,10 +342,6 @@ def bind(qqid,name,group):
     #更改群名片
     if config['AtNoXboxid']['Rename']:
         changeName(qqid,group,name)
-    #自动添加白名单
-    if config['AutoBindWhitelist']:
-        from index import Botruncmd
-        Botruncmd('whitelist add "%s"' % name)
 
 #获取cpu状态
 def getcpupercent():
@@ -460,15 +456,13 @@ def replacegroup(string,qqnick,qqid):
     return s
 
 
-
+cp = threading.Thread(target=getcpupercent)
+cp.setName('GetCpuPercent')
+cp.start()
 config = read_file('data/config.yml')
 Language = read_file('data/Language.yml')
 cron = read_file('data/Cron.json')
 num = 0
 BotVersion = 0.8
-cp = threading.Thread(target=getcpupercent)
-cp.setName('GetCpuPercent')
-cp.start()
-
 
     
