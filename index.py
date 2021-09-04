@@ -1,30 +1,28 @@
-
 #======================
 # imports
 #======================
-from placehoder import *
-import tkinter as tk
-from tkinter import ttk
-from tkinter import scrolledtext
-from tkinter import Menu
-from tkinter import Spinbox
-from tkinter import messagebox as mBox
+import os
+import re
 import subprocess
 import threading
 import time
-from tkinter.constants import END
-from src import *
-import os
-import re
-from croniter import croniter
-from croniter import CroniterNotAlphaError
-from croniter import CroniterBadCronError
+import tkinter as tk
 from datetime import datetime
-from motd import *
-from tkinter import *
 from json import JSONDecodeError
+from tkinter import *
+from tkinter import Menu, Spinbox
+from tkinter import messagebox as mBox
+from tkinter import scrolledtext, ttk
+from tkinter.constants import END
+
+from croniter import CroniterBadCronError, CroniterNotAlphaError, croniter
+from Library.motd import *
+
+from Library.Logger import log_error, log_info, log_warn
+from src import *
 from placehoder import *
-print('[INFO] 启动时间:',datetime.now())
+
+log_info('启动时间:'+str(datetime.now()))
 
 #全局变量
 StartedServer = False
@@ -32,6 +30,113 @@ Used = False
 NormalStop = False
 Sended = []
 
+# 弹窗
+class Editregular(tk.Toplevel):
+    def __init__(self, parent,content):
+        super().__init__()
+        self.title('Phsebot - 编辑正则')
+        self.content = content
+        self.parent = parent # 显式地保留父窗口
+        self.iconbitmap(r'Library/Images/bot.ico')
+        self.geometry('400x205')
+        self.resizable(0,0)
+        ms = ttk.LabelFrame(self, text='修改配置',width=9,height=10)
+        ms.grid(column=0, row=0, padx=7, pady=4)
+        
+        # 第一行（两列）
+        row1 = tk.Frame(ms)
+        row1.pack(fill="x")
+        tk.Label(row1, text=' 正则：', width=10).pack(side=tk.LEFT)
+        self.path = tk.StringVar()
+        self.path.set(content[0])
+        path = tk.Entry(row1, textvariable=self.path, width=42)
+        path.pack(side=tk.LEFT)
+        
+        # 第二行
+        row2 = tk.Frame(ms)
+        row2.pack(fill="x", ipadx=1, ipady=1)
+        tk.Label(row2, text=' 执行：', width=10).pack(side=tk.LEFT)
+        self.file = tk.StringVar()
+        self.file.set(content[1])
+        file = tk.Entry(row2, textvariable=self.file, width=42)
+        file.pack(side=tk.LEFT)
+
+        # 第三行
+        row3 = tk.Frame(ms)
+        row3.pack(fill="x")
+        self.autostatus=tk.IntVar()
+        self.auto = tk.Checkbutton(row3, text="需要管理员权限",variable=self.autostatus)
+        if content[2] == '管理员':
+            self.auto.select()
+        self.auto.pack(side=tk.LEFT)
+
+        # 第四行
+        row4 = tk.Frame(ms)
+        row4.pack(fill="x", ipadx=1, ipady=1)
+        self.iv_default = tk.IntVar()
+        self.rb_default_Label = tk.Label(row4, text='选择来源：')
+        self.rb_default1 = tk.Radiobutton(row4, text='控制台', value=1, variable=self.iv_default)
+        self.rb_default2 = tk.Radiobutton(row4, text='群消息', value=2, variable=self.iv_default)
+        self.rb_default_Label.grid(row=2, column=0, sticky='E')
+        self.rb_default1.grid(row=4, column=1, sticky='W')
+        self.rb_default2.grid(row=4, column=2, sticky='W')
+        if content[3] == '控制台':
+            self.rb_default1.select()
+        elif content[3] == '群消息':
+            self.rb_default2.select()
+
+
+        # 第六行
+        row6 = tk.Frame(ms)
+        row6.pack(fill="x")
+        tk.Button(row6, text="保存", command=self.ok).pack(side=tk.LEFT)
+        tk.Button(row6, text="取消", command=self.cancel).pack(side=tk.RIGHT)
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+        
+        
+    def on_closing(self):
+        if mBox.askyesno('提示','您确认保存吗？'):
+            self.ok()
+        else:
+            self.cancel()
+
+        
+    def ok(self):
+        conn = sq.connect('data/regular.db')
+        c = conn.cursor()
+        #删除原有的正则
+        c.execute("DELETE from interactive where 正则='%s';" % self.content[0])
+        conn.commit()
+
+        #正则
+        regular = self.path.get()
+        #执行
+        run = self.file.get()
+        #权限
+        if self.autostatus.get() == 1:
+            admin = '管理员'
+        else:
+            admin = ''
+        #捕获
+        if self.iv_default.get() == 1:
+            find = '控制台'
+        else:
+            find = '群消息'
+
+
+        #提交新的正则
+        c.execute("INSERT INTO interactive (正则,捕获,权限,执行) \
+        VALUES ('%s','%s','%s','%s')" % (regular,run,admin,find))
+        conn.commit()
+        conn.close()
+        update()
+        self.destroy() # 销毁窗口
+        
+    def cancel(self):
+        self.destroy()
+
+def edit_ragular(content):
+    Editregular(win,content)
 
 class MultiListbox(Frame):
     def __init__(self,master,lists):
@@ -41,13 +146,14 @@ class MultiListbox(Frame):
             frame = Frame(self)
             frame.pack(side=LEFT, expand=YES, fill=BOTH)
             Label(frame, text=l, borderwidth=1, relief=RAISED).pack(fill=X)
-            lb = Listbox(frame, width=w, borderwidth=0, selectborderwidth=0, relief=FLAT, exportselection=FALSE,height=19)
+            lb = Listbox(frame, width=w, borderwidth=0, selectborderwidth=0, relief=FLAT, exportselection=FALSE,height=18)
             lb.pack(expand=YES, fill=BOTH)
             self.lists.append(lb)
             lb.bind("<B1-Motion>",lambda e, s=self: s._select(e.y))
-            lb.bind("<Button-1>",lambda e,s=self: s._select(e.y))
+            lb.bind("<Button-1>",lambda e,s=self: s._selects(e.y))
+            lb.bind("<Double-Button-1>",lambda e,s=self: s._select(e.y))
             lb.bind("<Leave>",lambda e: "break")
-            lb.bind("<B2-Motion>",lambda e,s=self: s._b2motion(e.x,e.y))
+            lb.bind("<MouseWheel>",lambda e,s=self: s._b2motion(e.x,e.y))
             lb.bind("<Button-2>",lambda e,s=self: s._button2(e.x,e.y))
         frame = Frame(self)
         frame.pack(side=LEFT, fill=Y)
@@ -56,10 +162,22 @@ class MultiListbox(Frame):
         sb.pack(side=LEFT, fill=Y)
         self.lists[0]["yscrollcommand"] = sb.set
 
+    def _selects(self, y):
+        row = self.lists[0].nearest(y)
+        a = self.selection_clear(0, END)
+        se = self.selection_set(row)
+        return "break"
+
     def _select(self, y):
         row = self.lists[0].nearest(y)
-        self.selection_clear(0, END)
-        self.selection_set(row)
+        a = self.selection_clear(0, END)
+        se = self.selection_set(row)
+        c = []
+        for i in self.lists:
+            content = i.get(row)
+            c.append(content)
+        if len(c) == 4:
+            edit_ragular(c)
         return "break"
 
     def _button2(self, x, y):
@@ -69,7 +187,7 @@ class MultiListbox(Frame):
 
     def _b2motion(self, x, y):
         for l in self.lists:
-            l.scan_dragto(x, y)
+            l.scan_dragto(0, y)
         return "break"
 
     def _scroll(self, *args):
@@ -307,6 +425,7 @@ def checkBDS():
             GameVersion.configure(text='服务器版本：')
             action.configure(state='disabled')
             nameEntered.configure(state='disabled')
+            os.remove('Temp/console.txt')
             break
         elif not check(config['ServerFile']) and NormalStop == False and config['AutoRestart'] and StartedServer:
             if Language['AbendServer'] != False:
@@ -334,17 +453,18 @@ def checkBDS():
             GameVersion.configure(text='服务器版本：')
             action.configure(state='disabled')
             nameEntered.configure(state='disabled')
+            os.remove('Temp/console.txt')
             break
 
 def showinfo():
-    global StartedServer,Version,Sended,World,ServerPort
+    global StartedServer,Version,Sended,World,Port
     line = []
     updateLine = ''
     
     while StartedServer:
         time.sleep(0.0005)
-        if os.path.isfile('console.txt'):
-            with open('console.txt','r',encoding='utf8') as f:
+        if os.path.isfile('Temp/console.txt'):
+            with open('Temp/console.txt','r',encoding='utf8') as f:
                 lines = f.readlines()
                 if line == []:
                     line = lines
@@ -381,9 +501,6 @@ def showinfo():
                             if 'INFO] Version' in i:
                                 Version = re.findall(r'Version\s(.+?)[\r\s]',i)[0]
                                 GameVersion.configure(text='服务器版本：'+Version)
-                                d = read_file('Temp/data.json')
-                                d['Version'] = Version
-                                write_file('Temp/data.json',d)
                                 if 'SendedVersion' not in Sended:
                                     Sended.append('SendedVersion')
                                     if Language['ServerVersion'] != False:
@@ -393,9 +510,6 @@ def showinfo():
                             if 'opening' in i:
                                 World = re.findall(r'opening\s(.+?)[\r\s]',i)[0]
                                 GameFile.configure(text='服务器存档：'+World)
-                                d = read_file('Temp/data.json')
-                                d['World'] = World
-                                write_file('Temp/data.json',d)
                                 if 'OpenWorld' not in Sended:
                                     Sended.append('OpenWorld')
                                     if Language['OpenWorld'] != False:
@@ -405,9 +519,8 @@ def showinfo():
                             #加载端口
                             if 'IPv4' in i:
                                 Port = int(re.findall(r'^\[INFO\]\sIPv4\ssupported,\sport:\s(.+?)$',i)[0])
-                                d = read_file('Temp/data.json')
-                                d['Port'] = Port
-                                write_file('Temp/data.json',d)
+                                with open('Temp\\data','w') as f:
+                                    f.write(str(Port))
                                 if 'PortOpen' not in Sended:
                                     Sended.append('PortOpen')
                                     if Language['PortOpen'] != False:
@@ -472,7 +585,7 @@ def runserver():
     runserverc.configure(state='disabled')
     stoper.configure(state='normal')
     ServerNow.configure(text='服务器状态：已启动')
-    obj = subprocess.Popen("Library\index.bat > console.txt", stdin=subprocess.PIPE, 
+    obj = subprocess.Popen("Library\index.bat > Temp/console.txt", stdin=subprocess.PIPE, 
     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     show = threading.Thread(target=showinfo)
     show.setName('ShowBDSConsole')
@@ -501,14 +614,12 @@ def runfileserver():
 scrolW  = 75; scrolH  =  21
 scr = scrolledtext.ScrolledText(monty, width=scrolW, height=scrolH, wrap=tk.WORD)
 scr.grid(column=0, row=0,columnspan=3)
-#scr.configure(state='disabled')
 
 #命令输入
 ttk.Label(monty, text="键入命令：").grid(column=0, row=2, sticky='W')
 name = tk.StringVar()
 nameEntered = ttk.Entry(monty, width=70, textvariable=name)
 nameEntered.grid(column=0, row=2, sticky='W')
-
 
 #执行命令
 action = ttk.Button(monty,text="执行",width=5,command=runcmd)   
@@ -518,7 +629,6 @@ nameEntered.configure(state='disabled')
 
 createToolTip(action,'执行BDS命令')
 
-#createToolTip(bookChosen, '这是一个Combobox.')
 createToolTip(scr,'BDS日志输出')
 createToolTip(nameEntered,'键入命令')
 
@@ -573,6 +683,25 @@ stoper.grid(column=0,row=7)
 ttk.Label(ServerUse, text="强制停止",width=17,foreground='red').grid(column=1, row=7)
 stoper.configure(state='disabled')
 
+#更新预览
+def update():
+    global config,Language,cron
+    conn = sq.connect('data/regular.db')
+    c = conn.cursor()
+    cursor = c.execute("SELECT *  from interactive")
+    cmd = ''
+    mlc.delete(END)
+    mlb.delete(END)
+    for row in cursor:
+        r = row[0]
+        by = row[1]
+        perm = row[2]
+        cmd = row[3]
+        mlb.insert(END,(r,cmd,perm,by))
+    conn.close()
+
+
+
 #重载所有文件
 def filereload():
     global config,Language,cron
@@ -598,7 +727,7 @@ def filereload():
         mlc.insert(END,(i['cron'],i['cmd']))
     crontab()
     mBox.showinfo('重载文件','重载文件完成\nCrontab计划任务重新计时')
-    print('[INFO] 内置计划任务已重新计时')
+    log_info('内置计划任务已重新计时')
 
 reload = ttk.Button(ServerUse,text=">",width=2,command=filereload)   
 reload.grid(column=0,row=8)
@@ -612,13 +741,10 @@ ServerUse.grid(column=0, row=2, padx=5, pady=10,sticky='W')
 # 一次性控制各控件之间的距离
 for child in infos.winfo_children(): 
     child.grid_configure(padx=3,pady=1)
-'''# 单独控制个别控件之间的距离
-action.grid(column=2,row=1,rowspan=2,padx=6)'''
 #---------------Tab1控件介绍------------------#
  
 lbv=tk.StringVar()#绑定变量
 #---------------Tab2控件介绍------------------#
-# We are creating a container tab3 to hold all other widgets -- Tab2
 monty2 = ttk.LabelFrame(tab2, text='正则表达式预览 (请使用滚动条拉取页面避免出现错位的情况)')
 monty2.grid(column=0, row=0, padx=8, pady=4)
 
@@ -635,8 +761,8 @@ for row in cursor:
     cmd = row[3]
     mlb.insert(END,(r,cmd,perm,by))
 conn.close()
-
 mlb.pack(expand=YES, fill=BOTH)
+
 
 #---------------Tab2控件介绍------------------#
 
@@ -686,8 +812,8 @@ win.geometry('725x380')
 #======================
 # Start GUI
 #======================
-print('[INFO] Phsebot启动成功 作者：HuoHuaX')
-print('[INFO] 特别鸣谢：McPlus Yanhy2000')
+log_info('Phsebot启动成功 作者：HuoHuaX')
+log_info('特别鸣谢：McPlus Yanhy2000')
 loginQQ()
 
 def writeconfig():
@@ -697,14 +823,73 @@ cd %s
     with open('Library\index.bat','w') as f:
         f.write(run % (config['ServerPath'],config['ServerFile']))
 
-    with open('Temp/data.json','w') as f:
-        f.write("""{
-    "Version":"",
-    "Port":0,
-    "World":""
-}
-        """)
+    with open('Temp\\data','w') as f:
+        f.write("0")
 writeconfig()
+
+
+
+#解析cron
+def crontab():
+    croncomment = []
+    cronl = cron
+    str_time_now=datetime.now()
+    for i in cronl:
+        try:
+            iter=croniter(i['cron'],str_time_now)
+            time = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
+            cmd = i['cmd']
+            croncomment.append({'time':time,'cmd':cmd,'cron':i['cron']})
+        except CroniterNotAlphaError:
+            log_error(i['cron'],'无法被解析')
+        except CroniterBadCronError:
+            log_error(i['cron'],'无法被解析')
+    write_file('Temp/crontab.json',croncomment)
+    log_info('内置计划任务已开始运行')
+
+#运行计划任务
+def runcron():
+    while True:
+        time.sleep(0.05)
+        now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        nowlist = now.split('-')
+        timelist = []
+        for i in nowlist:
+            timelist.append(int(i))
+        try:
+            with open('Temp/crontab.json','r',encoding='utf-8') as f:
+                croncmd = json.loads(f.read())
+        except JSONDecodeError:
+            croncmd = []
+
+        for i in croncmd:
+            crontime = []
+            for t in i['time'].split('-'):
+                crontime.append(int(t))
+            #触发条件
+            if timelist[0] >= crontime[0] and timelist[1] >= crontime[1] and \
+                timelist[2] >= crontime[2] and timelist[3] >= crontime[3] and\
+                    timelist[4] >= crontime[4] and timelist[5] >= crontime[5]:
+                rps = replaceconsole(i['cmd'][2:])
+                #群消息
+                if i['cmd'][:2] == '>>':
+                    for g in config['Group']:
+                        sendGroupMsg(g,rps)
+                #控制台
+                elif i['cmd'][:2] == '<<':
+                    Botruncmd(rps)
+                #运行程序
+                elif i['cmd'][:2] == '^^':
+                    os.system('start '+cmd[2:])
+
+                #执行完毕重新解析
+                str_time_now=datetime.now()
+                iter=croniter(i['cron'],str_time_now)
+                times = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
+                cmd = i['cmd']
+                croncmd.remove(i)
+                croncmd.append({'time':times,'cmd':cmd,'cron':i['cron']})
+                write_file('Temp/crontab.json',croncmd)
 
 def usegroupregular():
     global sessionKey
@@ -897,7 +1082,6 @@ def usegroupregular():
                             if Language['LeftGroup'] != False:
                                 sendGroupMsg(group,Language['LeftGroup'].replace(r'%xboxid%',xboxid))
                             Botruncmd('whitelist remove "%s"' % xboxid)
-                            
 
 def useconsoleregular(text):
     rt = {}
@@ -956,68 +1140,6 @@ def useconsoleregular(text):
         else:
             rt = {'Type':'None'}
     return rt
-
-#解析cron
-def crontab():
-    croncomment = []
-    cronl = cron
-    str_time_now=datetime.now()
-    for i in cronl:
-        try:
-            iter=croniter(i['cron'],str_time_now)
-            time = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
-            cmd = i['cmd']
-            croncomment.append({'time':time,'cmd':cmd,'cron':i['cron']})
-        except CroniterNotAlphaError:
-            print('[ERRO]',i['cron'],'无法被解析')
-        except CroniterBadCronError:
-            print('[ERRO]',i['cron'],'无法被解析')
-    write_file('Temp/crontab.json',croncomment)
-    print('[INFO] 内置计划任务已开始运行')
-
-#运行计划任务
-def runcron():
-    while True:
-        time.sleep(0.05)
-        now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        nowlist = now.split('-')
-        timelist = []
-        for i in nowlist:
-            timelist.append(int(i))
-        try:
-            with open('Temp/crontab.json','r',encoding='utf-8') as f:
-                croncmd = json.loads(f.read())
-        except JSONDecodeError:
-            croncmd = []
-
-        for i in croncmd:
-            crontime = []
-            for t in i['time'].split('-'):
-                crontime.append(int(t))
-            #触发条件
-            if timelist[0] >= crontime[0] and timelist[1] >= crontime[1] and \
-                timelist[2] >= crontime[2] and timelist[3] >= crontime[3] and\
-                    timelist[4] >= crontime[4] and timelist[5] >= crontime[5]:
-                rps = replaceconsole(i['cmd'][2:])
-                #群消息
-                if i['cmd'][:2] == '>>':
-                    for g in config['Group']:
-                        sendGroupMsg(g,rps)
-                #控制台
-                elif i['cmd'][:2] == '<<':
-                    Botruncmd(rps)
-                #运行程序
-                elif i['cmd'][:2] == '^^':
-                    os.system('start '+cmd[2:])
-
-                #执行完毕重新解析
-                str_time_now=datetime.now()
-                iter=croniter(i['cron'],str_time_now)
-                times = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
-                cmd = i['cmd']
-                croncmd.remove(i)
-                croncmd.append({'time':times,'cmd':cmd,'cron':i['cron']})
-                write_file('Temp/crontab.json',croncmd)
         
 #生成计划任务
 crontab()
@@ -1033,9 +1155,9 @@ if config['EnableGroup']:
 
 def on_closing():
     if mBox.askyesno('退出','您即将关闭Phsebot，确认吗？'):
-        print('[INFO] 正在执行Exit事件')
+        log_info('正在执行Exit事件')
         win.destroy()
-        print('[INFO] 正在释放Mirai资源，请稍后')
+        log_info('正在释放Mirai资源，请稍后')
         releaseSession()
         os._exit(0)
 

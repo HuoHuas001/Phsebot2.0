@@ -1,12 +1,12 @@
+import json
 import sqlite3 as sq
+
 import psutil
-from motd import *
+from Library.motd import *
+import threading
 from src import *
 
-#全局变量声明
-Version = ''
-World = ''
-ServerPort = 0
+
 
 def bind(qqid,name,group):
     qxlist = []
@@ -46,10 +46,17 @@ def bind(qqid,name,group):
       VALUES (%i,'%s')" % (qqid,name))
     conn.commit()
     conn.close()
+    #发群消息
     if Language['BindSuccessful'] != False:
         sendGroupMsg(group,Language['BindSuccessful'].replace(r'%xboxid%',name))
+    #更改群名片
     if config['AtNoXboxid']['Rename']:
         changeName(qqid,group,name)
+    #自动添加白名单
+    if config['AutoBindWhitelist']:
+        if __name__ == '__main__':
+            from index import Botruncmd
+            Botruncmd('whitelist add "%s"' % name)
 
 #获取cpu状态
 def getcpupercent():
@@ -65,9 +72,10 @@ cp = threading.Thread(target=getcpupercent)
 cp.setName('GetCpuPercent')
 cp.start()
 
+#
+
 #解除绑定
 def unbind(qqid,group):
-    "unBindSuccessful"
     qxlist = []
     qlist = []
     xlist = []
@@ -99,18 +107,15 @@ def unbind(qqid,group):
 
 
 def replaceconsole(string):
-    with open('Temp/data.json','r') as f:
-        d = json.loads(f.read())
-        ServerPort = d['Port']
-        Version = d['Version']
-        World = d['World']
-    motdinfo = Server('127.0.0.1',ServerPort).motd()
+    with open('Temp\\data','r') as f:
+        Port = f.read()
+    motdinfo = Server('127.0.0.1',int(Port)).motd()
     if motdinfo['status'] == 'online':
         server_motd = motdinfo['name']
-        server_version = Version
+        server_version = motdinfo['version']
         server_online = motdinfo['online']
         server_maxonline = motdinfo['upperLimit']
-        server_levelname = World.replace('worlds/','')
+        server_levelname = motdinfo['save']
     else:
         server_motd = '服务器未启动'
         server_version = '服务器未启动'
@@ -130,18 +135,15 @@ def replaceconsole(string):
     return s
 
 def replacegroup(string,qqnick,qqid):
-    with open('Temp/data.json','r') as f:
-        d = json.loads(f.read())
-        ServerPort = d['Port']
-        Version = d['Version']
-        World = d['World']
-    motdinfo = Server('localhost',ServerPort).motd()
+    with open('Temp\\data','r') as f:
+        Port = f.read()
+    motdinfo = Server('localhost',int(Port)).motd()
     if motdinfo['status'] == 'online':
         server_motd = motdinfo['name']
-        server_version = Version
+        server_version = motdinfo['version']
         server_online = motdinfo['online']
         server_maxonline = motdinfo['upperLimit']
-        server_levelname = World.replace('worlds/','')
+        server_levelname = motdinfo['save']
     else:
         server_motd = '服务器未启动'
         server_version = '服务器未启动'

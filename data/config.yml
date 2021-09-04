@@ -49,3 +49,12 @@ CheckNick:
 
 #是否开启玩家退群自动删白名单
 LeftRemove: false
+
+#是否开启自动绑定白名单
+AutoBindWhitelist: false
+
+#DEBUG模式
+Debug: true
+
+#最低输出模式，可选:info/warn/error
+LowLog: info

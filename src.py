@@ -1,21 +1,27 @@
+import json
+import os
+import re
+import socket
+import sqlite3 as sq
+import threading
+import time
+import tkinter as tk
+import webbrowser
+from datetime import date, datetime
+from json.decoder import JSONDecodeError
+from tkinter import messagebox as mBox
+from tkinter import ttk
+
 import psutil
 import requests
-import socket
-import json
 import yaml
-import threading
-import re
-import sqlite3 as sq
 from websocket import create_connection
-from tkinter import messagebox as mBox
-import os
-import tkinter as tk
-from tkinter import ttk
-from datetime import date, datetime
-from placehoder import *
-import time
-import webbrowser
-BotVersion = 0.7
+from Library.Logger import log_error, log_info, log_warn
+from placehoder import replaceconsole,replacegroup
+
+
+    
+    
 
 
 def read_file(file):
@@ -44,9 +50,6 @@ def check(p):
     else:
         return False
 
-config = read_file('data/config.yml')
-Language = read_file('data/Language.yml')
-cron = read_file('data/Cron.json')
 
 def loginQQ():
     global sessionKey
@@ -65,11 +68,11 @@ def loginQQ():
         bindCode = requests.post(url+'/bind',json={"sessionKey":sessionKey,'qq':qq})
         bindCode = json.loads(bindCode.text)
         if bindCode['code'] == 0:
-            print('[INFO] %i 登陆成功' % (qq))
+            log_info('%i 登陆成功' % (qq))
     else:
         sessionKey = ''
-        print('[ERROR] 在登录时出现了错误')
-num = 0
+        log_error('在登录时出现了错误')
+
 def sendGroupMsg(group,text):
     global num
     s = threading.Thread(target=sendGroupMsg2,args=(group,text))
@@ -87,10 +90,13 @@ def sendGroupMsg2(group,text):
         ]
     }
     r = requests.post(url+'/sendGroupMessage',json=msgjson)
-    j = json.loads(r.text)
-    if j['code'] == 0 and j['messageId'] == -1:
-        print('[INFO] 消息已发送，但可能遭到屏蔽')
-    return True
+    try:
+        j = json.loads(r.text)
+        if j['code'] == 0 and j['messageId'] == -1:
+            log_warn('消息已发送，但可能遭到屏蔽')
+        return True
+    except JSONDecodeError as e:
+        log_error('发送消息时出现了内部错误')
 
 
 
@@ -240,7 +246,7 @@ def changeName(member,group,name):
     m = requests.post(url+'/memberInfo',json=namejson)
     j = json.loads(m.text)
     if j['code'] == 10:
-        print('[INFO] 已尝试修改群名片，但没有权限')
+        log_warn('已尝试修改 %i 的群名片，但没有权限' % member)
 
 #退出释放资源
 def releaseSession():
@@ -284,14 +290,22 @@ def recallmsg(Sourceid):
 
 def testupdate():
     try:
-        print('[INFO] 正在请求更新')
+        log_info('正在请求更新')
         update = json.loads(requests.get('https://api.github.com/repos/HuoHuas001/Phsebot/releases').text)
         if float(update[0]["tag_name"]) > BotVersion:
             if mBox.askyesno('提示','Phsebot有新版本了，是否去更新'):  
                 webbrowser.open("https://github.com/HuoHuas001/Phsebot/releases")
         else:
-            print('[INFO] 该版本是最新版本')
+            log_info('该版本是最新版本')
     except:
-        print('[ERRO] 获取更新时失败')
+        log_error('获取更新时失败')
 
 
+config = read_file('data/config.yml')
+Language = read_file('data/Language.yml')
+cron = read_file('data/Cron.json')
+num = 0
+BotVersion = 0.7
+
+
+    
