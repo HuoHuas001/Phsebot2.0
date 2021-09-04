@@ -18,7 +18,7 @@ import yaml
 from websocket import create_connection
 from Library.motd import *
 
-from Library.Logger import log_error, log_info, log_warn
+from Library.Logger import log_error, log_info, log_warn, log_debug
 
 
 def read_file(file):
@@ -55,7 +55,8 @@ def loginQQ():
     qq = config['Bot']
     try:
         authCode = requests.post(url+'/verify',json={"verifyKey":key})
-    except:
+    except Exception as e:
+        log_debug(e)
         mBox.showwarning('Phsebot', '无法连接到Mirai，请检查地址是否正确或是否开启')
         os._exit(0)
 
@@ -93,6 +94,7 @@ def sendGroupMsg2(group,text):
             log_warn('消息已发送，但可能遭到屏蔽')
         return True
     except JSONDecodeError as e:
+        log_debug(e)
         log_error('发送消息时出现了内部错误')
 
 
@@ -294,7 +296,8 @@ def testupdate():
                 webbrowser.open("https://github.com/HuoHuas001/Phsebot/releases")
         else:
             log_info('该版本是最新版本')
-    except:
+    except Exception as e:
+        log_debug(e)
         log_error('获取更新时失败')
 
 

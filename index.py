@@ -18,7 +18,7 @@ from tkinter.constants import END
 from croniter import CroniterBadCronError, CroniterNotAlphaError, croniter
 from Library.motd import *
 
-from Library.Logger import log_error, log_info, log_warn
+from Library.Logger import log_error, log_info, log_warn, log_debug
 from src import *
 StartedServer = False
 Used = False
@@ -266,7 +266,7 @@ class ToolTip(object):
                       font=("tahoma", "8", "normal"))
             label.pack(ipadx=1)
         except TypeError:
-            pass
+            log_debug(e)
  
     def hidetip(self):
         tw = self.tipwindow
@@ -486,8 +486,8 @@ def showinfo():
 
                             if back['Type'] == 'Cmd':
                                 Botruncmd(back['Cmd'])
-                        except IndexError:
-                            pass
+                        except IndexError as e:
+                            log_debug(e)
 
                         scr.delete(1.0,'end')
                         scr.insert('end','[INFO] 进程已开始\n')
@@ -648,7 +648,8 @@ def create_content():
             use.configure(text='授权状态：已授权')
         else:
             use.configure(text='授权状态：未授权')
-    except:
+    except Exception as e:
+        log_debug(e)
         use.configure(text='授权状态：未授权')
     ttk.Label(infos, text="",width=20).grid(column=0, row=2)
 
@@ -823,9 +824,11 @@ def crontab():
             time = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
             cmd = i['cmd']
             croncomment.append({'time':time,'cmd':cmd,'cron':i['cron']})
-        except CroniterNotAlphaError:
+        except CroniterNotAlphaError as e:
+            log_debug(e)
             log_error(i['cron'],'无法被解析')
-        except CroniterBadCronError:
+        except CroniterBadCronError as e:
+            log_debug(e)
             log_error(i['cron'],'无法被解析')
     write_file('Temp/crontab.json',croncomment)
     log_info('内置计划任务已开始运行')
@@ -842,7 +845,8 @@ def runcron():
         try:
             with open('Temp/crontab.json','r',encoding='utf-8') as f:
                 croncmd = json.loads(f.read())
-        except JSONDecodeError:
+        except JSONDecodeError as e:
+            log_debug(e)
             croncmd = []
 
         for i in croncmd:
@@ -1157,5 +1161,6 @@ if __name__ == '__main__':
     testupdate()
     try:
         win.mainloop()
-    except KeyboardInterrupt:
+    except KeyboardInterrupt as e:
+        log_debug(e)
         on_closing()
