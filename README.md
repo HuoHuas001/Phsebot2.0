@@ -4,7 +4,7 @@
 
 ![example](https://img.shields.io/badge/Python-3.7.9-blue.svg) 
 ![example](https://img.shields.io/github/downloads/HuoHuas001/Phsebot/total)
-![example](https://img.shields.io/badge/Version-dev_0.0.1-green.svg) 
+![example](https://img.shields.io/badge/Version-dev_0.8-green.svg) 
 
 ## 1.安装教程  
 > 本教程适用于了解什么是cmd和pip以及json和yaml语法的用户
