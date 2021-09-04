@@ -305,7 +305,7 @@ config = read_file('data/config.yml')
 Language = read_file('data/Language.yml')
 cron = read_file('data/Cron.json')
 num = 0
-BotVersion = 0.7
+BotVersion = 0.8
 
 
     

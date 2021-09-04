@@ -1,4 +1,4 @@
 @echo off
-title Phsebot - dev0.7
+title Phsebot - dev0.8
 python index.py
 pause
