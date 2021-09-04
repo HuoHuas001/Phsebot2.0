@@ -20,25 +20,18 @@ from Library.motd import *
 
 from Library.Logger import log_error, log_info, log_warn
 from src import *
-from placehoder import *
 
-log_info('启动时间:'+str(datetime.now()))
-
-#全局变量
-StartedServer = False
-Used = False
-NormalStop = False
-Sended = []
 
 # 弹窗
 class Editregular(tk.Toplevel):
-    def __init__(self, parent,content):
+    def __init__(self, parent,content,tf):
         super().__init__()
         self.title('Phsebot - 编辑正则')
         self.content = content
         self.parent = parent # 显式地保留父窗口
         self.iconbitmap(r'Library/Images/bot.ico')
         self.geometry('400x205')
+        self.tf = tf
         self.resizable(0,0)
         ms = ttk.LabelFrame(self, text='修改配置',width=9,height=10)
         ms.grid(column=0, row=0, padx=7, pady=4)
@@ -105,8 +98,9 @@ class Editregular(tk.Toplevel):
         conn = sq.connect('data/regular.db')
         c = conn.cursor()
         #删除原有的正则
-        c.execute("DELETE from interactive where 正则='%s';" % self.content[0])
-        conn.commit()
+        if self.tf:
+            c.execute("DELETE from interactive where 正则='%s';" % self.content[0])
+            conn.commit()
 
         #正则
         regular = self.path.get()
@@ -136,7 +130,7 @@ class Editregular(tk.Toplevel):
         self.destroy()
 
 def edit_ragular(content):
-    Editregular(win,content)
+    Editregular(win,content,True)
 
 class MultiListbox(Frame):
     def __init__(self,master,lists):
@@ -146,7 +140,7 @@ class MultiListbox(Frame):
             frame = Frame(self)
             frame.pack(side=LEFT, expand=YES, fill=BOTH)
             Label(frame, text=l, borderwidth=1, relief=RAISED).pack(fill=X)
-            lb = Listbox(frame, width=w, borderwidth=0, selectborderwidth=0, relief=FLAT, exportselection=FALSE,height=18)
+            lb = Listbox(frame, width=w, borderwidth=0, selectborderwidth=0, relief=FLAT, exportselection=FALSE,height=16)
             lb.pack(expand=YES, fill=BOTH)
             self.lists.append(lb)
             lb.bind("<B1-Motion>",lambda e, s=self: s._select(e.y))
@@ -287,25 +281,24 @@ def createToolTip( widget, text):
     widget.bind('<Enter>', enter)
     widget.bind('<Leave>', leave)
  
+def build_window():
+    global win,monty,tab1,tab2,tab3
+    win = tk.Tk()   
+    win.title("Phsebot")
+    win.resizable(0,0)
+    tabControl = ttk.Notebook(win)          
+    tab1 = ttk.Frame(tabControl)           
+    tabControl.add(tab1, text='BDS控制台')      
+    tab2 = ttk.Frame(tabControl)            
+    tabControl.add(tab2, text='正则表达式')      
+    tab3 = ttk.Frame(tabControl)            
+    tabControl.add(tab3, text='Cron表达式')      
+    tabControl.pack(expand=1, fill="both")
 
-win = tk.Tk()   
- 
-  
-win.title("Phsebot")
- 
-win.resizable(0,0)
- 
-tabControl = ttk.Notebook(win)          
-tab1 = ttk.Frame(tabControl)           
-tabControl.add(tab1, text='BDS控制台')      
-tab2 = ttk.Frame(tabControl)            
-tabControl.add(tab2, text='正则表达式')      
-tab3 = ttk.Frame(tabControl)            
-tabControl.add(tab3, text='Cron表达式')      
-tabControl.pack(expand=1, fill="both")
-
-monty = ttk.LabelFrame(tab1, text='BDS控制台',width=500,height=100)
-monty.grid(column=0, row=0, padx=1, pady=10,)
+    monty = ttk.LabelFrame(tab1, text='BDS控制台',width=500,height=100)
+    monty.grid(column=0, row=0, padx=1, pady=10,)
+    win.iconbitmap(r'Library/Images/bot.ico')
+    win.geometry('725x400')
  
 def runcmd():
     global NormalStop
@@ -609,79 +602,154 @@ def runfileserver():
     c.setName('CheckBDS')
     c.start()
 
+def create_content():
+    global runserverb,runserverc,stoper,ServerNow,scr,nameEntered,action,GameFile,GameVersion,ServerUse,infos,mlb,mlc
+    #BDS控制台日志输出 
+    scrolW  = 75; scrolH  =  21
+    scr = scrolledtext.ScrolledText(monty, width=scrolW, height=scrolH, wrap=tk.WORD)
+    scr.grid(column=0, row=0,columnspan=3)
 
-#BDS控制台日志输出  
-scrolW  = 75; scrolH  =  21
-scr = scrolledtext.ScrolledText(monty, width=scrolW, height=scrolH, wrap=tk.WORD)
-scr.grid(column=0, row=0,columnspan=3)
+    #命令输入
+    ttk.Label(monty, text="键入命令：").grid(column=0, row=2, sticky='W')
+    name = tk.StringVar()
+    nameEntered = ttk.Entry(monty, width=70, textvariable=name)
+    nameEntered.grid(column=0, row=2, sticky='W')
 
-#命令输入
-ttk.Label(monty, text="键入命令：").grid(column=0, row=2, sticky='W')
-name = tk.StringVar()
-nameEntered = ttk.Entry(monty, width=70, textvariable=name)
-nameEntered.grid(column=0, row=2, sticky='W')
+    #执行命令
+    action = ttk.Button(monty,text="执行",width=5,command=runcmd)   
+    action.grid(column=1,row=2,rowspan=2)
+    action.configure(state='disabled')
+    nameEntered.configure(state='disabled')
 
-#执行命令
-action = ttk.Button(monty,text="执行",width=5,command=runcmd)   
-action.grid(column=1,row=2,rowspan=2)
-action.configure(state='disabled')
-nameEntered.configure(state='disabled')
+    createToolTip(action,'执行BDS命令')
 
-createToolTip(action,'执行BDS命令')
+    createToolTip(scr,'BDS日志输出')
+    createToolTip(nameEntered,'键入命令')
 
-createToolTip(scr,'BDS日志输出')
-createToolTip(nameEntered,'键入命令')
+    infos = ttk.LabelFrame(tab1, text='信息展示',width=500,height=100)
+    infos.grid(column=1, row=0, padx=1, pady=10,)
 
-infos = ttk.LabelFrame(tab1, text='信息展示',width=500,height=100)
-infos.grid(column=1, row=0, padx=1, pady=10,)
-
-#QQ信息
-QQInfo = ttk.LabelFrame(infos, text='机器人信息')
-QQid = ttk.Label(QQInfo, text="账号：",width=20)
-QQid.grid(column=0, row=0,sticky='W')
-use = ttk.Label(QQInfo, text="授权状态：",width=20)
-use.grid(column=0, row=1,sticky='W')
-version = ttk.Label(QQInfo, text="Bot版本："+str(BotVersion),width=20).grid(column=0, row=2,sticky='W')
-QQInfo.grid(column=0, row=0, padx=5, pady=10,sticky='W')
-QQid.configure(text='账号：%i' % (config['Bot']))
-try:
-    j = json.loads(requests.get('http://www.txssb.cn/phsebot').text)
-    if str(config['Bot']) in j:
-        Used = True
-        use.configure(text='授权状态：已授权')
-    else:
+    #QQ信息
+    QQInfo = ttk.LabelFrame(infos, text='机器人信息')
+    QQid = ttk.Label(QQInfo, text="账号：",width=20)
+    QQid.grid(column=0, row=0,sticky='W')
+    use = ttk.Label(QQInfo, text="授权状态：",width=20)
+    use.grid(column=0, row=1,sticky='W')
+    version = ttk.Label(QQInfo, text="Bot版本："+str(BotVersion),width=20).grid(column=0, row=2,sticky='W')
+    QQInfo.grid(column=0, row=0, padx=5, pady=10,sticky='W')
+    QQid.configure(text='账号：%i' % (config['Bot']))
+    try:
+        j = json.loads(requests.get('http://www.txssb.cn/phsebot').text)
+        if str(config['Bot']) in j:
+            Used = True
+            use.configure(text='授权状态：已授权')
+        else:
+            use.configure(text='授权状态：未授权')
+    except:
         use.configure(text='授权状态：未授权')
-except:
-    use.configure(text='授权状态：未授权')
-ttk.Label(infos, text="",width=20).grid(column=0, row=2)
+    ttk.Label(infos, text="",width=20).grid(column=0, row=2)
 
-#服务器信息
-Serverinfos = ttk.LabelFrame(infos, text='服务器信息')
-ServerNow = ttk.Label(Serverinfos, text="服务器状态：未启动",width=20)
-ServerNow.grid(column=0, row=3)
-ttk.Label(Serverinfos, text="=====================",width=20).grid(column=0, row=4)
-GameVersion = ttk.Label(Serverinfos, text="服务器版本：",width=20)
-GameVersion.grid(column=0, row=5)
-GameFile = ttk.Label(Serverinfos, text="服务器存档：",width=20)
-GameFile.grid(column=0, row=6)
-Serverinfos.grid(column=0, row=1, padx=5, pady=10,sticky='W')
+    #服务器信息
+    Serverinfos = ttk.LabelFrame(infos, text='服务器信息')
+    ServerNow = ttk.Label(Serverinfos, text="服务器状态：未启动",width=20)
+    ServerNow.grid(column=0, row=3)
+    ttk.Label(Serverinfos, text="=====================",width=20).grid(column=0, row=4)
+    GameVersion = ttk.Label(Serverinfos, text="服务器版本：",width=20)
+    GameVersion.grid(column=0, row=5)
+    GameFile = ttk.Label(Serverinfos, text="服务器存档：",width=20)
+    GameFile.grid(column=0, row=6)
+    Serverinfos.grid(column=0, row=1, padx=5, pady=10,sticky='W')
 
-ttk.Label(infos, text="",width=20).grid(column=0, row=6)
+    ttk.Label(infos, text="",width=20).grid(column=0, row=6)
 
-#服务器操作
-ServerUse = ttk.LabelFrame(infos, text='服务器操作',width=500,height=100)
-runserverb = ttk.Button(ServerUse,text=">",width=2,command=runserver)   
-runserverb.grid(column=0,row=5)
-ttk.Label(ServerUse, text="从配置启动",width=17).grid(column=1, row=5)
+    #服务器操作
+    ServerUse = ttk.LabelFrame(infos, text='服务器操作',width=500,height=100)
+    runserverb = ttk.Button(ServerUse,text=">",width=2,command=runserver)   
+    runserverb.grid(column=0,row=5)
+    ttk.Label(ServerUse, text="从配置启动",width=17).grid(column=1, row=5)
 
-runserverc = ttk.Button(ServerUse,text=">",width=2,command=runfileserver)   
-runserverc.grid(column=0,row=6)
-ttk.Label(ServerUse, text="从文件启动",width=17).grid(column=1, row=6)
+    runserverc = ttk.Button(ServerUse,text=">",width=2,command=runfileserver)   
+    runserverc.grid(column=0,row=6)
+    ttk.Label(ServerUse, text="从文件启动",width=17).grid(column=1, row=6)
 
-stoper = ttk.Button(ServerUse,text=">",width=2,command=stoperd)   
-stoper.grid(column=0,row=7)
-ttk.Label(ServerUse, text="强制停止",width=17,foreground='red').grid(column=1, row=7)
-stoper.configure(state='disabled')
+    stoper = ttk.Button(ServerUse,text=">",width=2,command=stoperd)   
+    stoper.grid(column=0,row=7)
+    ttk.Label(ServerUse, text="强制停止",width=17,foreground='red').grid(column=1, row=7)
+    stoper.configure(state='disabled')
+
+    reload = ttk.Button(ServerUse,text=">",width=2,command=filereload)   
+    reload.grid(column=0,row=8)
+    ttk.Label(ServerUse, text="重载文件",width=17).grid(column=1, row=8)
+
+    ServerUse.grid(column=0, row=2, padx=5, pady=10,sticky='W')
+    # 一次性控制各控件之间的距离
+    for child in infos.winfo_children(): 
+        child.grid_configure(padx=3,pady=1)
+    #---------------Tab1控件介绍------------------#
+ 
+    lbv=tk.StringVar()#绑定变量
+    #---------------Tab2控件介绍------------------#
+    def new_regular():
+        Editregular(win,['','','','控制台'],False)
+    monty2 = ttk.LabelFrame(tab2, text='正则表达式 (请使用滚动条拉取页面避免出现错位的情况)')
+    monty2.grid(column=0, row=0, padx=8, pady=4)
+
+
+    mlb = MultiListbox(monty2,(('正则', 57),('执行', 20),("权限", 10),("捕获",10)))
+    conn = sq.connect('data/regular.db')
+    c = conn.cursor()
+    cursor = c.execute("SELECT *  from interactive")
+    cmd = ''
+    for row in cursor:
+        r = row[0]
+        by = row[1]
+        perm = row[2]
+        cmd = row[3]
+        mlb.insert(END,(r,cmd,perm,by))
+    conn.close()
+    mlb.pack(expand=YES, fill=BOTH)
+
+    newregular = tk.Button(monty2,text='新建',width=10,command=new_regular)
+    newregular.pack(side=LEFT)
+
+    #---------------Tab2控件介绍------------------#
+
+
+    #---------------Tab3控件介绍------------------#
+    monty3 = ttk.LabelFrame(tab3, text='Cron预览 (请使用滚动条拉取页面避免出现错位的情况)')
+    monty3.grid(column=0, row=0, padx=8, pady=4)
+    mlc = MultiListbox(monty3,(('Crontab表达式', 50),('执行任务', 47)))
+    with open('data/Cron.json','r',encoding='utf-8') as f:
+        cronl = json.loads(f.read())
+    for i in cronl:
+        mlc.insert(END,(i['cron'],i['cmd']))
+    mlc.pack(expand=YES, fill=BOTH)
+    #---------------Tab3控件介绍------------------#
+ 
+ 
+    #----------------菜单栏介绍-------------------#    
+    # Exit GUI cleanly
+    def _quit():
+        win.quit()
+        win.destroy()
+        exit()
+    
+    # Creating a Menu Bar
+    menuBar = Menu(win)
+    win.config(menu=menuBar)
+ 
+    # Add menu items
+    def configw():
+        pw = PopupDialog(win)
+        win.wait_window(pw)
+
+    fileMenu = Menu(menuBar, tearoff=0)
+    fileMenu.add_command(label="配置",command=configw)
+    fileMenu.add_separator()
+    fileMenu.add_command(label="退出", command=_quit)
+    menuBar.add_cascade(label="显示", menu=fileMenu)
+ 
+#----------------菜单栏介绍-------------------#
 
 #更新预览
 def update():
@@ -729,92 +797,6 @@ def filereload():
     mBox.showinfo('重载文件','重载文件完成\nCrontab计划任务重新计时')
     log_info('内置计划任务已重新计时')
 
-reload = ttk.Button(ServerUse,text=">",width=2,command=filereload)   
-reload.grid(column=0,row=8)
-ttk.Label(ServerUse, text="重载文件",width=17).grid(column=1, row=8)
-
-ServerUse.grid(column=0, row=2, padx=5, pady=10,sticky='W')
-
-
-
-
-# 一次性控制各控件之间的距离
-for child in infos.winfo_children(): 
-    child.grid_configure(padx=3,pady=1)
-#---------------Tab1控件介绍------------------#
- 
-lbv=tk.StringVar()#绑定变量
-#---------------Tab2控件介绍------------------#
-monty2 = ttk.LabelFrame(tab2, text='正则表达式预览 (请使用滚动条拉取页面避免出现错位的情况)')
-monty2.grid(column=0, row=0, padx=8, pady=4)
-
-
-mlb = MultiListbox(monty2,(('正则', 57),('执行', 20),("权限", 10),("捕获",10)))
-conn = sq.connect('data/regular.db')
-c = conn.cursor()
-cursor = c.execute("SELECT *  from interactive")
-cmd = ''
-for row in cursor:
-    r = row[0]
-    by = row[1]
-    perm = row[2]
-    cmd = row[3]
-    mlb.insert(END,(r,cmd,perm,by))
-conn.close()
-mlb.pack(expand=YES, fill=BOTH)
-
-
-#---------------Tab2控件介绍------------------#
-
-
-#---------------Tab3控件介绍------------------#
-monty3 = ttk.LabelFrame(tab3, text='Cron预览 (请使用滚动条拉取页面避免出现错位的情况)')
-monty3.grid(column=0, row=0, padx=8, pady=4)
-mlc = MultiListbox(monty3,(('Crontab表达式', 50),('执行任务', 47)))
-with open('data/Cron.json','r',encoding='utf-8') as f:
-    cronl = json.loads(f.read())
-for i in cronl:
-    mlc.insert(END,(i['cron'],i['cmd']))
-mlc.pack(expand=YES, fill=BOTH)
-#---------------Tab3控件介绍------------------#
- 
- 
-#----------------菜单栏介绍-------------------#    
-# Exit GUI cleanly
-def _quit():
-    win.quit()
-    win.destroy()
-    exit()
-    
-# Creating a Menu Bar
-menuBar = Menu(win)
-win.config(menu=menuBar)
- 
-# Add menu items
-def configw():
-    pw = PopupDialog(win)
-    win.wait_window(pw)
-
-fileMenu = Menu(menuBar, tearoff=0)
-fileMenu.add_command(label="配置",command=configw)
-fileMenu.add_separator()
-fileMenu.add_command(label="退出", command=_quit)
-menuBar.add_cascade(label="显示", menu=fileMenu)
- 
-#----------------菜单栏介绍-------------------#
- 
- 
-# Change the main windows icon
-win.iconbitmap(r'Library/Images/bot.ico')
-win.geometry('725x380')
-# Place cursor into name Entry
-#nameEntered.focus()      
-#======================
-# Start GUI
-#======================
-log_info('Phsebot启动成功 作者：HuoHuaX')
-log_info('特别鸣谢：McPlus Yanhy2000')
-loginQQ()
 
 def writeconfig():
     run = '''@echo off
@@ -825,8 +807,6 @@ cd %s
 
     with open('Temp\\data','w') as f:
         f.write("0")
-writeconfig()
-
 
 
 #解析cron
@@ -1142,28 +1122,41 @@ def useconsoleregular(text):
     return rt
         
 #生成计划任务
-crontab()
-if config['EnableCron']:
-    croncmdt = threading.Thread(target=runcron)
-    croncmdt.setName('Cron_Timer')
-    croncmdt.start()
+if __name__ == '__main__':
+    log_info('启动时间:'+str(datetime.now()))
+    #全局变量
+    StartedServer = False
+    Used = False
+    NormalStop = False
+    Sended = []
+    build_window()
+    create_content()
+    log_info('Phsebot启动成功 作者：HuoHuaX')
+    log_info('特别鸣谢：McPlus Yanhy2000')
+    loginQQ()
+    writeconfig()
+    crontab()
+    if config['EnableCron']:
+        croncmdt = threading.Thread(target=runcron)
+        croncmdt.setName('Cron_Timer')
+        croncmdt.start()
 
-if config['EnableGroup']:
-    gmsp = threading.Thread(target=usegroupregular)
-    gmsp.setName('RecvGroupMsg')
-    gmsp.start()
+    if config['EnableGroup']:
+        gmsp = threading.Thread(target=usegroupregular)
+        gmsp.setName('RecvGroupMsg')
+        gmsp.start()
 
-def on_closing():
-    if mBox.askyesno('退出','您即将关闭Phsebot，确认吗？'):
-        log_info('正在执行Exit事件')
-        win.destroy()
-        log_info('正在释放Mirai资源，请稍后')
-        releaseSession()
-        os._exit(0)
+    def on_closing():
+        if mBox.askyesno('退出','您即将关闭Phsebot，确认吗？'):
+            log_info('正在执行Exit事件')
+            win.destroy()
+            log_info('正在释放Mirai资源，请稍后')
+            releaseSession()
+            os._exit(0)
 
-win.protocol("WM_DELETE_WINDOW", on_closing)
-testupdate()
-try:
-    win.mainloop()
-except KeyboardInterrupt:
-    on_closing()
+    win.protocol("WM_DELETE_WINDOW", on_closing)
+    testupdate()
+    try:
+        win.mainloop()
+    except KeyboardInterrupt:
+        on_closing()
