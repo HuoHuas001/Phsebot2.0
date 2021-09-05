@@ -20,6 +20,7 @@ from Library.motd import *
 
 from Library.Logger import log_error, log_info, log_warn, log_debug
 from src import *
+
 StartedServer = False
 Used = False
 NormalStop = False
@@ -305,8 +306,8 @@ def build_window():
  
 def runcmd():
     global NormalStop
-    result=nameEntered.get()+'\r\n'
-    cmd = result.encode('utf8')
+    result=nameEntered.get()
+    cmd = result.encode('utf-8')+'\r\n'
     if cmd == b'stop\r\n':
         NormalStop = True
     obj.stdin.write(cmd)
@@ -410,7 +411,7 @@ def checkBDS():
     global StartedServer
     while True:
         time.sleep(1)
-        if not check(config['ServerProcess']) and NormalStop == True and StartedServer:
+        if not check(obj) and NormalStop == True and StartedServer:
             runserverb.configure(state='normal')
             runserverc.configure(state='normal')
             stoper.configure(state='disabled')
@@ -421,9 +422,13 @@ def checkBDS():
             GameVersion.configure(text='服务器版本：')
             action.configure(state='disabled')
             nameEntered.configure(state='disabled')
-            os.remove('Temp/console.txt')
+            try:
+                os.remove('Temp/console.txt')
+            except Exception as e:
+                log_debug(e)
+
             break
-        elif not check(config['ServerProcess']) and NormalStop == False and config['AutoRestart'] and StartedServer:
+        elif not check(obj) and NormalStop == False and config['AutoRestart'] and StartedServer:
             if Language['AbendServer'] != False:
                 for i in config['Group']:
                     sendGroupMsg(i,Language['AbendServer'])
@@ -435,7 +440,7 @@ def checkBDS():
             GameVersion.configure(text='服务器版本：')
             runserver()
             break
-        elif not check(config['ServerProcess']) and NormalStop == False and config['AutoRestart'] == False and StartedServer:
+        elif not check(obj) and NormalStop == False and config['AutoRestart'] == False and StartedServer:
             if Language['AbendServer'] != False:
                 for i in config['Group']:
                     sendGroupMsg(i,Language['AbendServer'])
@@ -565,7 +570,7 @@ def stoperd():
     answer = mBox.askyesno("强制停止服务器", "你确定吗？") 
     if answer == True:
         NormalStop = True
-        os.system('taskkill /f /im %s' % config['ServerProcess'])
+        subprocess.Popen("cmd.exe /k taskkill /F /T /PID %i" % obj.pid , shell=True)  
         if Language['ForcedStop'] != False:
             for i in config['Group']:
                 sendGroupMsg(i,Language['ForcedStop'])

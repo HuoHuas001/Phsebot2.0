@@ -5,7 +5,7 @@ ServerCmd: bedrock_server.exe
 ServerProcess: bedrock_server.exe
 
 #服务端目录
-ServerPath: E:\MCServer\TShock4.4.0_Pre12_Terraria1.4.0.5
+ServerPath: E:\MCServer\bds1.17.10
 
 #管理员列表
 Admin:

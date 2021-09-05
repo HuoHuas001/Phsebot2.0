@@ -42,7 +42,7 @@ def checkprocess(processname):
 
  
 def check(p):
-    if checkprocess(p):
+    if p.poll() == None:
         return True
     else:
         return False
