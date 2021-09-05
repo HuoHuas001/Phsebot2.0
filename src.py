@@ -11,14 +11,15 @@ from datetime import date, datetime
 from json.decoder import JSONDecodeError
 from tkinter import messagebox as mBox
 from tkinter import ttk
-
-import psutil
 import requests
+import psutil
+
 import yaml
 from websocket import create_connection
 from Library.motd import *
 
 from Library.Logger import log_error, log_info, log_warn, log_debug
+
 
 
 def read_file(file):
@@ -48,7 +49,7 @@ def check(p):
         return False
 
 
-def loginQQ():
+'''def loginQQ():
     global sessionKey
     url = config["BotURL"]
     key = config['Key']
@@ -69,33 +70,31 @@ def loginQQ():
             log_info('%i 登陆成功' % (qq))
     else:
         sessionKey = ''
-        log_error('在登录时出现了错误')
+        log_error('在登录时出现了错误')'''
 
-def sendGroupMsg(group,text):
+def sendGroupMsg(ws,group,text):
     global num
-    s = threading.Thread(target=sendGroupMsg2,args=(group,text))
+    s = threading.Thread(target=sendGroupMsg2,args=(ws,group,text))
     s.setName('SendGroupMsg'+str(num))
     s.start()
     num += 1
 
-def sendGroupMsg2(group,text):
-    url = config["BotURL"]
+def sendGroupMsg2(ws,group,text):
+    '''url = config["BotURL"]'''
     msgjson = {
-        "sessionKey":sessionKey,
         "target":group,
         "messageChain":[
             { "type":"Plain", "text":text.replace('\\n','\n')},
         ]
     }
-    r = requests.post(url+'/sendGroupMessage',json=msgjson)
-    try:
-        j = json.loads(r.text)
-        if j['code'] == 0 and j['messageId'] == -1:
-            log_warn('消息已发送，但可能遭到屏蔽')
-        return True
-    except JSONDecodeError as e:
-        log_debug(e)
-        log_error('发送消息时出现了内部错误')
+    mj = {
+        "syncId": 123,
+        "command": "sendGroupMessage",
+        "subCommand": None,
+        "content": msgjson
+    }
+    ws.send(json.dumps(mj))
+
 
 
 
@@ -232,25 +231,21 @@ cd "%s"
         self.destroy()
 
 #修改群名
-def changeName(member,group,name):
-    url = config["BotURL"]
+def changeName(ws,member,group,name):
     namejson = {
-        "sessionKey": sessionKey,
         "target": group,
         "memberId": member,
         "info": {
             "name": name,
         }
     }
-    m = requests.post(url+'/memberInfo',json=namejson)
-    j = json.loads(m.text)
-    if j['code'] == 10:
-        log_warn('已尝试修改 %i 的群名片，但没有权限' % member)
-
-#退出释放资源
-def releaseSession():
-    url = config["BotURL"]
-    requests.post(url+'/release',json={'sessionKey':sessionKey,'qq':config['Bot']})
+    mj = {
+        "syncId": 1234,
+        "command": "memberInfo",
+        "subCommand": 'update',
+        "content": namejson
+    }
+    ws.send(json.dumps(mj))
 
 
 
@@ -268,24 +263,35 @@ def write_file(file,content):
         json.dump(content, f, indent=4, ensure_ascii=False, cls=ComplexEncoder)
 
 
-def send_at(group,senderqq,msg):
-    url = config["BotURL"]
+def send_at(ws,group,senderqq,msg):
     msgjson = {
-        "sessionKey":sessionKey,
         "target":group,
         "messageChain":[{"type": "At", "target": senderqq, "display": ""}]
     }
     if msg != False:
         msgjson['messageChain'].append({"type":"Plain", "text":msg})
-    requests.post(url+'/sendGroupMessage',json=msgjson)
 
-def recallmsg(Sourceid):
-    url = config["BotURL"]
+    mj = {
+        "syncId": 1234,
+        "command": "sendGroupMessage",
+        "subCommand": None,
+        "content": msgjson
+    }
+    ws.send(json.dumps(mj))
+
+
+def recallmsg(ws,Sourceid):
     recjson = {
-        "sessionKey":sessionKey,
         "target":Sourceid
     }
-    requests.post(url+'/recall',json=recjson)
+    mj = {
+        "syncId": 12345,
+        "command": "recall",
+        "subCommand": None,
+        "content": recjson
+    }
+    ws.send(json.dumps(mj))
+
 
 def testupdate():
     try:
@@ -321,7 +327,7 @@ def bind(qqid,name,group):
         for i in qxlist:
             if qqid == i['qq']:
                 if Language['QQBinded'] != False:
-                    sendGroupMsg(group,Language['QQBinded'].replace(r'%xboxid%',i['id']))
+                    sendGroupMsg(ws,group,Language['QQBinded'].replace(r'%xboxid%',i['id']))
                 return False
 
     #检测Xboid是否绑定
@@ -329,7 +335,7 @@ def bind(qqid,name,group):
         for i in qxlist:
             if name == i['id']:
                 if Language['XboxIDBinded'] != False:
-                    sendGroupMsg(group,Language['XboxIDBinded'].replace(r'%binderqq%',str(i['qq'])))
+                    sendGroupMsg(ws,group,Language['XboxIDBinded'].replace(r'%binderqq%',str(i['qq'])))
                 return False
 
     #全部都不符合自动绑定
@@ -341,10 +347,10 @@ def bind(qqid,name,group):
     conn.close()
     #发群消息
     if Language['BindSuccessful'] != False:
-        sendGroupMsg(group,Language['BindSuccessful'].replace(r'%xboxid%',name))
+        sendGroupMsg(ws,group,Language['BindSuccessful'].replace(r'%xboxid%',name))
     #更改群名片
     if config['AtNoXboxid']['Rename']:
-        changeName(qqid,group,name)
+        changeName(ws,qqid,group,name)
 
 #获取cpu状态
 def getcpupercent():
@@ -378,16 +384,16 @@ def unbind(qqid,group):
         for i in qxlist:
             if i['qq'] == qqid:
                 if Language['unBindSuccessful'] != False:
-                    sendGroupMsg(group,Language['unBindSuccessful'].replace(r'%xboxid%',i['id']))
+                    sendGroupMsg(ws,group,Language['unBindSuccessful'].replace(r'%xboxid%',i['id']))
         conn = sq.connect('data/xuid.db')
         c = conn.cursor()
         c.execute("DELETE from xboxid where qq=%i;" % (qqid,))
         conn.commit()
         if config['AtNoXboxid']['Rename']:
-            changeName(qqid,group,'')
+            changeName(ws,qqid,group,'')
     else:
         if Language['NotFoundXboxID'] != False:
-            sendGroupMsg(group,Language['NotFoundXboxID'])
+            sendGroupMsg(ws,group,Language['NotFoundXboxID'])
 
 
 def replaceconsole(string):
@@ -467,5 +473,14 @@ Language = read_file('data/Language.yml')
 cron = read_file('data/Cron.json')
 num = 0
 BotVersion = 0.8
+try:
+    key = config['Key']
+    url = config['BotURL']
+    ws = create_connection(url+'/all?verifyKey=%s&qq=%i' % (key,config['Bot']))
+    log_info('%i 登陆成功' % config['Bot'])
+except Exception as e:
+    log_error(e)
+    mBox.showerror('错误','无法连接到Mirai，请检查连接地址是否正确\n详细错误请查看控制台')
+    os._exit(1)
 
     

@@ -14,11 +14,10 @@ Admin:
 
 #发消息的群聊
 Group:
-  - 615056067
+  - 611424871
 
 #Mah登录地址
-BotURL: "http://localhost:8080"
-BotWSURL: "ws://localhost:8080"
+BotURL: "ws://localhost:8080"
 
 #Mah登录Key
 Key: "INITKEY8Gj5l2Hh"
@@ -58,3 +57,6 @@ Debug: true
 
 #最低输出模式，可选:info/warn/error
 LowLog: info
+
+#最大重启次数
+MaxAutoRestart: 3

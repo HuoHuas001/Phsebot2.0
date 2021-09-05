@@ -21,10 +21,10 @@ from Library.motd import *
 from Library.Logger import log_error, log_info, log_warn, log_debug
 from src import *
 
-StartedServer = False
 Used = False
 NormalStop = False
-Sended = []
+
+
 
 # 弹窗
 class Editregular(tk.Toplevel):
@@ -305,14 +305,17 @@ def build_window():
     win.geometry('725x400')
  
 def runcmd():
-    global NormalStop
-    result=nameEntered.get()
-    cmd = result.encode('utf-8')+'\r\n'
-    if cmd == b'stop\r\n':
-        NormalStop = True
-    obj.stdin.write(cmd)
-    obj.stdin.flush()
-    nameEntered.delete(0, 'end')
+    try:
+        global NormalStop
+        result=nameEntered.get()+'\r\n'
+        cmd = result.encode('utf-8')
+        if result.encode('utf-8') == b'stop\r\n':
+            NormalStop = True
+        obj.stdin.write(result.encode('utf-8'))
+        obj.stdin.flush()
+        nameEntered.delete(0, 'end')
+    except Exception as e:
+        log_debug(e)
 
 def motdServer(ip,port,group):
     motd = Server(ip,int(port))
@@ -323,10 +326,10 @@ def motdServer(ip,port,group):
             .replace(r'%agreement%',jmotd['protocol']).replace(r'%version%',jmotd['version']).replace(r'%delay%',str(jmotd['delay'])+'ms')\
                 .replace(r'%online%',jmotd['online']).replace(r'%max%',jmotd['upperLimit']).replace(r'%gamemode%',jmotd['gamemode'])
 
-            sendGroupMsg(group,sendmsg.replace('\\n','\n'))
+            sendGroupMsg(ws,group,sendmsg.replace('\\n','\n'))
     else:
         if Language['MotdFaild'] != False:
-            sendGroupMsg(group,Language['MotdFaild'])
+            sendGroupMsg(ws,group,Language['MotdFaild'])
 
 def Botruncmd(text):
     global NormalStop
@@ -334,23 +337,23 @@ def Botruncmd(text):
     cmd = result
     #开服
     if text == 'start':
-        if not StartedServer:
+        if not check(obj):
             runserver()
         else:
             if Language['ServerRunning'] != False:
                 for i in config['Group']:
-                    sendGroupMsg(i,Language['ServerRunning'])
+                    sendGroupMsg(ws,i,Language['ServerRunning'])
                 
     #正常关服
     elif text == 'stop':
         NormalStop = True
-        if StartedServer:
+        if check(obj):
             obj.stdin.write(cmd.encode('utf8'))
             obj.stdin.flush()
         else:
             if Language['ServerNotRunning'] != False:
                 for i in config['Group']:
-                    sendGroupMsg(i,Language['ServerNotRunning'])
+                    sendGroupMsg(ws,i,Language['ServerNotRunning'])
 
     #绑定XboxID
     elif 'bindid' in text:
@@ -399,171 +402,143 @@ def Botruncmd(text):
 
     #执行指令
     else:
-        if StartedServer:
+        if check(obj):
             obj.stdin.write(cmd.encode('utf8'))
             obj.stdin.flush()
         else:
             if Language['ServerNotRunning']:
                 for i in config['Group']:
-                    sendGroupMsg(i,Language['ServerNotRunning'])
+                    sendGroupMsg(ws,i,Language['ServerNotRunning'])
 
+Restart = 0
 def checkBDS():
-    global StartedServer
+    global StartedServer,Restart
     while True:
         time.sleep(1)
-        if not check(obj) and NormalStop == True and StartedServer:
+        if not check(obj) and NormalStop == True and check(obj):
             runserverb.configure(state='normal')
             runserverc.configure(state='normal')
             stoper.configure(state='disabled')
-            StartedServer = False
             scr.insert('end','[INFO] 进程已停止')
             ServerNow.configure(text='服务器状态：未启动')
             GameFile.configure(text='服务器存档：')
             GameVersion.configure(text='服务器版本：')
             action.configure(state='disabled')
             nameEntered.configure(state='disabled')
-            try:
-                os.remove('Temp/console.txt')
-            except Exception as e:
-                log_debug(e)
-
             break
-        elif not check(obj) and NormalStop == False and config['AutoRestart'] and StartedServer:
+        elif not check(obj) and NormalStop == False and config['AutoRestart'] and check(obj):
             if Language['AbendServer'] != False:
                 for i in config['Group']:
-                    sendGroupMsg(i,Language['AbendServer'])
+                    sendGroupMsg(ws,i,Language['AbendServer'])
             if Language['RestartServer'] != False:
                 for i in config['Group']:
-                    sendGroupMsg(i,Language['RestartServer'])
+                    sendGroupMsg(ws,i,Language['RestartServer'])
             ServerNow.configure(text='服务器状态：未启动')
             GameFile.configure(text='服务器存档：')
             GameVersion.configure(text='服务器版本：')
-            runserver()
+            if config['MaxAutoRestart'] > Restart:
+                runserver()
+                Restart += 1
+            else:
+                for i in config['Group']:
+                    sendGroupMsg(ws,i,Language['MaxRestart'])
+                Restart = 0
             break
-        elif not check(obj) and NormalStop == False and config['AutoRestart'] == False and StartedServer:
+        elif not check(obj) and NormalStop == False and config['AutoRestart'] == False and check(obj):
             if Language['AbendServer'] != False:
                 for i in config['Group']:
-                    sendGroupMsg(i,Language['AbendServer'])
+                    sendGroupMsg(ws,i,Language['AbendServer'])
             runserverb.configure(state='normal')
             runserverc.configure(state='normal')
             stoper.configure(state='disabled')
-            StartedServer = False
             scr.insert('end','[INFO] 进程已停止')
             ServerNow.configure(text='服务器状态：未启动')
             GameFile.configure(text='服务器存档：')
             GameVersion.configure(text='服务器版本：')
             action.configure(state='disabled')
             nameEntered.configure(state='disabled')
-            os.remove('Temp/console.txt')
             break
 
 def showinfo():
-    global StartedServer,Version,Sended,World,Port
-    line = []
-    updateLine = ''
-    
-    while StartedServer:
-        time.sleep(0.0005)
-        if os.path.isfile('Temp/console.txt'):
-            with open('Temp/console.txt','r',encoding='utf8') as f:
-                lines = f.readlines()
-                for i in lines:
-                    if i == ': ':
-                        lines.remove(i)
-                if line == []:
-                    line = lines
-                else:
-                    if lines != line:
-                        line = lines
-                        try:
-                            updateLine = lines[-1]
-                            back = useconsoleregular(updateLine)
-                            #玩家退服
-                            if re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != []:
-                                r = re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
-                                if Language['PlayerLeft'] != False:
-                                    for g in config["Group"]:
-                                        sendGroupMsg(g,Language['PlayerLeft'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
+    global Version,Sended,World,Port
+    for line in iter(obj.stdout.readline, b''):
+        line = line.decode('utf8')
+        scr.insert('end',line)
+        scr.see(END)
+        #使用控制台正则
+        try:
+            updateLine = line
+            back = useconsoleregular(updateLine)
+            #玩家退服
+            if re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != []:
+                r = re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
+                if Language['PlayerLeft'] != False:
+                    for g in config["Group"]:
+                        sendGroupMsg(ws,g,Language['PlayerLeft'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
 
-                            #玩家进服
-                            if re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != []:
-                                r = re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
-                                if Language['PlayerJoin'] != False:
-                                    for g in config["Group"]:
-                                        sendGroupMsg(g,Language['PlayerJoin'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
+            #玩家进服
+            if re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != []:
+                r = re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
+                if Language['PlayerJoin'] != False:
+                    for g in config["Group"]:
+                        sendGroupMsg(ws,g,Language['PlayerJoin'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
 
-                            if back['Type'] == 'Cmd':
-                                Botruncmd(back['Cmd'])
-                        except IndexError as e:
-                            log_debug(e)
+            if back['Type'] == 'Cmd':
+                Botruncmd(back['Cmd'])
+        except Exception as e:
+            log_debug(e)
 
-                        scr.delete(1.0,'end')
-                        scr.insert('end','[INFO] 进程已开始\n')
-                        for i in lines:
-                            scr.insert('end',i)
-                            #版本
-                            if 'INFO] Version' in i:
-                                Version = re.findall(r'Version\s(.+?)[\r\s]',i)[0]
-                                GameVersion.configure(text='服务器版本：'+Version)
-                                if 'SendedVersion' not in Sended:
-                                    Sended.append('SendedVersion')
-                                    if Language['ServerVersion'] != False:
-                                        for b in config["Group"]:
-                                            sendGroupMsg(b,Language['ServerVersion'].replace('%Version%',Version))
-                            #打开世界
-                            if 'opening' in i:
-                                World = re.findall(r'opening\s(.+?)[\r\s]',i)[0]
-                                GameFile.configure(text='服务器存档：'+World)
-                                if 'OpenWorld' not in Sended:
-                                    Sended.append('OpenWorld')
-                                    if Language['OpenWorld'] != False:
-                                        for b in config["Group"]:
-                                            sendGroupMsg(b,Language['OpenWorld'].replace('%World%',World))
+        #内置正则
+            #版本
+        if 'INFO] Version' in line:
+            Version = re.findall(r'Version\s(.+?)[\r\s]',line)[0]
+            GameVersion.configure(text='服务器版本：'+Version)
+            if Language['ServerVersion'] != False:
+                for b in config["Group"]:
+                    sendGroupMsg(ws,b,Language['ServerVersion'].replace('%Version%',Version))
+            #打开世界
+        if 'opening' in line:
+            World = re.findall(r'opening\s(.+?)[\r\s]',line)[0]
+            GameFile.configure(text='服务器存档：'+World)
+            if Language['OpenWorld'] != False:
+                for b in config["Group"]:
+                    sendGroupMsg(ws,b,Language['OpenWorld'].replace('%World%',World))
+            #加载端口
+        if 'IPv4' in line:
+            Port = int(re.findall(r'^\[INFO\]\sIPv4\ssupported,\sport:\s(.+?)$',line)[0])
+            with open('Temp\\data','w') as f:
+                f.write(str(Port))
+            if Language['PortOpen'] != False:
+                for b in config["Group"]:
+                    sendGroupMsg(ws,b,Language['PortOpen'].replace('%Port%',str(Port)))
 
-                            #加载端口
-                            if 'IPv4' in i:
-                                Port = int(re.findall(r'^\[INFO\]\sIPv4\ssupported,\sport:\s(.+?)$',i)[0])
-                                with open('Temp\\data','w') as f:
-                                    f.write(str(Port))
-                                if 'PortOpen' not in Sended:
-                                    Sended.append('PortOpen')
-                                    if Language['PortOpen'] != False:
-                                        for b in config["Group"]:
-                                            sendGroupMsg(b,Language['PortOpen'].replace('%Port%',str(Port)))
+            #开服完成
+        if 'Server started' in line:
+            if Language['ServerStart'] != False:
+                for b in config["Group"]:
+                    sendGroupMsg(ws,b,Language['ServerStart'])
 
-                            #开服完成
-                            if 'Server started' in i:
-                                if 'ServerStart' not in Sended:
-                                    Sended.append('ServerStart')
-                                    if Language['ServerStart'] != False:
-                                        for b in config["Group"]:
-                                            sendGroupMsg(b,Language['ServerStart'])
+            #关服中
+        if '[INFO] Server stop requested.' in line:
+            if Language['ServerStopping'] != False:
+                for b in config["Group"]:
+                    sendGroupMsg(ws,b,Language['ServerStopping'])
 
-                            #关服中
-                            if '[INFO] Server stop requested.' in i:
-                                if 'ServerStopping' not in Sended:
-                                    Sended.append('ServerStopping')
-                                    if Language['ServerStopping'] != False:
-                                        for b in config["Group"]:
-                                            sendGroupMsg(b,Language['ServerStopping'])
+            #关服完成
+        if 'Quit correctly' in line:
+            if Language['ServerStoped'] != False:
+                for b in config["Group"]:
+                    sendGroupMsg(ws,b,Language['ServerStoped'])
 
-                            #关服完成
-                            if 'Quit correctly' in i:
-                                if 'ServerStoped' not in Sended:
-                                    Sended.append('ServerStoped')
-                                    if Language['ServerStoped'] != False:
-                                        for b in config["Group"]:
-                                            sendGroupMsg(b,Language['ServerStoped'])
+            #崩溃
+        if 'Crashed' in line:
+            if Language['Crashed'] != False:
+                for b in config["Group"]:
+                    sendGroupMsg(ws,b,Language['Crashed'])
 
-                            #崩溃
-                            if 'Crashed' in i:
-                                if 'Crashed' not in Sended:
-                                    Sended.append('Crashed')
-                                    if Language['Crashed'] != False:
-                                        for b in config["Group"]:
-                                            sendGroupMsg(b,Language['Crashed'])
 
-                        scr.see(END)
+    obj.stdout.close()
+    obj.wait()
 
 def stoperd():
     global NormalStop
@@ -573,15 +548,14 @@ def stoperd():
         subprocess.Popen("cmd.exe /k taskkill /F /T /PID %i" % obj.pid , shell=True)  
         if Language['ForcedStop'] != False:
             for i in config['Group']:
-                sendGroupMsg(i,Language['ForcedStop'])
+                sendGroupMsg(ws,i,Language['ForcedStop'])
         action.configure(state='disabled')
         nameEntered.configure(state='disabled')
         
 def runserver():
-    global obj,StartedServer,Sended,NormalStop
+    global obj,Sended,NormalStop
     NormalStop = False
     Sended = []
-    StartedServer = True
     nameEntered.configure(state='normal')
     action.configure(state='normal')
     scr.delete(1.0,'end')
@@ -589,17 +563,26 @@ def runserver():
     runserverc.configure(state='disabled')
     stoper.configure(state='normal')
     ServerNow.configure(text='服务器状态：已启动')
-    obj = subprocess.Popen("Library\index.bat > Temp/console.txt", stdin=subprocess.PIPE, 
+
+    #旧版控制台
+    '''obj = subprocess.Popen("Library\index.bat > Temp/console.txt", stdin=subprocess.PIPE, 
     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     show = threading.Thread(target=showinfo)
     show.setName('ShowBDSConsole')
+    show.start()'''
+
+    #新版控制台
+    obj = subprocess.Popen('Library\index.bat', stdout=subprocess.PIPE, stdin=subprocess.PIPE,bufsize=1)
+    show = threading.Thread(target=showinfo)
+    show.setName('ShowBDSConsole')
     show.start()
+
     c = threading.Thread(target=checkBDS)
     c.setName('CheckBDS')
     c.start()
     if Language['Starting'] != False:
         for i in config['Group']:
-            sendGroupMsg(i,Language['Starting'])
+            sendGroupMsg(ws,i,Language['Starting'])
 
 def runfileserver():
     global obj
@@ -625,6 +608,7 @@ def create_content():
     name = tk.StringVar()
     nameEntered = ttk.Entry(monty, width=70, textvariable=name)
     nameEntered.grid(column=0, row=2, sticky='W')
+    
 
     #执行命令
     action = ttk.Button(monty,text="执行",width=5,command=runcmd)   
@@ -869,7 +853,7 @@ def runcron():
                 #群消息
                 if i['cmd'][:2] == '>>':
                     for g in config['Group']:
-                        sendGroupMsg(g,rps)
+                        sendGroupMsg(ws,g,rps)
                 #控制台
                 elif i['cmd'][:2] == '<<':
                     Botruncmd(rps)
@@ -887,11 +871,10 @@ def runcron():
                 write_file('Temp/crontab.json',croncmd)
 
 def usegroupregular():
-    global sessionKey
-    url = config['BotWSURL']
-    key = config['Key']
+    global sessionKey,ws
+    
+    
     url2 = config["BotURL"]
-    ws = create_connection(url+'/all?verifyKey=%s&qq=%i' % (key,config['Bot']))
     while True:
         time.sleep(0.005)
         rt = {}
@@ -913,8 +896,16 @@ def usegroupregular():
             if by == '群消息':
                 regular['Group'].append({'regular':r,'perm':perm,'run':cmd})
         conn.close()
-        j = json.loads(ws.recv())
-        if 'type' in j['data']:
+        try:
+            j = json.loads(ws.recv())
+        except ConnectionResetError as e:
+            log_debug(e)
+            mBox.showerror('错误','Mirai已断开连接')
+            os._exit(1)
+        except Exception as e:
+            log_debug(e)
+            mBox.showerror('错误','出现了内部错误')
+        if 'data' in j and 'type' in j['data'] and j['syncId'] != '123':
             if j['data']['type'] == "GroupMessage":
                 group = j['data']["sender"]['group']['id']
                 senderqq = j['data']['sender']["id"]
@@ -969,7 +960,7 @@ def usegroupregular():
                                 if senderqq in config['Admin']:
                                     if b['run'][:2] == '>>':
                                         for g in config["Group"]:
-                                            sendGroupMsg(g,rps)
+                                            sendGroupMsg(ws,g,rps)
                                     #执行命令
                                     elif b['run'][:2] == '<<':
                                         if 'motd' in cmd[2:]:
@@ -982,12 +973,12 @@ def usegroupregular():
                                             Botruncmd(rps)
                                 else:
                                     if Language['NoPermission'] != False:
-                                        sendGroupMsg(group,Language['NoPermission'])
+                                        sendGroupMsg(ws,group,Language['NoPermission'])
 
                             else:
                                 if b['run'][:2] == '>>':
                                     for g in config["Group"]:
-                                        sendGroupMsg(g,rps)
+                                        sendGroupMsg(ws,g,rps)
                                 #执行命令
                                 elif b['run'][:2] == '<<':
                                     if 'motd' in cmd[2:]:
@@ -1014,8 +1005,8 @@ def usegroupregular():
                         if senderqq not in qlist:
                             #撤回消息
                             if config['AtNoXboxid']['Recall']:
-                                recallmsg(Sourceid)
-                            send_at(group,senderqq,Language['AtNotXboxid'])
+                                recallmsg(ws,Sourceid)
+                            send_at(ws,group,senderqq,Language['AtNotXboxid'])
             #检测改名
             elif j['data']['type'] == "MemberCardChangeEvent":
                 qqid = j['data']['member']['id']
@@ -1040,9 +1031,9 @@ def usegroupregular():
                         for p in qxlist:
                             if p['qq'] == qqid:
                                 if j['data']['current'] != p['id']:
-                                    changeName(qqid,group,p['id'])
+                                    changeName(ws,qqid,group,p['id'])
                                     if Language['ChangeNick'] != False:
-                                        send_at(group,qqid,Language['ChangeNick'])
+                                        send_at(ws,group,qqid,Language['ChangeNick'])
 
             #检测成员离开群聊
             elif 'MemberLeaveEventKick' == j['data']['type'] or "MemberLeaveEventQuit" == j['data']['type']:
@@ -1075,8 +1066,28 @@ def usegroupregular():
                                 wlrun = True
                         if wlrun:
                             if Language['LeftGroup'] != False:
-                                sendGroupMsg(group,Language['LeftGroup'].replace(r'%xboxid%',xboxid))
+                                sendGroupMsg(ws,group,Language['LeftGroup'].replace(r'%xboxid%',xboxid))
                             Botruncmd('whitelist remove "%s"' % xboxid)
+        elif j['syncId'] == '123' and 'data' in j:
+            try:
+                ij = j['data']
+                if ij['code'] == 0 and ij['messageId'] == -1:
+                    log_warn('消息已发送，但可能遭到屏蔽')
+                if ij['code'] == 10:
+                    log_warn('已尝试修改群名片，但没有权限')
+            except JSONDecodeError as e:
+                log_debug(e)
+                log_error('发送消息时出现了内部错误')
+
+        elif j['syncId'] == '1234' and 'data' in j:
+            try:
+                ij = j['data']
+                if ij['code'] == 10:
+                    log_warn('已尝试修改群名片，但没有权限')
+            except JSONDecodeError as e:
+                log_debug(e)
+                log_error('修改群名片时出现了内部错误')
+        
 
 def useconsoleregular(text):
     rt = {}
@@ -1127,7 +1138,7 @@ def useconsoleregular(text):
             rps = replaceconsole(cmd[2:])
             if i['run'][:2] == '>>':
                 for g in config["Group"]:
-                    sendGroupMsg(g,rps)
+                    sendGroupMsg(ws,g,rps)
                 rt = {'Type':'Sended'}
             #执行命令
             elif i['run'][:2] == '<<':
@@ -1144,7 +1155,8 @@ if __name__ == '__main__':
     create_content()
     log_info('Phsebot启动成功 作者：HuoHuaX')
     log_info('特别鸣谢：McPlus Yanhy2000')
-    loginQQ()
+    #loginQQ()
+    
     writeconfig()
     crontab()
     if config['EnableCron']:
@@ -1162,11 +1174,11 @@ if __name__ == '__main__':
             log_info('正在执行Exit事件')
             win.destroy()
             log_info('正在释放Mirai资源，请稍后')
-            releaseSession()
             os._exit(0)
 
     win.protocol("WM_DELETE_WINDOW", on_closing)
     testupdate()
+    
     try:
         win.mainloop()
     except KeyboardInterrupt as e:
