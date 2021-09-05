@@ -126,7 +126,7 @@ class PopupDialog(tk.Toplevel):
         row2.pack(fill="x", ipadx=1, ipady=1)
         tk.Label(row2, text=' 服务端文件：', width=10).pack(side=tk.LEFT,pady=4)
         self.file = tk.StringVar()
-        self.file.set(config['ServerFile'])
+        self.file.set(config['ServerCmd'])
         file = tk.Entry(row2, textvariable=self.file, width=42)
         file.pack(side=tk.LEFT)
 
@@ -188,7 +188,7 @@ class PopupDialog(tk.Toplevel):
         # 显式地更改父窗口参数
 
         #文件
-        config['ServerFile'] = self.file.get()
+        config['ServerCmd'] = self.file.get()
 
         #路径
         config['ServerPath'] = self.path.get()
@@ -222,9 +222,9 @@ class PopupDialog(tk.Toplevel):
         #写入bat
         with open('Library\index.bat','w') as f:
             run = '''@echo off
-cd %s
+cd "%s"
 %s'''
-            f.write(run % (config['ServerPath'],config['ServerFile']))
+            f.write(run % (config['ServerPath'],config['ServerCmd']))
         
         self.destroy() # 销毁窗口
         

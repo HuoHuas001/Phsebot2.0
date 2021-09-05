@@ -265,7 +265,7 @@ class ToolTip(object):
                       background="#ffffe0", relief=tk.SOLID, borderwidth=1,
                       font=("tahoma", "8", "normal"))
             label.pack(ipadx=1)
-        except TypeError:
+        except TypeError as e:
             log_debug(e)
  
     def hidetip(self):
@@ -410,7 +410,7 @@ def checkBDS():
     global StartedServer
     while True:
         time.sleep(1)
-        if not check(config['ServerFile']) and NormalStop == True and StartedServer:
+        if not check(config['ServerProcess']) and NormalStop == True and StartedServer:
             runserverb.configure(state='normal')
             runserverc.configure(state='normal')
             stoper.configure(state='disabled')
@@ -423,7 +423,7 @@ def checkBDS():
             nameEntered.configure(state='disabled')
             os.remove('Temp/console.txt')
             break
-        elif not check(config['ServerFile']) and NormalStop == False and config['AutoRestart'] and StartedServer:
+        elif not check(config['ServerProcess']) and NormalStop == False and config['AutoRestart'] and StartedServer:
             if Language['AbendServer'] != False:
                 for i in config['Group']:
                     sendGroupMsg(i,Language['AbendServer'])
@@ -435,7 +435,7 @@ def checkBDS():
             GameVersion.configure(text='服务器版本：')
             runserver()
             break
-        elif not check(config['ServerFile']) and NormalStop == False and config['AutoRestart'] == False and StartedServer:
+        elif not check(config['ServerProcess']) and NormalStop == False and config['AutoRestart'] == False and StartedServer:
             if Language['AbendServer'] != False:
                 for i in config['Group']:
                     sendGroupMsg(i,Language['AbendServer'])
@@ -462,6 +462,9 @@ def showinfo():
         if os.path.isfile('Temp/console.txt'):
             with open('Temp/console.txt','r',encoding='utf8') as f:
                 lines = f.readlines()
+                for i in lines:
+                    if i == ': ':
+                        lines.remove(i)
                 if line == []:
                     line = lines
                 else:
@@ -524,7 +527,7 @@ def showinfo():
                                             sendGroupMsg(b,Language['PortOpen'].replace('%Port%',str(Port)))
 
                             #开服完成
-                            if 'Server started.' in i:
+                            if 'Server started' in i:
                                 if 'ServerStart' not in Sended:
                                     Sended.append('ServerStart')
                                     if Language['ServerStart'] != False:
@@ -562,7 +565,7 @@ def stoperd():
     answer = mBox.askyesno("强制停止服务器", "你确定吗？") 
     if answer == True:
         NormalStop = True
-        os.system('taskkill /f /im %s' % config['ServerFile'])
+        os.system('taskkill /f /im %s' % config['ServerProcess'])
         if Language['ForcedStop'] != False:
             for i in config['Group']:
                 sendGroupMsg(i,Language['ForcedStop'])
@@ -804,10 +807,10 @@ def filereload():
 
 def writeconfig():
     run = '''@echo off
-cd %s
+cd "%s"
 %s'''
     with open('Library\index.bat','w') as f:
-        f.write(run % (config['ServerPath'],config['ServerFile']))
+        f.write(run % (config['ServerPath'],config['ServerCmd']))
 
     with open('Temp\\data','w') as f:
         f.write("0")

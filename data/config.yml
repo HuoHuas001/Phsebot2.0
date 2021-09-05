@@ -1,8 +1,11 @@
 #服务端文件
-ServerFile: bedrock_server.exe
+ServerCmd: bedrock_server.exe
+
+#服务端进程
+ServerProcess: bedrock_server.exe
 
 #服务端目录
-ServerPath: E:\MCServer\bds1.17.10
+ServerPath: E:\MCServer\TShock4.4.0_Pre12_Terraria1.4.0.5
 
 #管理员列表
 Admin:
