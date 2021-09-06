@@ -21,6 +21,7 @@ from Library.motd import *
 from Library.Logger import log_error, log_info, log_warn, log_debug
 from src import *
 
+
 Used = False
 NormalStop = False
 
@@ -462,7 +463,10 @@ def checkBDS():
 def showinfo():
     global Version,Sended,World,Port
     for line in iter(obj.stdout.readline, b''):
-        line = line.decode('utf8')
+        try:
+            line = line.decode('utf8')
+        except UnicodeDecodeError:
+            line = line.decode('gbk')
         scr.insert('end',line)
         scr.see(END)
         #使用控制台正则
@@ -487,6 +491,7 @@ def showinfo():
                 Botruncmd(back['Cmd'])
         except Exception as e:
             log_debug(e)
+            
 
         #内置正则
             #版本
@@ -572,7 +577,7 @@ def runserver():
     show.start()'''
 
     #新版控制台
-    obj = subprocess.Popen('Library\index.bat', stdout=subprocess.PIPE, stdin=subprocess.PIPE,bufsize=1)
+    obj = subprocess.Popen('Library\index.bat', stdout=subprocess.PIPE, stdin=-1,bufsize=1,shell=True)
     show = threading.Thread(target=showinfo)
     show.setName('ShowBDSConsole')
     show.start()
@@ -901,10 +906,11 @@ def usegroupregular():
         except ConnectionResetError as e:
             log_debug(e)
             mBox.showerror('错误','Mirai已断开连接')
-            os._exit(1)
+            break
         except Exception as e:
             log_debug(e)
             mBox.showerror('错误','出现了内部错误')
+            break
         if 'data' in j and 'type' in j['data'] and j['syncId'] != '123':
             if j['data']['type'] == "GroupMessage":
                 group = j['data']["sender"]['group']['id']
@@ -1153,12 +1159,16 @@ if __name__ == '__main__':
     #全局变量
     build_window()
     create_content()
+    if login():
+        from src import ws
+    else:
+        mBox.showerror('连接Mirai失败','连接Mirai失败，请检查\n更多详情请查看控制台Debug日志信息')
+        os._exit(0)
     log_info('Phsebot启动成功 作者：HuoHuaX')
     log_info('特别鸣谢：McPlus Yanhy2000')
-    #loginQQ()
-    
     writeconfig()
     crontab()
+    obj = subprocess.Popen('echo xxxx', stdout=subprocess.PIPE, stdin=-1,bufsize=1,shell=True)
     if config['EnableCron']:
         croncmdt = threading.Thread(target=runcron)
         croncmdt.setName('Cron_Timer')

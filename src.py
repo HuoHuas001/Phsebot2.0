@@ -17,7 +17,8 @@ import psutil
 import yaml
 from websocket import create_connection
 from Library.motd import *
-
+import traceback
+import sys
 from Library.Logger import log_error, log_info, log_warn, log_debug
 
 
@@ -472,15 +473,18 @@ config = read_file('data/config.yml')
 Language = read_file('data/Language.yml')
 cron = read_file('data/Cron.json')
 num = 0
-BotVersion = 0.8
-try:
-    key = config['Key']
-    url = config['BotURL']
-    ws = create_connection(url+'/all?verifyKey=%s&qq=%i' % (key,config['Bot']))
-    log_info('%i 登陆成功' % config['Bot'])
-except Exception as e:
-    log_error(e)
-    mBox.showerror('错误','无法连接到Mirai，请检查连接地址是否正确\n详细错误请查看控制台')
-    os._exit(1)
-
+BotVersion = 1.0
+def login():
+    global ws
+    try:
+        key = config['Key']
+        url = config['BotURL']
+        ws = create_connection(url+'/all?verifyKey=%s&qq=%i' % (key,config['Bot']))
+        log_info('%i 登陆成功' % config['Bot'])
+        return True
+    except Exception as e:
+        log_debug(e)
+        return False
     
+
+        
