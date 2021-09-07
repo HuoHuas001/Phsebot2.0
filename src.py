@@ -299,7 +299,10 @@ def testupdate():
         log_info('正在请求更新')
         update = json.loads(requests.get('https://api.github.com/repos/HuoHuas001/Phsebot/releases').text)
         if float(update[0]["tag_name"]) > BotVersion:
-            if mBox.askyesno('提示','Phsebot有新版本了，是否去更新'):  
+            title = 'Phsebot有新版本了，是否去更新？'
+            if update[0]['body'] != '':
+                title += '\n更新日志:'+update[0]['body']
+            if mBox.askyesno('提示',title):  
                 webbrowser.open("https://github.com/HuoHuas001/Phsebot/releases")
         else:
             log_info('该版本是最新版本')

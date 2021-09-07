@@ -1,9 +1,9 @@
 #服务端文件
-ServerCmd: start.bat
+ServerCmd: bedrock_server.exe
 
 
 #服务端目录
-ServerPath: E:\MCServer\Nukkit
+ServerPath: E:\MCServer\bedrock-server-1.17.11.01
 
 #管理员列表
 Admin:
@@ -12,7 +12,7 @@ Admin:
 
 #发消息的群聊
 Group:
-  - 611424871
+  - 615056067
 
 #Mah登录地址
 BotURL: "ws://localhost:8080"

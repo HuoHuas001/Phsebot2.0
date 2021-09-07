@@ -102,11 +102,6 @@ class Editregular(tk.Toplevel):
     def ok(self):
         conn = sq.connect('data/regular.db')
         c = conn.cursor()
-        #删除原有的正则
-        if self.tf:
-            c.execute("DELETE from interactive where 正则='%s';" % self.content[0])
-            conn.commit()
-
         #正则
         regular = self.path.get()
         #执行
@@ -121,13 +116,21 @@ class Editregular(tk.Toplevel):
             find = '控制台'
         else:
             find = '群消息'
-
-
-        #提交新的正则
-        c.execute("INSERT INTO interactive (正则,捕获,权限,执行) \
-        VALUES ('%s','%s','%s','%s')" % (regular,find,admin,run))
+        
+        if self.tf:
+            #修改原文
+            c.execute(
+                'UPDATE interactive set 正则="%s",捕获="%s",权限="%s",执行="%s" where rowid=%i'
+                % (regular,find,admin,run,self.content[4]+2)
+            )
+            conn.commit()
+        else:
+            #提交新的正则
+            c.execute("INSERT INTO interactive (正则,捕获,权限,执行) \
+            VALUES ('%s','%s','%s','%s')" % (regular,find,admin,run))
         conn.commit()
         conn.close()
+        
         update()
         self.destroy() # 销毁窗口
         
@@ -162,9 +165,14 @@ class MultiListbox(Frame):
         self.lists[0]["yscrollcommand"] = sb.set
 
     def _selects(self, y):
+        global csd
         row = self.lists[0].nearest(y)
         a = self.selection_clear(0, END)
         se = self.selection_set(row)
+        csd = []
+        for i in self.lists:
+            content = i.get(row)
+            csd.append(content)
         return "break"
 
     def _select(self, y):
@@ -175,7 +183,8 @@ class MultiListbox(Frame):
         for i in self.lists:
             content = i.get(row)
             c.append(content)
-        if len(c) == 4:
+        c.append(row)
+        if len(c) == 5:
             edit_ragular(c)
         return "break"
 
@@ -692,6 +701,21 @@ def create_content():
     #---------------Tab2控件介绍------------------#
     def new_regular():
         Editregular(win,['','','','控制台'],False)
+    
+    def delete_regular():
+        global csd
+        if csd != []:
+            #删除正则
+            if len(csd) == 4:
+                conn = sq.connect('data/regular.db')
+                c = conn.cursor()
+                c.execute("DELETE from interactive where 正则='%s';" % csd[0])
+                conn.commit()
+                mBox.showinfo('删除成功','您已删除正则:\n%s' % csd[0])
+                update()
+                csd = []
+        else:
+            mBox.showwarning('警告','你没有选中正则')
     monty2 = ttk.LabelFrame(tab2, text='正则表达式 (请使用滚动条拉取页面避免出现错位的情况)')
     monty2.grid(column=0, row=0, padx=8, pady=4)
 
@@ -713,6 +737,9 @@ def create_content():
     newregular = tk.Button(monty2,text='新建',width=10,command=new_regular)
     newregular.pack(side=LEFT)
 
+    deleter = tk.Button(monty2,text='删除',width=10,command=delete_regular)
+    deleter.pack(side=LEFT,padx=3)
+
     #---------------Tab2控件介绍------------------#
 
 
@@ -729,12 +756,6 @@ def create_content():
  
  
     #----------------菜单栏介绍-------------------#    
-    # Exit GUI cleanly
-    def _quit():
-        win.quit()
-        win.destroy()
-        exit()
-    
     # Creating a Menu Bar
     menuBar = Menu(win)
     win.config(menu=menuBar)
@@ -747,7 +768,7 @@ def create_content():
     fileMenu = Menu(menuBar, tearoff=0)
     fileMenu.add_command(label="配置",command=configw)
     fileMenu.add_separator()
-    fileMenu.add_command(label="退出", command=_quit)
+    fileMenu.add_command(label="退出", command=on_closing)
     menuBar.add_cascade(label="显示", menu=fileMenu)
  
 #----------------菜单栏介绍-------------------#
@@ -759,8 +780,7 @@ def update():
     c = conn.cursor()
     cursor = c.execute("SELECT *  from interactive")
     cmd = ''
-    mlc.delete(END)
-    mlb.delete(END)
+    mlb.delete(0,END)
     for row in cursor:
         r = row[0]
         by = row[1]
@@ -781,8 +801,8 @@ def filereload():
     c = conn.cursor()
     cursor = c.execute("SELECT *  from interactive")
     cmd = ''
-    mlc.delete(END)
-    mlb.delete(END)
+    mlc.delete(0,END)
+    mlb.delete(0,END)
     for row in cursor:
         r = row[0]
         by = row[1]
@@ -1152,11 +1172,20 @@ def useconsoleregular(text):
         else:
             rt = {'Type':'None'}
     return rt
+
+def on_closing():
+    if mBox.askyesno('退出','您即将关闭Phsebot，确认吗？'):
+        log_info('正在执行Exit事件')
+        win.destroy()
+        log_info('正在释放Mirai资源，请稍后')
+        os._exit(0)
         
 #生成计划任务
 if __name__ == '__main__':
+    os.system('title Phsebot-V'+str(BotVersion))
     log_info('启动时间:'+str(datetime.now()))
     #全局变量
+    testupdate()
     build_window()
     create_content()
     if login():
@@ -1179,18 +1208,10 @@ if __name__ == '__main__':
         gmsp.setName('RecvGroupMsg')
         gmsp.start()
 
-    def on_closing():
-        if mBox.askyesno('退出','您即将关闭Phsebot，确认吗？'):
-            log_info('正在执行Exit事件')
-            win.destroy()
-            log_info('正在释放Mirai资源，请稍后')
-            os._exit(0)
-
     win.protocol("WM_DELETE_WINDOW", on_closing)
-    testupdate()
-    
     try:
         win.mainloop()
     except KeyboardInterrupt as e:
         log_debug(e)
         on_closing()
+

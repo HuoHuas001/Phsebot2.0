@@ -1,4 +1,5 @@
 #正则语言包文件，不触发请设置为false
+#如：ServerVersion: false
 
 #ServerVersion可用变量：%Version%
 ServerVersion: "[服务器] 服务器版本 %Version%"
