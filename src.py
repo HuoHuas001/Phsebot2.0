@@ -423,9 +423,17 @@ def replaceconsole(string):
     ram_2 = str(int((mem.free/1024)/1024))+'MB'
     ram_3 = str(int((mem.used/1024)/1024))+'MB'
     ram_4 = str(mem.percent)+'%'
-    s = string.replace(r'%cpu%',cpu).replace(r'%ram_1%',ram_1).replace(r'%ram_2%',ram_2).replace(r'%ram_3%',ram_3)\
-            .replace(r'%ram_4%',ram_4).replace(r'%server_motd%',server_motd).replace(r'%server_version%',server_version)\
-                .replace(r'%server_online%',server_online).replace(r'server_maxonline',server_maxonline).replace(r'%server_levelname%',server_levelname).replace('\\n','\n')
+    s = string.replace(r'%cpu%',cpu)\
+        .replace(r'%ram_1%',ram_1)\
+        .replace(r'%ram_2%',ram_2)\
+        .replace(r'%ram_3%',ram_3)\
+        .replace(r'%ram_4%',ram_4)\
+        .replace(r'%server_motd%',server_motd)\
+        .replace(r'%server_version%',server_version)\
+        .replace(r'%server_online%',server_online)\
+        .replace(r'server_maxonline',server_maxonline)\
+        .replace(r'%server_levelname%',server_levelname)\
+        .replace('\\n','\n')
     return s
 
 def replacegroup(string,qqnick,qqid):
@@ -462,10 +470,20 @@ def replacegroup(string,qqnick,qqid):
             xboxid = row[1]
     conn.close()
     #替换文本
-    s = string.replace(r'%qqnick%',qqnick).replace(r'%qqid%',str(qqid)).replace(r'%xboxid%',xboxid)\
-        .replace(r'%cpu%',cpu).replace(r'%ram_1%',ram_1).replace(r'%ram_2%',ram_2).replace(r'%ram_3%',ram_3)\
-            .replace(r'%ram_4%',ram_4).replace(r'%server_motd%',server_motd).replace(r'%server_version%',server_version)\
-                .replace(r'%server_online%',server_online).replace(r'%server_maxonline%',server_maxonline).replace(r'%server_levelname%',server_levelname).replace('\\n','\n')
+    s = string.replace(r'%qqnick%',qqnick)\
+        .replace(r'%qqid%',str(qqid))\
+        .replace(r'%xboxid%',xboxid)\
+        .replace(r'%cpu%',cpu)\
+        .replace(r'%ram_1%',ram_1)\
+        .replace(r'%ram_2%',ram_2)\
+        .replace(r'%ram_3%',ram_3)\
+        .replace(r'%ram_4%',ram_4)\
+        .replace(r'%server_motd%',server_motd)\
+        .replace(r'%server_version%',server_version)\
+        .replace(r'%server_online%',server_online)\
+        .replace(r'%server_maxonline%',server_maxonline)\
+        .replace(r'%server_levelname%',server_levelname)\
+        .replace('\\n','\n')
     return s
 
 
@@ -475,8 +493,9 @@ cp.start()
 config = read_file('data/config.yml')
 Language = read_file('data/Language.yml')
 cron = read_file('data/Cron.json')
+NoOut = read_file('data/NoOut.yml')
 num = 0
-BotVersion = 1.0
+BotVersion = 1.1
 def login():
     global ws
     try:

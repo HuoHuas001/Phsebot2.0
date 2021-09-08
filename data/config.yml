@@ -58,3 +58,6 @@ LowLog: info
 
 #最大重启次数
 MaxAutoRestart: 3
+
+#启用输出屏蔽功能
+NoOut: true

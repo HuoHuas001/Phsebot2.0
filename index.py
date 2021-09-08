@@ -425,7 +425,7 @@ def checkBDS():
     global StartedServer,Restart
     while True:
         time.sleep(1)
-        if not check(obj) and NormalStop == True and check(obj):
+        if not check(obj) and NormalStop == True:
             runserverb.configure(state='normal')
             runserverc.configure(state='normal')
             stoper.configure(state='disabled')
@@ -436,7 +436,8 @@ def checkBDS():
             action.configure(state='disabled')
             nameEntered.configure(state='disabled')
             break
-        elif not check(obj) and NormalStop == False and config['AutoRestart'] and check(obj):
+
+        elif not check(obj) and NormalStop == False and config['AutoRestart']:
             if Language['AbendServer'] != False:
                 for i in config['Group']:
                     sendGroupMsg(ws,i,Language['AbendServer'])
@@ -454,7 +455,8 @@ def checkBDS():
                     sendGroupMsg(ws,i,Language['MaxRestart'])
                 Restart = 0
             break
-        elif not check(obj) and NormalStop == False and config['AutoRestart'] == False and check(obj):
+
+        elif not check(obj) and NormalStop == False and config['AutoRestart'] == False:
             if Language['AbendServer'] != False:
                 for i in config['Group']:
                     sendGroupMsg(ws,i,Language['AbendServer'])
@@ -476,8 +478,36 @@ def showinfo():
             line = line.decode('utf8')
         except UnicodeDecodeError:
             line = line.decode('gbk')
-        scr.insert('end',line)
-        scr.see(END)
+        #删除颜色代码
+        colorre = r'\[(.+?)m'
+        linec = re.findall(colorre,line)
+        for i in linec:
+            line = line.replace('\033['+i+'m','')
+
+        #自定义屏蔽输出
+        if config['NoOut']:
+            #字符串
+            if NoOut['AllLine'] != None:
+                for i in NoOut['AllLine']:
+                    if i in line:
+                        line = ''
+            
+            #替换
+            if NoOut['ReplaceLine'] != None:
+                for i in NoOut['ReplaceLine']:
+                    line = line.replace(i,'')
+
+            #正则
+            if NoOut['Regular'] != None:
+                for i in NoOut['Regular']:
+                    if re.search(i,line) != None:
+                        line = ''
+
+        if line != '':
+            scr.insert('end',line)
+            scr.see(END)
+
+
         #使用控制台正则
         try:
             updateLine = line
@@ -520,8 +550,11 @@ def showinfo():
             #加载端口
         if 'IPv4' in line:
             Port = int(re.findall(r'^\[INFO\]\sIPv4\ssupported,\sport:\s(.+?)$',line)[0])
-            with open('Temp\\data','w') as f:
-                f.write(str(Port))
+            try:
+                with open('Temp\\data','w') as f:
+                    f.write(str(Port))
+            except Exception as e:
+                log_debug(e)
             if Language['PortOpen'] != False:
                 for b in config["Group"]:
                     sendGroupMsg(ws,b,Language['PortOpen'].replace('%Port%',str(Port)))
@@ -793,11 +826,12 @@ def update():
 
 #重载所有文件
 def filereload():
-    global config,Language,cron
+    global config,Language,cron,NoOut
     config = read_file('data/config.yml')
     Language = read_file('data/Language.yml')
     cron = read_file('data/Cron.json')
     conn = sq.connect('data/regular.db')
+    NoOut = read_file('data/NoOut.yml')
     c = conn.cursor()
     cursor = c.execute("SELECT *  from interactive")
     cmd = ''
