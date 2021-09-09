@@ -50,29 +50,6 @@ def check(p):
         return False
 
 
-'''def loginQQ():
-    global sessionKey
-    url = config["BotURL"]
-    key = config['Key']
-    qq = config['Bot']
-    try:
-        authCode = requests.post(url+'/verify',json={"verifyKey":key})
-    except Exception as e:
-        log_debug(e)
-        mBox.showwarning('Phsebot', '无法连接到Mirai，请检查地址是否正确或是否开启')
-        os._exit(0)
-
-    authCode = json.loads(authCode.text)
-    if authCode['code'] == 0:
-        sessionKey = authCode['session']
-        bindCode = requests.post(url+'/bind',json={"sessionKey":sessionKey,'qq':qq})
-        bindCode = json.loads(bindCode.text)
-        if bindCode['code'] == 0:
-            log_info('%i 登陆成功' % (qq))
-    else:
-        sessionKey = ''
-        log_error('在登录时出现了错误')'''
-
 def sendGroupMsg(ws,group,text):
     global num
     s = threading.Thread(target=sendGroupMsg2,args=(ws,group,text))
@@ -81,20 +58,22 @@ def sendGroupMsg(ws,group,text):
     num += 1
 
 def sendGroupMsg2(ws,group,text):
-    '''url = config["BotURL"]'''
-    msgjson = {
+    try:
+        msgjson = {
         "target":group,
         "messageChain":[
             { "type":"Plain", "text":text.replace('\\n','\n')},
         ]
     }
-    mj = {
+        mj = {
         "syncId": 123,
         "command": "sendGroupMessage",
         "subCommand": None,
         "content": msgjson
     }
-    ws.send(json.dumps(mj))
+        ws.send(json.dumps(mj))
+    except Exception as e:
+        log_debug(e)
 
 
 
@@ -486,6 +465,23 @@ def replacegroup(string,qqnick,qqid):
         .replace('\\n','\n')
     return s
 
+def send_app(ws,group,code):
+    msgjson = {
+        "target":group,
+        "messageChain":[{
+    "type": "App",
+    "content": code
+}]
+    }
+    mj = {
+        "syncId": 12345,
+        "command": "sendGroupMessage",
+        "subCommand": None,
+        "content": msgjson
+    }
+    ws.send(json.dumps(mj))
+
+
 
 cp = threading.Thread(target=getcpupercent)
 cp.setName('GetCpuPercent')
@@ -495,7 +491,7 @@ Language = read_file('data/Language.yml')
 cron = read_file('data/Cron.json')
 NoOut = read_file('data/NoOut.yml')
 num = 0
-BotVersion = 1.1
+BotVersion = 1.3
 def login():
     global ws
     try:

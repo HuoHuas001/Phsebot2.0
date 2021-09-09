@@ -2,16 +2,16 @@
 #如：ServerVersion: false
 
 #ServerVersion可用变量：%Version%
-ServerVersion: "[服务器] 服务器版本 %Version%"
+ServerVersion: false
 
 #ServerStart可用变量：无
 ServerStart: "[服务器] 服务器启动成功"
 
 #OpenWorld可用变量：%World%
-OpenWorld: "[服务器] 正在加载%World%"
+OpenWorld: false
 
 #PortOpen可用变量：%Port%
-PortOpen: "[服务器] 正在打开端口：%Port%"
+PortOpen: false
 
 #ServerStopping可用变量：无
 ServerStopping: "[服务器] 正在请求关闭服务器"
@@ -23,7 +23,7 @@ ServerStoped: "[服务器] 服务器关闭完成"
 Crashed: "[服务器] 服务器已崩溃，请管理员查看后台日志"
 
 #Starting可用变量：无
-Starting: "[服务器] 服务器正在启动，请稍后"
+Starting: 
 
 #ServerRunning可用变量：无
 ServerRunning: "[服务器] 服务器已在运行中"
@@ -87,3 +87,6 @@ ChangeNick: '请不要乱修改群名片'
 
 #LeftGroup可用变量：%xboxid%
 LeftGroup: '%xboxid% 离开了群聊，白名单自动删除'
+
+#OnlineList可用变量：%Online% %Max% %Player%
+OnlineList: '[服务器]在线玩家:%Online%/%Max%\n玩家列表:%Player%'

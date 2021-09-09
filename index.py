@@ -327,6 +327,17 @@ def runcmd():
     except Exception as e:
         log_debug(e)
 
+def Textruncmd(text):
+    try:
+        global NormalStop
+        result=text+'\r\n'
+        if result.encode('utf-8') == b'stop\r\n':
+            NormalStop = True
+        obj.stdin.write(result.encode('utf-8'))
+        obj.stdin.flush()
+    except Exception as e:
+        log_debug(e)
+
 def motdServer(ip,port,group):
     motd = Server(ip,int(port))
     jmotd = motd.motd()
@@ -340,6 +351,30 @@ def motdServer(ip,port,group):
     else:
         if Language['MotdFaild'] != False:
             sendGroupMsg(ws,group,Language['MotdFaild'])
+
+def cardlist():
+    time.sleep(0.1)
+    if config['ServerInfoCard']['Enable']:
+        card = config['ServerInfoCard']['CardJson']
+        #改变
+        card = card.replace('%Online%',str(Players['Now']))
+        card = card.replace('%Max%',str(Players["Max"]))
+        card = card.replace('%Players%',Players['Player'])
+        #替换logo
+        if config['ServerInfoCard']['Logo'] != '':
+            card = card.replace(r'%Logo%','https:\/\/z3.ax1x.com\/2021\/09\/09\/hOPbZQ.png')
+        else:
+            card = card.replace(r'%Logo%',config['ServerInfoCard']['Logo'])
+        for i in config['Group']:
+            send_app(ws,i,card)
+
+#输出list名单
+def outList():
+    time.sleep(0.1)
+    if Language['OnlineList'] != False:
+        l = Language['OnlineList'].replace(r'%Online%',str(Players['Now'])).replace(r'%Max%',str(Players['Max'])).replace(r'%Player%',Players['Player'])
+        for i in config['Group']:
+            sendGroupMsg(ws,i,l)
 
 def Botruncmd(text):
     global NormalStop
@@ -387,6 +422,18 @@ def Botruncmd(text):
         group = int(args[-1])
         unbind(qqid,group)
 
+    #发送卡片list
+    elif 'cardlist' == text:
+        if check(obj):
+            Textruncmd('list')
+            cl = threading.Thread(target=cardlist)
+            cl.setName('CardList')
+            cl.start()
+        else:
+            if Language['ServerNotRunning']:
+                for i in config['Group']:
+                    sendGroupMsg(ws,i,Language['ServerNotRunning'])
+
     #Motd请求
     elif 'motd' in text:
         args = text.split(' ')
@@ -410,6 +457,18 @@ def Botruncmd(text):
         m.setName('MotdServer')
         m.start()
 
+    #输出名单
+    elif 'outlist' == text:
+        if check(obj):
+            Textruncmd('list')
+            cl = threading.Thread(target=outList)
+            cl.setName('OutList')
+            cl.start()
+        else:
+            if Language['ServerNotRunning']:
+                for i in config['Group']:
+                    sendGroupMsg(ws,i,Language['ServerNotRunning'])
+
     #执行指令
     else:
         if check(obj):
@@ -421,6 +480,11 @@ def Botruncmd(text):
                     sendGroupMsg(ws,i,Language['ServerNotRunning'])
 
 Restart = 0
+Players = {
+    "Now":0,
+    "Max":0,
+    "Player":''
+}
 def checkBDS():
     global StartedServer,Restart
     while True:
@@ -472,7 +536,8 @@ def checkBDS():
             break
 
 def showinfo():
-    global Version,Sended,World,Port
+    global Version,Sended,World,Port,Players
+    Last = ''
     for line in iter(obj.stdout.readline, b''):
         try:
             line = line.decode('utf8')
@@ -483,6 +548,19 @@ def showinfo():
         linec = re.findall(colorre,line)
         for i in linec:
             line = line.replace('\033['+i+'m','')
+
+        #捕捉玩家列表
+        pl = re.findall(r'^There\sare(.+?)\/(.+?)\sp',line)
+        if pl != []:
+            Players['Now'] = int(pl[0][0])
+            Players['Max'] = int(pl[0][1])
+
+        #存储上一个
+        if re.search(r'^There\sare(.+?)\/(.+?)\sp',Last) != None:
+            Players['Player'] = line
+            
+        Last = line
+        
 
         #自定义屏蔽输出
         if config['NoOut']:
@@ -610,13 +688,6 @@ def runserver():
     runserverc.configure(state='disabled')
     stoper.configure(state='normal')
     ServerNow.configure(text='服务器状态：已启动')
-
-    #旧版控制台
-    '''obj = subprocess.Popen("Library\index.bat > Temp/console.txt", stdin=subprocess.PIPE, 
-    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    show = threading.Thread(target=showinfo)
-    show.setName('ShowBDSConsole')
-    show.start()'''
 
     #新版控制台
     obj = subprocess.Popen('Library\index.bat', stdout=subprocess.PIPE, stdin=-1,bufsize=1,shell=True)
@@ -1147,6 +1218,15 @@ def usegroupregular():
             except JSONDecodeError as e:
                 log_debug(e)
                 log_error('修改群名片时出现了内部错误')
+            
+        elif j['syncId'] == '12345' and 'data' in j:
+            try:
+                ij = j['data']
+                if ij['messageId'] == -1:
+                    log_warn('已尝试发出卡片，但可能遭遇屏蔽')
+            except JSONDecodeError as e:
+                log_debug(e)
+                log_error('发送卡片时出现了内部错误')
         
 
 def useconsoleregular(text):

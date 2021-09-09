@@ -61,3 +61,11 @@ MaxAutoRestart: 3
 
 #启用输出屏蔽功能
 NoOut: true
+
+#服务器信息卡片（慎用）
+ServerInfoCard:
+  #启用此功能
+  Enable: true
+  #卡片json
+  CardJson: '{"app":"com.tencent.miniapp","desc":"","view":"notification","ver":"0.0.0.1","prompt":"Server Info ","appID":"","sourceName":"","actionData":"","actionData_A":"","sourceUrl":"","meta":{"notification":{"appInfo":{"appName":"服务器信息：","appType":4,"ext":"","appid":34544210,"iconUrl":"%Logo%"},"button":[{"action":"","name":" "}],"data":[{"title":"玩家状况","value":"%Online%\/%Max%"},{"title":"玩家列表","value":"%Players%"},{"title":"TPS","value":"20.0"}],"title":"状态","emphasis_keyword":""}},"text":"","sourceAd":"","extra":""}'
+  Logo: 'https:\/\/z3.ax1x.com\/2021\/09\/09\/hOPbZQ.png'
