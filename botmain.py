@@ -25,6 +25,41 @@ from Library.Tool import *
 from Library.FakePlayer import *
 from Library.window import *
 
+#输出控制台
+class WriteConsole():
+    def write(self,string):
+        self.i = 0
+        try:
+            ft = tf.Font(family='微软雅黑',size=10)
+            a = str(self.i+1)+'.0'
+            window_root.sc.tag_add('tag',END)
+            window_root.sc.tag_add('tag1',END)
+            window_root.sc.tag_add('tag2',END)
+            window_root.sc.tag_add('tag3',END)
+            window_root.sc.configure(state='normal')
+            if 'ERRO' in string:
+                window_root.sc.tag_config('tag',foreground='#F14C4C',font=ft)
+                window_root.sc.insert(END,string+'\n','tag')
+            elif 'WARN' in string:
+                window_root.sc.tag_config('tag1',foreground='#F5F543',font=ft)
+                window_root.sc.insert(END,string+'\n','tag1')
+            elif 'INFO' in string:
+                window_root.sc.tag_config('tag2',foreground='#23D18B',font=ft)
+                window_root.sc.insert(END,string+'\n','tag2')
+            elif 'DEBUG' in string:
+                window_root.sc.tag_config('tag3',foreground='#11A1C5',font=ft)
+                window_root.sc.insert(END,string+'\n','tag3')
+            window_root.sc.configure(state='disabled')
+            if config['AutoRecordBot']:
+                with open('Temp/BotConsole.txt','a',encoding='utf8') as f:
+                    f.write(string)
+        except Exception as e:
+            #log_debug(e)
+            pass
+
+writeconsole = WriteConsole()
+sys.stdout = writeconsole
+
 class Window():
     def __init__(self) -> None:
         #创建窗口
