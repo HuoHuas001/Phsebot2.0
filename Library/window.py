@@ -1,9 +1,4 @@
-from main import *
-import Library.Libs.Tool as tool
-from Library.Libs.global_var import *
-import yaml
-import sqlite3 as sq
-
+from Library.src import *
 # 弹窗
 class Editregular(tk.Toplevel):
     def __init__(self, parent,content,tf):

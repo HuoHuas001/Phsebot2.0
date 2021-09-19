@@ -10,13 +10,18 @@ import subprocess
 import threading
 import time
 
+import tkinter as tk
+from datetime import datetime
+from json import JSONDecodeError
+from tkinter import *
+from tkinter import Menu, Spinbox
+from tkinter import messagebox as mBox
+from tkinter import scrolledtext, ttk
+from tkinter.constants import END
+import tkinter.font as tf
 
-from Library.Libs.Tool import *
-from Library.Libs.basic import *
-from Library.Libs.Logger import *
-from Library.Libs.windows import *
-from Library.Libs.global_var import *
-from Library.Libs.FakePlayer import *
+from Library.src import *
+from Library.Tool import *
 
 class Window():
     def __init__(self) -> None:
@@ -40,7 +45,7 @@ class Window():
         #窗口frame
         self.monty = ttk.LabelFrame(self.tab1, text=PLP['BDSUI.frame'],width=500,height=100)
         self.monty.grid(column=0, row=0, padx=1, pady=10,)
-        #self.win.iconbitmap(r'Library/Images/bot.ico')
+        #self.win.iconbitmap(r'Library/Images/Sbot.ico')
         self.win.iconphoto(True, tk.PhotoImage(file='Library/Images/window.png'))
         self.win.geometry('725x415')
 
@@ -122,11 +127,12 @@ class Window():
 
         #---------------Tab2控件介绍------------------#
         def new_regular():
+            from Library.window import Editregular
             Editregular(self.win,['','','','控制台'],False)
     
         def delete_regular():
             global csd
-            from Library.Libs.Tool import csd
+            from Library.Tool import csd
             if csd != []:
                 #删除正则
                 if len(csd) == 4:
@@ -135,6 +141,7 @@ class Window():
                     c.execute("DELETE from interactive where 正则='%s';" % csd[0])
                     conn.commit()
                     mBox.showinfo(PLP['RemoveRegular.Ask.title'],'%s\n%s' % (PLP['RemoveRegular.Ask.message'],csd[0]))
+                    import Library.Tool as tool
                     tool.update()
                     csd = []
             else:
@@ -263,6 +270,7 @@ class BDSServer():
         }
 
     def RunServer(self) -> None:
+        from Library.src import Sbot
         self.NormalStop = False
 
         #窗口
@@ -285,7 +293,7 @@ class BDSServer():
         self.check.start()
         if Language['Starting'] != False:
             for i in config['Group']:
-                bot.sendGroupMsg(i,Language['Starting'])
+                sendGroupMsg(i,Language['Starting'])
         from Library.Loader.Plugin import Events
         for e in Events['StartingServer']:
             try:
@@ -339,7 +347,7 @@ class BDSServer():
 
         #触发自动改名
         if config['AutoChangeBotName']['Enable'] and self.Started:
-            bot.ChangeBotName(self.Started)
+            ChangeBotName(self.Started)
     
         #自定义屏蔽输出
         if config['NoOut']:
@@ -393,7 +401,7 @@ class BDSServer():
                         log_debug(e)
                 if Language['PlayerLeft'] != False:
                     for g in config["Group"]:
-                        bot.sendGroupMsg(g,Language['PlayerLeft'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
+                        sendGroupMsg(g,Language['PlayerLeft'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
 
             #玩家进服
             if re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != []:
@@ -406,7 +414,7 @@ class BDSServer():
                         log_debug(e)
                 if Language['PlayerJoin'] != False:
                     for g in config["Group"]:
-                        bot.sendGroupMsg(g,Language['PlayerJoin'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
+                        sendGroupMsg(g,Language['PlayerJoin'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
 
             '''if back['Type'] == 'Cmd':
                 Botruncmd(back['Cmd'])'''
@@ -427,7 +435,7 @@ class BDSServer():
                     log_debug(e)
             if Language['ServerVersion'] != False:
                 for b in config["Group"]:
-                    bot.sendGroupMsg(b,Language['ServerVersion'].replace('%Version%',Version))
+                    sendGroupMsg(b,Language['ServerVersion'].replace('%Version%',Version))
             #打开世界
         if 'opening' in line:
             World = re.findall(r'opening\s(.+?)[\r\s]',line)[0]
@@ -440,7 +448,7 @@ class BDSServer():
                     log_debug(e)
             if Language['OpenWorld'] != False:
                 for b in config["Group"]:
-                    bot.sendGroupMsg(b,Language['OpenWorld'].replace('%World%',World))
+                    sendGroupMsg(b,Language['OpenWorld'].replace('%World%',World))
             #加载端口
         if 'IPv4' in line:
             Port = int(re.findall(r'^\[INFO\]\sIPv4\ssupported,\sport:\s(.+?)$',line)[0])
@@ -457,13 +465,13 @@ class BDSServer():
                 log_debug(e)
             if Language['PortOpen'] != False:
                 for b in config["Group"]:
-                    bot.sendGroupMsg(b,Language['PortOpen'].replace('%Port%',str(Port)))
+                    sendGroupMsg(b,Language['PortOpen'].replace('%Port%',str(Port)))
 
             #开服完成
         if 'Server started' in line:
             if Language['ServerStart'] != False:
                 for b in config["Group"]:
-                    bot.sendGroupMsg(b,Language['ServerStart'])
+                    sendGroupMsg(b,Language['ServerStart'])
             #触发假人服务
             ConnectAllPlayer()
             self.Started = True
@@ -478,8 +486,8 @@ class BDSServer():
         if '[INFO] Server stop requested.' in line:
             if Language['ServerStopping'] != False:
                 for b in config["Group"]:
-                    bot.sendGroupMsg(b,Language['ServerStopping'])
-                bot.ChangeBotName(self.Started)
+                    sendGroupMsg(b,Language['ServerStopping'])
+                ChangeBotName(self.Started)
             from Library.Loader.Plugin import Events
             for e in Events['StoppingServer']:
                 try:
@@ -492,7 +500,7 @@ class BDSServer():
         if 'Quit correctly' in line:
             if Language['ServerStoped'] != False:
                 for b in config["Group"]:
-                    bot.sendGroupMsg(b,Language['ServerStoped'])
+                    sendGroupMsg(b,Language['ServerStoped'])
             from Library.Loader.Plugin import Events
             for e in Events['StoppedServer']:
                 try:
@@ -504,7 +512,7 @@ class BDSServer():
         if 'Crashed' in line:
             if Language['Crashed'] != False:
                 for b in config["Group"]:
-                    bot.sendGroupMsg(b,Language['Crashed'])
+                    sendGroupMsg(b,Language['Crashed'])
             from Library.Loader.Plugin import Events
             for e in Events['Crash']:
                 try:
@@ -528,7 +536,7 @@ class BDSServer():
         if Language['OnlineList'] != False:
             l = Language['OnlineList'].replace(r'%Online%',str(self.Players['Now'])).replace(r'%Max%',str(self.Players['Max'])).replace(r'%Player%',self.Players['Player'])
             for i in config['Group']:
-                bot.sendGroupMsg(i,l)
+                sendGroupMsg(i,l)
 
     def cardlist(self):
         time.sleep(1)
@@ -544,7 +552,7 @@ class BDSServer():
             else:
                 card = card.replace(r'%Logo%',config['ServerInfoCard']['Logo'])
             for i in config['Group']:
-                bot.send_app(i,card)
+                Sbot.send_app(i,card)
     
     def Runcmd(self,text=None):
         #运行一个bds命令
@@ -570,7 +578,7 @@ class BDSServer():
         else:
             if Language['ServerNotRunning']:
                 for i in config['Group']:
-                    bot.sendGroupMsg(i,Language['ServerNotRunning'])
+                    sendGroupMsg(i,Language['ServerNotRunning'])
 
     def Botruncmd(self,text:str):
         global NormalStop,Started
@@ -584,7 +592,7 @@ class BDSServer():
             else:
                 if Language['ServerRunning'] != False:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['ServerRunning'])
+                        sendGroupMsg(i,Language['ServerRunning'])
                     
         #正常关服
         elif text == 'stop':
@@ -597,7 +605,7 @@ class BDSServer():
             else:
                 if Language['ServerNotRunning'] != False:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['ServerNotRunning'])
+                        sendGroupMsg(i,Language['ServerNotRunning'])
 
         #绑定XboxID
         elif 'bindid' in text:
@@ -631,7 +639,7 @@ class BDSServer():
             else:
                 if Language['ServerNotRunning']:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['ServerNotRunning'])
+                        sendGroupMsg(i,Language['ServerNotRunning'])
 
         #Motd请求
         elif 'motd' in text:
@@ -651,7 +659,7 @@ class BDSServer():
                 port = d[1]
             else:
                 port = '19132'
-
+            import Library.Tool as tool
             m = threading.Thread(target=tool.motdServer,args=(addr,port,group))
             m.setName('MotdServer')
             m.start()
@@ -666,7 +674,7 @@ class BDSServer():
             else:
                 if Language['ServerNotRunning']:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['ServerNotRunning'])
+                        sendGroupMsg(i,Language['ServerNotRunning'])
 
         #解析假人命令
         elif 'FakePlayer' in text:
@@ -697,7 +705,7 @@ class BDSServer():
                 
                 else:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
+                        sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
             
             #移除假人FakePlayer remove Test:
             elif args[1] == 'remove':
@@ -705,7 +713,7 @@ class BDSServer():
                     RemoveFakePlayer(name)
                 else:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
+                        sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
 
             #断开连接假人FakePlayer disconnect Test:
             elif args[1] == 'disconnect':
@@ -713,7 +721,7 @@ class BDSServer():
                     RemoveFakePlayer(name)
                 else:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
+                        sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
 
             #连接假人
             elif args[1] == 'connect':
@@ -721,7 +729,7 @@ class BDSServer():
                     ConnectPlayer(name)
                 else:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
+                        sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
 
             #设置聊天
             elif args[1] == 'setchat':
@@ -731,7 +739,7 @@ class BDSServer():
                     setChatControl(name)
                 else:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
+                        sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
 
             #获取状态
             elif args[1] == 'getstate':
@@ -739,7 +747,7 @@ class BDSServer():
                     GetState(name)
                 else:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
+                        sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',PLP['FakePlayer.ARGError']))
 
             #获取所有状态
             elif args[1] == 'allstate':
@@ -774,10 +782,10 @@ class BDSServer():
             elif not self.getBDSPoll() and self.NormalStop == False and config['AutoRestart']:
                 if Language['AbendServer'] != False:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['AbendServer'])
+                        sendGroupMsg(i,Language['AbendServer'])
                 if Language['RestartServer'] != False:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['RestartServer'])
+                        sendGroupMsg(i,Language['RestartServer'])
                 window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.NoRunning']))
                 window_root.GameFile.configure(text=PLP['BDSUI.World'])
                 window_root.GameVersion.configure(text=PLP['BDSUI.Version'])
@@ -786,14 +794,14 @@ class BDSServer():
                     self.Restart += 1
                 else:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['MaxRestart'])
+                        sendGroupMsg(i,Language['MaxRestart'])
                     self.Restart = 0
                 break
 
             elif not self.getBDSPoll() and self.NormalStop == False and config['AutoRestart'] == False:
                 if Language['AbendServer'] != False:
                     for i in config['Group']:
-                        bot.sendGroupMsg(i,Language['AbendServer'])
+                        sendGroupMsg(i,Language['AbendServer'])
                 window_root.runserverb.configure(state='normal')
                 window_root.runserverc.configure(state='normal')
                 window_root.stoper.configure(state='disabled')
@@ -812,7 +820,7 @@ class BDSServer():
             subprocess.Popen("cmd.exe /k taskkill /F /T /PID %i" % self.bds.pid,stdout=subprocess.PIPE)  
             if Language['ForcedStop'] != False:
                 for i in config['Group']:
-                    bot.sendGroupMsg(i,Language['ForcedStop'])
+                    sendGroupMsg(i,Language['ForcedStop'])
             window_root.action.configure(state='disabled')
             window_root.nameEntered.configure(state='disabled')
             from Library.Loader.Plugin import Events
@@ -883,7 +891,7 @@ def useconsoleregular(text):
             rps = replaceconsole(cmd[2:])
             if i['run'][:2] == '>>':
                 for g in config["Group"]:
-                    bot.sendGroupMsg(g,rps)
+                    sendGroupMsg(g,rps)
                 rt = {'Type':'Sended'}
             #执行命令
             elif i['run'][:2] == '<<':
@@ -918,7 +926,8 @@ def usegroupregular():
                 regular['Group'].append({'regular':r,'perm':perm,'run':cmd})
         conn.close()
         try:
-            j = json.loads(bot.ws.recv())
+            j = json.loads(Sbot.ws.recv())
+            #log_debug(j)
         except ConnectionResetError as e:
             log_debug(e)
             mBox.showerror(PLP['Mirai.title'],PLP['Mirai.close'])
@@ -982,7 +991,7 @@ def usegroupregular():
                                 if senderqq in config['Admin']:
                                     if b['run'][:2] == '>>':
                                         for g in config["Group"]:
-                                            bot.sendGroupMsg(g,rps)
+                                            sendGroupMsg(g,rps)
                                     #执行命令
                                     elif b['run'][:2] == '<<':
                                         if 'motd' in cmd[2:]:
@@ -997,12 +1006,12 @@ def usegroupregular():
                                             server.Botruncmd(rps)
                                 else:
                                     if Language['NoPermission'] != False:
-                                        bot.sendGroupMsg(group,Language['NoPermission'])
+                                        sendGroupMsg(group,Language['NoPermission'])
 
                             else:
                                 if b['run'][:2] == '>>':
                                     for g in config["Group"]:
-                                        bot.sendGroupMsg(g,rps)
+                                        sendGroupMsg(g,rps)
                                 #执行命令
                                 elif b['run'][:2] == '<<':
                                     if 'motd' in cmd[2:]:
@@ -1031,8 +1040,8 @@ def usegroupregular():
                         if senderqq not in qlist:
                             #撤回消息
                             if config['AtNoXboxid']['Recall']:
-                                bot.recallmsg(Sourceid)
-                            bot.send_at(group,senderqq,Language['AtNotXboxid'])
+                                Sbot.recallmsg(Sourceid)
+                            Sbot.send_at(group,senderqq,Language['AtNotXboxid'])
             #检测改名
             elif j['data']['type'] == "MemberCardChangeEvent":
                 qqid = j['data']['member']['id']
@@ -1057,9 +1066,9 @@ def usegroupregular():
                         for p in qxlist:
                             if p['qq'] == qqid:
                                 if j['data']['current'] != p['id']:
-                                    bot.changeName(qqid,group,p['id'])
+                                    Sbot.changeName(qqid,group,p['id'])
                                     if Language['ChangeNick'] != False:
-                                        bot.send_at(group,qqid,Language['ChangeNick'])
+                                        Sbot.send_at(group,qqid,Language['ChangeNick'])
 
             #检测成员离开群聊
             elif 'MemberLeaveEventKick' == j['data']['type'] or "MemberLeaveEventQuit" == j['data']['type']:
@@ -1092,7 +1101,7 @@ def usegroupregular():
                                 wlrun = True
                         if wlrun:
                             if Language['LeftGroup'] != False:
-                                bot.sendGroupMsg(group,Language['LeftGroup'].replace(r'%xboxid%',xboxid))
+                                sendGroupMsg(group,Language['LeftGroup'].replace(r'%xboxid%',xboxid))
                             server.Botruncmd('whitelist remove "%s"' % xboxid)
         elif j['syncId'] == '123' and 'data' in j:
             try:
@@ -1122,22 +1131,35 @@ def usegroupregular():
                 log_error(PLP['Mirai.card.insideError'])
 
 
+def update_window():
+    while True:
+        time.sleep(2)
+        from Library.src import cpup
+        try:
+            window_root.CpuC.configure(text=PLP['MainUI.CPU']+' '+str(cpup)+'%')
+        except:
+            pass
+
+
 if __name__ == '__main__':
     server = BDSServer()
     window_root = Window()
     window_root.create_window_content()
     plugin = Plugin()
 
-    #登录Bot
-    bot = tool.Bot()
-    if bot.login():
-        if config['EnableGroup']:
-            gmsp = threading.Thread(target=usegroupregular)
-            gmsp.setName('RecvGroupMsg')
-            gmsp.start()
-    else:
-        mBox.showerror(PLP['Start.Connect.Faild.title'],PLP['Start.Connect.Faild.message'])
 
+    #启用线程
+    upd = threading.Thread(target=update_window)
+    upd.setDaemon(True)
+    upd.setName('UpWindow')
+    upd.start()
+
+    updv = threading.Thread(target=testupdate)
+    updv.setDaemon(True)
+    updv.setName('UpDateBot')
+    updv.start()
+    
+    
     #写入bat
     with open('Temp\\run.bat','w',encoding='utf8') as f:
         lines = '''@echo off
@@ -1163,6 +1185,33 @@ cd "%s"
                 e()
             except Exception as e:
                 log_debug(e)
+
+    #假人服务
+    from Library.FakePlayer import *
+    if config['FakePlayerService']['Enable']:
+        if Build_Connect():
+            log_info(PLP['Start.FakePlayer.Connected'])
+        else:
+            log_error(PLP['Start.FakePlayer.Failed'])
+
+    #杂项
+    import Library.Tool as tool
+    tool.writeconfig()
+    tool.crontab()
+    if config['EnableCron']:
+        croncmdt = threading.Thread(target=runcron)
+        croncmdt.setName('Cron_Timer')
+        croncmdt.start()
+
+    if config['EnableGroup']:
+        gmsp = threading.Thread(target=usegroupregular)
+        gmsp.setName('RecvGroupMsg')
+        gmsp.start()
+
+    #输出废话
+    log_info('Phsebot was successfully started')
+    log_info('Author: HuoHuaX')
+    log_info('Special Thanks McPlus Yanhy2000 strong support for this project')
     
     #更新窗口
     try:

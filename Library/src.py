@@ -13,6 +13,14 @@ from json.decoder import JSONDecodeError
 from tkinter import messagebox as mBox
 from tkinter import ttk
 
+import psutil
+import yaml
+from websocket import create_connection
+
+from Library.Logger import log_debug, log_error, log_info, log_warn
+from Library.motd import *
+
+
 def read_file(file):
     with open(file,'r',encoding='utf-8') as f:
         if '.json' in file:
@@ -22,13 +30,165 @@ def read_file(file):
             content = f.read().replace('\\n','\n')
             return yaml.load(content, Loader=yaml.FullLoader)
 
-import psutil
-import yaml
-from websocket import create_connection
-import Library.Libs.motd as motd
-from Library.Libs.Logger import log_debug, log_error, log_info, log_warn
-from main import *
-from Library.Libs.global_var import *
+ 
+def checkprocess(processname):
+    try:
+        pl = psutil.pids()
+        for pid in pl:
+            if psutil.Process(pid).name() == processname:
+                return True
+    except:
+        return True
+
+ 
+def check(p):
+    if p.poll() == None:
+        return True
+    else:
+        return False
+
+
+def sendGroupMsg(group,text):
+    global num
+    s = threading.Thread(target=Sbot.sendGroupMsg2,args=(group,text))
+    s.setName('SendGroupMsg'+str(num))
+    s.start()
+    num += 1
+
+# 弹窗
+class PopupDialog(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__()
+        self.title('Phsebot - '+PLP['EditConfig.title'])
+        
+        self.parent = parent # 显式地保留父窗口
+        self.iconbitmap(r'Library/Images/bot.ico')
+        self.geometry('400x205')
+        self.resizable(0,0)
+        ms = ttk.LabelFrame(self, text=PLP['EditConfig.frame'],width=9,height=10)
+        ms.grid(column=0, row=0, padx=7, pady=4)
+        
+        # 第一行（两列）
+        row1 = tk.Frame(ms)
+        row1.pack(fill="x")
+        tk.Label(row1, text=PLP['EditConfig.EditPath'], width=10).pack(side=tk.LEFT,pady=4)
+        self.path = tk.StringVar()
+        self.path.set(config['ServerPath'])
+        path = tk.Entry(row1, textvariable=self.path, width=42)
+        path.pack(side=tk.LEFT)
+        
+        # 第二行
+        row2 = tk.Frame(ms)
+        row2.pack(fill="x", ipadx=1, ipady=1)
+        tk.Label(row2, text=PLP['EditConfig.EditFile'], width=10).pack(side=tk.LEFT,pady=4)
+        self.file = tk.StringVar()
+        self.file.set(config['ServerCmd'])
+        file = tk.Entry(row2, textvariable=self.file, width=42)
+        file.pack(side=tk.LEFT)
+
+        # 第三行
+        row3 = tk.Frame(ms)
+        row3.pack(fill="x", ipadx=1, ipady=1)
+        tk.Label(row3, text=PLP['EditConfig.AdminList'], width=10).pack(side=tk.LEFT,pady=4)
+        self.admin = tk.StringVar()
+        admins = ''
+        for i in config['Admin']:
+            if admins == '':
+                admins += str(i)
+            else:
+                admins += '|'+str(i)
+        self.admin.set(admins)
+        admin = tk.Entry(row3, textvariable=self.admin, width=42)
+        admin.pack(side=tk.LEFT)
+
+        # 第四行
+        row4 = tk.Frame(ms)
+        row4.pack(fill="x", ipadx=1, ipady=1)
+        tk.Label(row4, text=PLP['EditConfig.Group'], width=10).pack(side=tk.LEFT,pady=4)
+        self.group = tk.StringVar()
+        groups = ''
+        for i in config['Group']:
+            if groups == '':
+                groups += str(i)
+            else:
+                groups += '|'+str(i)
+        self.group.set(groups)
+        group = tk.Entry(row4, textvariable=self.group, width=42)
+        group.pack(side=tk.LEFT)
+
+        #第五行
+        row5 = tk.Frame(ms)
+        row5.pack(fill="x")
+        self.autostatus=tk.IntVar()
+        self.auto = tk.Checkbutton(row5, text=PLP['EditConfig.Restart'],variable=self.autostatus)
+        if config['AutoRestart']:
+            self.auto.select()
+        self.auto.pack(side=tk.LEFT)
+        
+        # 第六行
+        row6 = tk.Frame(ms)
+        row6.pack(fill="x")
+        tk.Button(row6, text=PLP['EditConfig.Save'], command=self.ok).pack(side=tk.LEFT)
+        tk.Button(row6, text=PLP['EditConfig.Canel'], command=self.cancel).pack(side=tk.RIGHT)
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+        
+        
+    def on_closing(self):
+        if mBox.askyesno(PLP['EditConfig.Ask'],PLP['EditConfig.Message']):
+            self.ok()
+        else:
+            self.cancel()
+
+        
+    def ok(self):
+        # 显式地更改父窗口参数
+
+        #文件
+        config['ServerCmd'] = self.file.get()
+
+        #路径
+        config['ServerPath'] = self.path.get()
+
+        #管理员列表
+        admins = []
+        for i in self.admin.get().split('|'):
+            admins.append(int(i))
+        config['Admin'] = admins
+
+        #群组列表
+        groups = []
+        for i in self.group.get().split('|'):
+            groups.append(int(i))
+        config['Group'] = groups
+
+        #自动重启
+        auto = False
+        if self.autostatus.get() == 1:
+            auto = True
+        else:
+            auto = False
+        config['AutoRestart'] = auto
+
+        #写入文件
+        with open('data/config.yml','w') as f:
+            y = yaml.dump(config)
+            f.write(y)
+
+        
+        #写入bat
+        with open('Library\index.bat','w') as f:
+            run = '''@echo off
+cd "%s"
+%s'''
+            f.write(run % (config['ServerPath'],config['ServerCmd']))
+        
+        self.destroy() # 销毁窗口
+        
+    def cancel(self):
+        self.destroy()
+
+
+
 
 
 class ComplexEncoder(json.JSONEncoder):
@@ -43,7 +203,6 @@ class ComplexEncoder(json.JSONEncoder):
 def write_file(file,content):
     with open(file,'w',encoding='utf-8') as f:
         json.dump(content, f, indent=4, ensure_ascii=False, cls=ComplexEncoder)
-
 
 
 def testupdate():
@@ -90,7 +249,6 @@ def testupdate():
 
 
 def bind(qqid,name,group):
-    from main import bot
     qxlist = []
     qlist = []
     xlist = []
@@ -110,7 +268,7 @@ def bind(qqid,name,group):
         for i in qxlist:
             if qqid == i['qq']:
                 if Language['QQBinded'] != False:
-                    bot.sendGroupMsg(group,Language['QQBinded'].replace(r'%xboxid%',i['id']))
+                    sendGroupMsg(group,Language['QQBinded'].replace(r'%xboxid%',i['id']))
                 return False
 
     #检测Xboid是否绑定
@@ -118,7 +276,7 @@ def bind(qqid,name,group):
         for i in qxlist:
             if name == i['id']:
                 if Language['XboxIDBinded'] != False:
-                    bot.sendGroupMsg(group,Language['XboxIDBinded'].replace(r'%binderqq%',str(i['qq'])))
+                    sendGroupMsg(group,Language['XboxIDBinded'].replace(r'%binderqq%',str(i['qq'])))
                 return False
 
     #全部都不符合自动绑定
@@ -130,10 +288,10 @@ def bind(qqid,name,group):
     conn.close()
     #发群消息
     if Language['BindSuccessful'] != False:
-        bot.sendGroupMsg(group,Language['BindSuccessful'].replace(r'%xboxid%',name))
+        sendGroupMsg(group,Language['BindSuccessful'].replace(r'%xboxid%',name))
     #更改群名片
     if config['AtNoXboxid']['Rename']:
-        bot.changeName(qqid,group,name)
+        Sbot.changeName(qqid,group,name)
 
 #获取cpu状态
 cpup = 0
@@ -149,7 +307,6 @@ def getcpupercent():
 
 #解除绑定
 def unbind(qqid,group):
-    from main import bot
     qxlist = []
     qlist = []
     xlist = []
@@ -168,16 +325,16 @@ def unbind(qqid,group):
         for i in qxlist:
             if i['qq'] == qqid:
                 if Language['unBindSuccessful'] != False:
-                    bot.sendGroupMsg(group,Language['unBindSuccessful'].replace(r'%xboxid%',i['id']))
+                    sendGroupMsg(group,Language['unBindSuccessful'].replace(r'%xboxid%',i['id']))
         conn = sq.connect('data/xuid.db')
         c = conn.cursor()
         c.execute("DELETE from xboxid where qq=%i;" % (qqid,))
         conn.commit()
         if config['AtNoXboxid']['Rename']:
-            bot.changeName(qqid,group,'')
+            Sbot.changeName(qqid,group,'')
     else:
         if Language['NotFoundXboxID'] != False:
-            bot.sendGroupMsg(group,Language['NotFoundXboxID'])
+            sendGroupMsg(group,Language['NotFoundXboxID'])
 
 def get_week_t():
   week_day_dict = {
@@ -215,7 +372,7 @@ def getAPM():
 def replaceconsole(string):
     with open('Temp\\data','r') as f:
         Port = f.read()
-    motdinfo = motd.Server('127.0.0.1',int(Port)).motd()
+    motdinfo = Server('127.0.0.1',int(Port)).motd()
     if motdinfo['status'] == 'online':
         server_motd = motdinfo['name']
         server_version = motdinfo['version']
@@ -278,7 +435,7 @@ def replaceconsole(string):
 def replacegroup(string,qqnick,qqid):
     with open('Temp\\data','r') as f:
         Port = f.read()
-    motdinfo = motd.Server('localhost',int(Port)).motd()
+    motdinfo = Server('localhost',int(Port)).motd()
     if motdinfo['status'] == 'online':
         server_motd = motdinfo['name']
         server_version = motdinfo['version']
@@ -352,10 +509,141 @@ def replacegroup(string,qqnick,qqid):
         .replace(r'%sec%',sec)
     return s
 
+def send_app(ws,group,code):
+    msgjson = {
+        "target":group,
+        "messageChain":[{
+    "type": "App",
+    "content": code
+}]
+    }
+    mj = {
+        "syncId": 12345,
+        "command": "sendGroupMessage",
+        "subCommand": None,
+        "content": msgjson
+    }
+    ws.send(json.dumps(mj))
+
+
+
+def ChangeBotName(Started):
+    if Started:
+        with open('Temp\\data','r') as f:
+            Port = f.read()
+        Motd = Server('127.0.0.1',int(Port)).motd()
+        server_online = Motd['online']
+        server_maxonline = Motd['upperLimit']
+        for i in config['Group']:
+            Sbot.changeName(config['Bot'],i,config['AutoChangeBotName']['String'].replace(r'%Online%',str(server_online))\
+                .replace(r'%Max%',str(server_maxonline)))
+    else:
+        if config['AutoChangeBotName']['StopReset'] != False:
+            for i in config['Group']:
+                Sbot.changeName(config['Bot'],i,config['AutoChangeBotName']['StopReset'])
+
+class Bot():
+    def __init__(self) -> None:
+        pass
+
+    def login(self):
+        try:
+            key = config['Key']
+            url = config['BotURL']
+            self.ws = create_connection(url+'/all?verifyKey=%s&qq=%i' % (key,config['Bot']))
+            self.connect = True
+            log_info('%i %s' % (config['Bot'],PLP['Login.success']))
+            return True
+        except Exception as e:
+            self.connect = False
+            log_debug(e)
+            return False
+
+    def send_at(self,group,senderqq,msg):
+        msgjson = {
+            "target":group,
+            "messageChain":[{"type": "At", "target": senderqq, "display": ""}]
+        }
+        if msg != False:
+            msgjson['messageChain'].append({"type":"Plain", "text":msg})
+
+        mj = {
+            "syncId": 1234,
+            "command": "sendGroupMessage",
+            "subCommand": None,
+            "content": msgjson
+        }
+        self.ws.send(json.dumps(mj))
+
+
+    def recallmsg(self,Sourceid):
+        recjson = {
+            "target":Sourceid
+        }
+        mj = {
+            "syncId": 12345,
+            "command": "recall",
+            "subCommand": None,
+            "content": recjson
+        }
+        self.ws.send(json.dumps(mj))
+
+    #修改群名
+    def changeName(self,member,group,name):
+        namejson = {
+            "target": group,
+            "memberId": member,
+            "info": {
+                "name": name,
+            }
+        }
+        mj = {
+            "syncId": 1234,
+            "command": "memberInfo",
+            "subCommand": 'update',
+            "content": namejson
+        }
+        self.ws.send(json.dumps(mj))
+
+    def sendGroupMsg2(self,group,text):
+        try:
+            msgjson = {
+            "target":group,
+            "messageChain":[
+                { "type":"Plain", "text":text.replace('\\n','\n')},
+            ]
+        }
+            mj = {
+            "syncId": 123,
+            "command": "sendGroupMessage",
+            "subCommand": None,
+            "content": msgjson
+        }
+            self.ws.send(json.dumps(mj))
+        except Exception as e:
+            log_debug(e)
+
+    
+
 if __name__ == '__main__':
     os._exit(0)
 else:
     cp = threading.Thread(target=getcpupercent)
     cp.setName('GetCpuPercent')
     cp.start()
+    config = read_file('data/config.yml')
+    Language = read_file('data/Language.yml')
+    cron = read_file('data/Cron.json')
+    NoOut = read_file('data/NoOut.yml')
+    PLP = read_file('Library/Language/'+config['LangPack']+'.yml')
+    num = 0
+    BotVersion = '1.6-Beta'
+    HotFix = True
+    Sbot = Bot()
+    if Sbot.login():
+        pass
+    else:
+        mBox.showerror(PLP['Start.Connect.Faild.title'],PLP['Start.Connect.Faild.message'])
     
+
+        

@@ -1,11 +1,18 @@
-from main import *
-from Library.Libs.basic import *
+from botmain import *
+from Library.motd import *
+from Library.src import *
 from datetime import datetime
-import socket
-import time
-import Library.Libs.windows as wi
 from croniter import CroniterBadCronError, CroniterNotAlphaError, croniter
 
+import tkinter as tk
+from datetime import datetime
+from json import JSONDecodeError
+from tkinter import *
+from tkinter import Menu, Spinbox
+from tkinter import messagebox as mBox
+from tkinter import scrolledtext, ttk
+from tkinter.constants import END
+import tkinter.font as tf
 
 def writeconfig():
     run = '''@echo off
@@ -39,7 +46,7 @@ def crontab():
 
 #运行计划任务
 def runcron():
-    from main import bot
+    from botmain import server
     while True:
         time.sleep(0.05)
         now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
@@ -66,11 +73,10 @@ def runcron():
                 #群消息
                 if i['cmd'][:2] == '>>':
                     for g in config['Group']:
-                        bot.sendGroupMsg(g,rps)
+                        sendGroupMsg(g,rps)
                 #控制台
                 elif i['cmd'][:2] == '<<':
-                    #Botruncmd(rps)
-                    pass
+                    server.Botruncmd(rps)
                 #运行程序
                 elif i['cmd'][:2] == '^^':
                     os.system('start '+cmd[2:])
@@ -85,8 +91,9 @@ def runcron():
                 write_file('Temp/crontab.json',croncmd)
 
 def edit_ragular(content):
-    from main import window_root
-    wi.Editregular(window_root.win,content,True)
+    from Library.window import Editregular
+    from botmain import window_root
+    Editregular(window_root.win,content,True)
 
 class MultiListbox(Frame):
     def __init__(self,master,lists):
@@ -235,8 +242,6 @@ class ToolTip(object):
 
 
 def motdServer(ip,port,group):
-    from main import bot
-    from Library.Libs.motd import Server
     motd = Server(ip,int(port))
     jmotd = motd.motd()
     if jmotd['status'] == 'online':
@@ -245,17 +250,17 @@ def motdServer(ip,port,group):
             .replace(r'%agreement%',jmotd['protocol']).replace(r'%version%',jmotd['version']).replace(r'%delay%',str(jmotd['delay'])+'ms')\
                 .replace(r'%online%',jmotd['online']).replace(r'%max%',jmotd['upperLimit']).replace(r'%gamemode%',jmotd['gamemode'])
 
-            bot.sendGroupMsg(group,sendmsg.replace('\\n','\n'))
+            sendGroupMsg(group,sendmsg.replace('\\n','\n'))
     else:
         if Language['MotdFaild'] != False:
-            bot.sendGroupMsg(group,Language['MotdFaild'])
+            sendGroupMsg(group,Language['MotdFaild'])
 
 
 
 
 #重载所有文件
 def filereload():
-    from main import window_root
+    from botmain import window_root
     global config,Language,cron,NoOut
     config = read_file('data/config.yml')
     Language = read_file('data/Language.yml')
@@ -291,140 +296,47 @@ def createToolTip( widget, text):
     widget.bind('<Enter>', enter)
     widget.bind('<Leave>', leave)
 
-#更新预览
-def update():
-    from main import window_root
-    global config,Language,cron
-    conn = sq.connect('data/regular.db')
-    c = conn.cursor()
-    cursor = c.execute("SELECT *  from interactive")
-    cmd = ''
-    window_root.mlb.delete(0,END)
-    for row in cursor:
-        r = row[0]
-        by = row[1]
-        perm = row[2]
-        cmd = row[3]
-        window_root.mlb.insert(END,(r,cmd,perm,by))
-    conn.close()
-
-class Bot():
-    def __init__(self) -> None:
-        pass
-        
-    def login(self) -> bool:
+#运行计划任务
+def runcron():
+    while True:
+        time.sleep(0.05)
+        now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        nowlist = now.split('-')
+        timelist = []
+        for i in nowlist:
+            timelist.append(int(i))
         try:
-            key = config['Key']
-            url = config['BotURL']
-            self.ws = create_connection(url+'/all?verifyKey=%s&qq=%i' % (key,config['Bot']))
-            log_info('%i %s' % (config['Bot'],PLP['Login.success']))
-            return True
-        except Exception as e:
+            with open('Temp/crontab.json','r',encoding='utf-8') as f:
+                croncmd = json.loads(f.read())
+        except JSONDecodeError as e:
             log_debug(e)
-            return False
+            croncmd = []
 
-    def sendGroupMsg(self,group,text):
-        global num
-        s = threading.Thread(target=self.sendGroupMsg2,args=(group,text))
-        s.setName('SendGroupMsg'+str(num))
-        s.start()
-        num += 1
+        for i in croncmd:
+            crontime = []
+            for t in i['time'].split('-'):
+                crontime.append(int(t))
+            #触发条件
+            if timelist[0] >= crontime[0] and timelist[1] >= crontime[1] and \
+                timelist[2] >= crontime[2] and timelist[3] >= crontime[3] and\
+                    timelist[4] >= crontime[4] and timelist[5] >= crontime[5]:
+                rps = replaceconsole(i['cmd'][2:])
+                #群消息
+                if i['cmd'][:2] == '>>':
+                    for g in config['Group']:
+                        sendGroupMsg(g,rps)
+                #控制台
+                elif i['cmd'][:2] == '<<':
+                    server.Botruncmd(rps)
+                #运行程序
+                elif i['cmd'][:2] == '^^':
+                    os.system('start '+cmd[2:])
 
-    def sendGroupMsg2(self,group,text):
-        try:
-            msgjson = {
-            "target":group,
-            "messageChain":[
-                { "type":"Plain", "text":text.replace('\\n','\n')},
-            ]
-        }
-            mj = {
-            "syncId": 123,
-            "command": "sendGroupMessage",
-            "subCommand": None,
-            "content": msgjson
-        }
-            self.ws.send(json.dumps(mj))
-        except Exception as e:
-            log_debug(e)
-
-
-    #修改群名
-    def changeName(self,member,group,name):
-        namejson = {
-            "target": group,
-            "memberId": member,
-            "info": {
-                "name": name,
-            }
-        }
-        mj = {
-            "syncId": 1234,
-            "command": "memberInfo",
-            "subCommand": 'update',
-            "content": namejson
-        }
-        self.ws.send(json.dumps(mj))
-
-    def send_at(self,group,senderqq,msg):
-        msgjson = {
-            "target":group,
-            "messageChain":[{"type": "At", "target": senderqq, "display": ""}]
-        }
-        if msg != False:
-            msgjson['messageChain'].append({"type":"Plain", "text":msg})
-
-        mj = {
-            "syncId": 1234,
-            "command": "sendGroupMessage",
-            "subCommand": None,
-            "content": msgjson
-        }
-        self.ws.send(json.dumps(mj))
-
-
-    def recallmsg(self,Sourceid):
-        recjson = {
-            "target":Sourceid
-        }
-        mj = {
-            "syncId": 12345,
-            "command": "recall",
-            "subCommand": None,
-            "content": recjson
-        }
-        self.ws.send(json.dumps(mj))
-
-    def send_app(self,group,code):
-        msgjson = {
-            "target":group,
-            "messageChain":[{
-        "type": "App",
-        "content": code
-    }]
-        }
-        mj = {
-            "syncId": 12345,
-            "command": "sendGroupMessage",
-            "subCommand": None,
-            "content": msgjson
-        }
-        self.ws.send(json.dumps(mj))
-
-    def ChangeBotName(self,Started):
-        if Started:
-            with open('Temp\\data','r') as f:
-                Port = f.read()
-            Motd = motd.Server('127.0.0.1',int(Port)).motd()
-            server_online = Motd['online']
-            server_maxonline = Motd['upperLimit']
-            for i in config['Group']:
-                self.changeName(config['Bot'],i,config['AutoChangeBotName']['String'].replace(r'%Online%',str(server_online))\
-                    .replace(r'%Max%',str(server_maxonline)))
-        else:
-            if config['AutoChangeBotName']['StopReset'] != False:
-                for i in config['Group']:
-                    self.changeName(config['Bot'],i,config['AutoChangeBotName']['StopReset'])
-
-
-    
+                #执行完毕重新解析
+                str_time_now=datetime.now()
+                iter=croniter(i['cron'],str_time_now)
+                times = iter.get_next(datetime).strftime("%Y-%m-%d-%H-%M-%S")
+                cmd = i['cmd']
+                croncmd.remove(i)
+                croncmd.append({'time':times,'cmd':cmd,'cron':i['cron']})
+                write_file('Temp/crontab.json',croncmd)

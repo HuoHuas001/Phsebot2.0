@@ -3,10 +3,18 @@ Author = 'HuoHuaX'
 Type = 'official'
 
 #定义加载器方法
-from main import *
-from Library.Libs.global_var import *
+import sys
+import os
+#添加工作目录
+sys.path.append(os.path.abspath('.'))
+sys.path.append(os.path.abspath('.')+'\\Library\\PLib')
+
+from Library.Logger import *
+from Library.src import *
 import sqlite3 as sq
 import threading
+import time
+
 
 cmds = {}
 Events = {
@@ -80,6 +88,7 @@ def SendAllGroup(text:str) -> dict:
     '''向所有群发消息
     :param text: 发送的文本
     '''
+
     for i in config['Group']:
         sendGroupMsg(i,text)
     return {'code':0,'msg':'Send message success'}
@@ -90,6 +99,7 @@ def SendGroup(group:int,text:str):
     :param group: 指定的群号
     :param text: 发送的文本
     '''
+
     if group in config['Group']:
         sendGroupMsg(group,text)
         return {'code':0,'msg':'Send message success'}
@@ -128,13 +138,6 @@ def regEvent(Event:str,function) -> dict:
     else:
         return {'code':1,'msg':'Not Found '+Event}
 
-#返回在线的玩家列表
-def getList() -> list:
-    runcmd('list')
-    l = MyThread(getlistT)
-    l.start()
-    l.join()
-    log_debug(l.get_result())
 
 #加载的插件
 from Plugin import loadlist

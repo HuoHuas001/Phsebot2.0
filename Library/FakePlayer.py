@@ -1,14 +1,13 @@
 #导入模块
 from os import remove
 from websocket import create_connection
-from Library.Libs.basic import *
+from Library.src import *
 import json
-from Library.Libs.Logger import log_error, log_info, log_warn, log_debug
-
+from Library.Logger import log_error, log_info, log_warn, log_debug
 ConnectED = False
 ControlList = config['FakePlayerService']['Control']
 EnableFakePlayer = config['FakePlayerService']['Enable']
-Eventa = config['FakePlayerService']['Event']
+Event = config['FakePlayerService']['Event']
 def state(num):
     if num == 0:
         return '连接中'
@@ -38,7 +37,7 @@ def RecvEvent():
 
 
         #列表(list)
-        if j['type'] == 'list' and Eventa['list']:
+        if j['type'] == 'list' and Event['list']:
             namelist = ''
             for i in j['data']['list']:
                 if namelist == '':
@@ -50,7 +49,7 @@ def RecvEvent():
                     sendGroupMsg(i,Language['FakePlayerList'].replace(r'%list%',namelist))
 
         #添加(add)
-        elif j['type'] == 'add' and Eventa['add']:
+        elif j['type'] == 'add' and Event['add']:
             if j['data']['success']:
                 for i in config['Group']:
                     if Language['FakePlayerInfo'] != False:
@@ -61,7 +60,7 @@ def RecvEvent():
                         sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',j['data']['reason']))
 
         #移除(remove)
-        elif j['type'] == 'remove' and Eventa['remove']:
+        elif j['type'] == 'remove' and Event['remove']:
             if j['data']['success']:
                 for i in config['Group']:
                     if Language['FakePlayerInfo'] != False:
@@ -72,7 +71,7 @@ def RecvEvent():
                         sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',j['data']['reason']))
 
         #获取状态(getState)
-        elif j['type'] == 'getState' and Eventa['getstate']:
+        elif j['type'] == 'getState' and Event['getstate']:
             if j['data']['success']:
                 for i in config['Group']:
                     if Language['FakePlayerInfo'] != False:
@@ -83,7 +82,7 @@ def RecvEvent():
                         sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',j['data']['reason']))
 
         #获取假人状态
-        elif j['type'] == "getState_all" and Eventa['getstate_all']:
+        elif j['type'] == "getState_all" and Event['getstate_all']:
             states = ''
             for f in j['data']["playersData"]:
                 if states == '':
@@ -95,7 +94,7 @@ def RecvEvent():
                     sendGroupMsg(i,Language['FakePlayerInfo'].replace(r'%info%',states))
 
         #断开连接假人响应
-        elif j['type'] == "disconnect" and Eventa['disconnect']:
+        elif j['type'] == "disconnect" and Event['disconnect']:
             if j['data']['success']:
                 for i in config['Group']:
                     if Language['FakePlayerInfo'] != False:
@@ -106,7 +105,7 @@ def RecvEvent():
                         sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',j['data']['reason']))
 
         #连接假人响应
-        elif j['type'] == 'connect' and Eventa['connect']:
+        elif j['type'] == 'connect' and Event['connect']:
             if j['data']['success']:
                 for i in config['Group']:
                     if Language['FakePlayerInfo'] != False:
@@ -117,7 +116,7 @@ def RecvEvent():
                         sendGroupMsg(i,Language['FakePlayerError'].replace(r'%error%',j['data']['reason']))
         
         #移除全部假人响应
-        elif j['type'] == 'remove_all' and Eventa['remove_all']:
+        elif j['type'] == 'remove_all' and Event['remove_all']:
             states = ''
             for f in j['data']["list"]:
                     states += '\n'+f
@@ -126,7 +125,7 @@ def RecvEvent():
                     sendGroupMsg(i,Language['FakePlayerInfo'].replace(r'%info%','已移除'+states))
         
         #移除全部假人响应
-        elif j['type'] == 'disconnect_all' and Eventa['disconnect_all']:
+        elif j['type'] == 'disconnect_all' and Event['disconnect_all']:
             states = ''
             for f in j['data']["list"]:
                     states += '\n'+f
@@ -135,7 +134,7 @@ def RecvEvent():
                     sendGroupMsg(i,Language['FakePlayerInfo'].replace(r'%info%','已断开'+states))
 
         #移除全部假人响应
-        elif j['type'] == 'connect_all' and Eventa['connect_all']:
+        elif j['type'] == 'connect_all' and Event['connect_all']:
             states = ''
             for f in j['data']["list"]:
                     states += '\n'+f
@@ -144,7 +143,7 @@ def RecvEvent():
                     sendGroupMsg(i,Language['FakePlayerInfo'].replace(r'%info%','已连接'+states))
 
         #聊天控制假人响应
-        elif j['type'] == 'setChatControl' and Eventa['setchatcontrol']:
+        elif j['type'] == 'setChatControl' and Event['setchatcontrol']:
             if j['data']['success']:
                 for i in config['Group']:
                     if Language['FakePlayerInfo'] != False:
