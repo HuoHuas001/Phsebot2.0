@@ -1,0 +1,103 @@
+#正则语言包文件，不触发请设置为false
+
+#ServerVersion可用变量：%Version%
+ServerVersion: False
+
+#ServerStart可用变量：无
+ServerStart: "[服务器] 服务器启动成功"
+
+#OpenWorld可用变量：%World%
+OpenWorld: False
+
+#PortOpen可用变量：%Port%
+PortOpen: False
+
+#ServerStopping可用变量：无
+ServerStopping: False
+
+#ServerStoped可用变量：无
+ServerStoped: "[服务器] 服务器关闭完成"
+
+#Crashed可用变量：无
+Crashed: "[服务器] 服务器已崩溃，请管理员查看后台日志"
+
+#Starting可用变量：无
+Starting: False
+
+#ServerRunning可用变量：无
+ServerRunning: "[服务器] 服务器已在运行中"
+
+#ServerNotRunning可用变量：无
+ServerNotRunning: "[服务器] 服务器不在运行中."
+
+#MotdFaild可用变量：无
+MotdFaild: "Motd请求失败"
+
+#MotdSuccessful可用变量：
+  #%ip% IP地址
+  #%port% 端口
+  #%motd% 说明
+  #%agreement% 协议版本
+  #%version% 客户端版本
+  #%online% 在线玩家
+  #%max% 最大在线玩家
+  #%gamemode% 游戏模式
+  #%delay% 本机到服务器的延迟
+MotdSuccessful: '[MOTD] Motd成功\n服务器地址:%ip%:%port%\n说明:%motd%\n协议版本:%agreement%\n游戏版本:%version%\n在线:%online%/%max%\n游戏模式:%gamemode%\n延迟:%delay%'
+
+#ForcedStop可用变量：无
+ForcedStop: '[服务器] 服务器已被强制停止'
+
+#AbendServer可用变量：无
+AbendServer: '[服务器] 服务器异常终止'
+
+#RestartServer可用变量：无
+RestartServer: '[服务器] 服务器重新启动'
+
+#PlayerJoin可用变量：%player% %xuid%
+PlayerJoin: '[服务器] %player% 加入了服务器，其xuid为%xuid%'
+
+#PlayerLeft可用变量：%player% %xuid%
+PlayerLeft: '[服务器] %player% 离开了服务器，其xuid为%xuid%'
+
+#XboxIDBinded可用变量：%binderqq%
+XboxIDBinded: '这个XBOXID已被 QQ号为：%binderqq% 绑定'
+
+#QQBinded可用变量：%xboxid%
+QQBinded: 你已绑定xboxid：%xboxid%
+
+#BindSuccessful可用变量：%xboxid%
+BindSuccessful: 您已成功绑定%xboxid%
+
+#NotFoundXboxID可用变量：无
+NotFoundXboxID: 你没有已绑定的xboxid
+
+#unBindSuccessful可用变量：%xboxid%
+unBindSuccessful: 您已成功解绑%xboxid%
+
+#NoPermission可用变量：无
+NoPermission: '你没有权限'
+
+#AtNotXboxid可用变量：无
+AtNotXboxid: '还未绑定Xboxid'
+
+#ChangeNick可用变量：无
+ChangeNick: '请不要乱修改群名片'
+
+#LeftGroup可用变量：%xboxid%
+LeftGroup: '%xboxid% 离开了群聊，白名单自动删除'
+
+#OnlineList可用变量：%Online% %Max% %Player%
+OnlineList: '[服务器]在线玩家:%Online%/%Max%\n玩家列表:%Player%'
+
+#FakePlayerError可用变量：%error%
+FakePlayerError: '假人错误:%error%'
+
+#FakePlayerList可用变量：%list%
+FakePlayerList: '假人列表如下：\n%list%'
+
+#FakePlayerInfo可用变量：%info%
+FakePlayerInfo: '假人信息:%info%'
+
+#MaxRestart可用变量：无
+MaxRestart: '服务器已达到崩溃次数，请手动重启'

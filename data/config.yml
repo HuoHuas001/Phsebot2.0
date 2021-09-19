@@ -1,0 +1,110 @@
+#服务端文件
+ServerCmd: bedrock_server.exe
+
+#服务端目录
+ServerPath: E:\MCServer\MZYsc
+
+#管理员列表
+Admin:
+  - 2351078777
+  - 1770627763
+  - 2385994313
+
+#发消息的群聊
+Group:
+  - 615056067
+
+#Mah登录地址
+BotURL: "ws://localhost:8080"
+
+#Mah登录Key
+Key: "INITKEY8Gj5l2Hh"
+
+#发消息的QQ号
+Bot: 3544175039
+
+#崩服自动重启
+AutoRestart: true
+
+#@未绑定白名单的成员
+AtNoXboxid: 
+  #此功能开关
+  Enable: false
+  #自动撤回未绑定成员的消息
+  Recall: false
+  #自动改名
+  Rename: true
+
+#是否启用Cron表达式
+EnableCron: true
+
+#是否监听群消息
+EnableGroup: true
+
+#是否检测昵称被玩家改变
+CheckNick:
+  Enable: true
+  WhiteList:
+    - 123456
+
+#是否开启玩家退群自动删白名单
+LeftRemove: false
+
+#DEBUG模式
+Debug: true
+
+#最低输出模式，可选:info/warn/error
+LowLog: info
+
+#最大重启次数
+MaxAutoRestart: 3
+
+#启用输出屏蔽功能
+NoOut: true
+
+#服务器信息卡片（慎用）
+ServerInfoCard:
+  #启用此功能
+  Enable: true
+  #卡片json
+  CardJson: '{"app":"com.tencent.miniapp","desc":"","view":"notification","ver":"0.0.0.1","prompt":"Server Info ","appID":"","sourceName":"","actionData":"","actionData_A":"","sourceUrl":"","meta":{"notification":{"appInfo":{"appName":"服务器信息：","appType":4,"ext":"","appid":34544210,"iconUrl":"%Logo%"},"button":[{"action":"","name":" "}],"data":[{"title":"玩家状况","value":"%Online%\/%Max%"},{"title":"玩家列表","value":"%Players%"},{"title":"TPS","value":"20.0"}],"title":"状态","emphasis_keyword":""}},"text":"","sourceAd":"","extra":""}'
+  Logo: 'https:\/\/z3.ax1x.com\/2021\/09\/09\/hOPbZQ.png'
+
+#假人服务
+FakePlayerService:
+  Enable: true
+  URL: 'ws://127.0.0.1:54321'
+  Control:
+    #开服自动连接假人
+    StartConnect: true
+    #关服自动断开假人
+    StopDisConnect: true
+  #通知到群里的消息
+  Event:
+    list: true
+    add: true
+    remove: true
+    getstate: true
+    getstate_all: true
+    disconnect: true
+    connect: true
+    remove_all: true
+    disconnect_all: true
+    connect_all: true
+    setchatcontrol: true
+
+#语言包
+LangPack: 'zh_cn'
+
+#自动改变机器人名称
+AutoChangeBotName:
+  #启用此功能
+  Enable: true
+  #改变的字符串 %Online%在线人数 %Max%最大人数
+  String: '服务器在线:%Online%/%Max%'
+  #关服自动还原的昵称(注：还原原名称请填写'',不开启请设置false)
+  StopReset: ''
+
+#自动记录后台日志
+AutoRecordBDS: true
+AutoRecordBot: true

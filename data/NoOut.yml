@@ -1,0 +1,17 @@
+#整行不输出(填写关键字即可)
+AllLine:
+  #例如:[INFO] IPv6 supported, port: 58543
+  #不想输出可以直接填IPv6
+  #- 'IPv6'
+
+#替换字符串
+ReplaceLine:
+  #例如:[INFO] IPv6 supported, port: 58543
+  #填写IPv6后输出:[INFO]  supported, port: 58543
+  #- 'IPv6'
+
+#正则匹配
+Regular:
+  #例如:[INFO] IPv6 supported, port: 58543
+  #不想输出可以直接填正则
+  #- '\[INFO\]\sIPv6'
