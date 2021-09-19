@@ -22,6 +22,8 @@ import tkinter.font as tf
 
 from Library.src import *
 from Library.Tool import *
+from Library.FakePlayer import *
+from Library.window import *
 
 class Window():
     def __init__(self) -> None:
@@ -54,6 +56,7 @@ class Window():
 
     #构建窗口内容
     def create_window_content(self):
+        from Library.src import server
         scrolW  = 75; scrolH  =  23.1
         self.scrc = scrolledtext.ScrolledText(self.monty, width=scrolW, height=scrolH, wrap=tk.WORD)
         self.scrc.grid(column=0, row=0,columnspan=3)
@@ -271,6 +274,7 @@ class BDSServer():
 
     def RunServer(self) -> None:
         from Library.src import Sbot
+        from Library.src import window_root
         self.NormalStop = False
 
         #窗口
@@ -322,6 +326,7 @@ class BDSServer():
         self.bds.wait()
 
     def insertscr(self,line:bytes):
+        from Library.src import window_root
         #解码
         try:
             line = line.decode('utf8')
@@ -341,9 +346,9 @@ class BDSServer():
 
         #存储上一个
         if re.search(r'^There\sare(.+?)\/(.+?)\sp',self.Last) != None:
-            self.Players['Player'] = line
+            self.Players['Player'] = line.replace('\n','')
         
-        Last = line
+        self.Last = line
 
         #触发自动改名
         if config['AutoChangeBotName']['Enable'] and self.Started:
@@ -386,6 +391,7 @@ class BDSServer():
                 pass
 
     def inlineregular(self,line):
+        from Library.src import window_root
         #使用控制台正则
         try:
             updateLine = line
@@ -555,6 +561,7 @@ class BDSServer():
                 Sbot.send_app(i,card)
     
     def Runcmd(self,text=None):
+        from Library.src import window_root
         #运行一个bds命令
         cmd = text
         if text == None:
@@ -765,6 +772,7 @@ class BDSServer():
             self.Runcmd(text)
 
     def checkBDS(self):
+        from Library.src import window_root
         while True:
             time.sleep(1)
             if not self.getBDSPoll() and self.NormalStop == True:
@@ -814,6 +822,7 @@ class BDSServer():
                 break
 
     def stoperd(self):
+        from Library.src import window_root
         answer = mBox.askyesno(PLP['BDSUI.ForceStop.title'], PLP['BDSUI.ForceStop.message']) 
         if answer == True:
             self.NormalStop = True
@@ -831,6 +840,7 @@ class BDSServer():
                     log_debug(e)
     
     def runfileserver(self):
+        from Library.src import window_root
         window_root.scrc.delete(1.0,'end')
         self.bds = os.system("start Temp/run.bat")
         window_root.runserverb.configure(state='disabled')
@@ -1135,6 +1145,7 @@ def update_window():
     while True:
         time.sleep(2)
         from Library.src import cpup
+        from Library.src import window_root
         try:
             window_root.CpuC.configure(text=PLP['MainUI.CPU']+' '+str(cpup)+'%')
         except:
@@ -1142,11 +1153,8 @@ def update_window():
 
 
 if __name__ == '__main__':
-    server = BDSServer()
-    window_root = Window()
-    window_root.create_window_content()
+    from Library.src import server
     plugin = Plugin()
-
 
     #启用线程
     upd = threading.Thread(target=update_window)

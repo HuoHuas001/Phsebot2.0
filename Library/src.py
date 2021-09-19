@@ -532,11 +532,12 @@ def ChangeBotName(Started):
         with open('Temp\\data','r') as f:
             Port = f.read()
         Motd = Server('127.0.0.1',int(Port)).motd()
-        server_online = Motd['online']
-        server_maxonline = Motd['upperLimit']
-        for i in config['Group']:
-            Sbot.changeName(config['Bot'],i,config['AutoChangeBotName']['String'].replace(r'%Online%',str(server_online))\
-                .replace(r'%Max%',str(server_maxonline)))
+        if Motd['status'] == 'online':
+            server_online = Motd['online']
+            server_maxonline = Motd['upperLimit']
+            for i in config['Group']:
+                Sbot.changeName(config['Bot'],i,config['AutoChangeBotName']['String'].replace(r'%Online%',str(server_online))\
+                    .replace(r'%Max%',str(server_maxonline)))
     else:
         if config['AutoChangeBotName']['StopReset'] != False:
             for i in config['Group']:
@@ -640,6 +641,10 @@ else:
     BotVersion = '1.6-Beta'
     HotFix = True
     Sbot = Bot()
+    from botmain import BDSServer,Window
+    server = BDSServer()
+    window_root = Window()
+    window_root.create_window_content()
     if Sbot.login():
         pass
     else:

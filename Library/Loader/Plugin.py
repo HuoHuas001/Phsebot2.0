@@ -138,6 +138,30 @@ def regEvent(Event:str,function) -> dict:
     else:
         return {'code':1,'msg':'Not Found '+Event}
 
+#键入指令
+def Runcmd(cmd:str):
+    '''运行一个命令
+    :param cmd: 命令
+    '''
+    from Library.src import server
+    server.Runcmd(cmd)
+
+def getlistT():
+    time.sleep(1)
+    from Library.src import server
+    return server.Players
+
+#返回在线的玩家列表
+def getList() -> dict:
+    Runcmd('list')
+    l = MyThread(getlistT)
+    l.start()
+    l.join()
+    result = l.get_result()
+    log_debug(result)
+    result['Player'] = result['Player'].split(', ')
+    return result
+
 
 #加载的插件
 from Plugin import loadlist

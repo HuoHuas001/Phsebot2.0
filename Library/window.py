@@ -102,7 +102,7 @@ class Editregular(tk.Toplevel):
             VALUES ('%s','%s','%s','%s')" % (regular,find,admin,run))
         conn.commit()
         conn.close()
-        
+        import Library.Tool as tool
         tool.update()
         self.destroy() # 销毁窗口
         
@@ -116,7 +116,7 @@ class PopupDialog(tk.Toplevel):
         self.title('Phsebot - '+PLP['EditConfig.title'])
         
         self.parent = parent # 显式地保留父窗口
-        self.iconbitmap(r'Library/Images/bot.ico')
+        #self.iconbitmap(r'Library/Images/bot.ico')
         self.geometry('400x205')
         self.resizable(0,0)
         ms = ttk.LabelFrame(self, text=PLP['EditConfig.frame'],width=9,height=10)

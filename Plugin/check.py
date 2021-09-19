@@ -1,7 +1,11 @@
 from Library.Loader.Plugin import *
+from datetime import datetime
 log_info('签到插件加载成功! Powered by HuoHuaX')
 
-def aaa(args):
-    SendAllGroup('test')
+def check(args):
+    pass
 
-regBotCmd('aaa',aaa)
+def clean_check():
+    while True:
+        times = datetime.now().strftime('%H-%M')
+regBotCmd('check',check)

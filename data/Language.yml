@@ -55,10 +55,10 @@ AbendServer: '[服务器] 服务器异常终止'
 RestartServer: '[服务器] 服务器重新启动'
 
 #PlayerJoin可用变量：%player% %xuid%
-PlayerJoin: '[服务器] %player% 加入了服务器，其xuid为%xuid%'
+PlayerJoin: False
 
 #PlayerLeft可用变量：%player% %xuid%
-PlayerLeft: '[服务器] %player% 离开了服务器，其xuid为%xuid%'
+PlayerLeft: False
 
 #XboxIDBinded可用变量：%binderqq%
 XboxIDBinded: '这个XBOXID已被 QQ号为：%binderqq% 绑定'

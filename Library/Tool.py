@@ -92,7 +92,7 @@ def runcron():
 
 def edit_ragular(content):
     from Library.window import Editregular
-    from botmain import window_root
+    from Library.src import window_root
     Editregular(window_root.win,content,True)
 
 class MultiListbox(Frame):
@@ -260,7 +260,7 @@ def motdServer(ip,port,group):
 
 #重载所有文件
 def filereload():
-    from botmain import window_root
+    from Library.src import window_root
     global config,Language,cron,NoOut
     config = read_file('data/config.yml')
     Language = read_file('data/Language.yml')
@@ -340,3 +340,20 @@ def runcron():
                 croncmd.remove(i)
                 croncmd.append({'time':times,'cmd':cmd,'cron':i['cron']})
                 write_file('Temp/crontab.json',croncmd)
+
+#更新预览
+def update():
+    from Library.src import window_root
+    global config,Language,cron
+    conn = sq.connect('data/regular.db')
+    c = conn.cursor()
+    cursor = c.execute("SELECT *  from interactive")
+    cmd = ''
+    window_root.mlb.delete(0,END)
+    for row in cursor:
+        r = row[0]
+        by = row[1]
+        perm = row[2]
+        cmd = row[3]
+        window_root.mlb.insert(END,(r,cmd,perm,by))
+    conn.close()
