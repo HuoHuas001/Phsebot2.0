@@ -638,7 +638,7 @@ else:
     NoOut = read_file('data/NoOut.yml')
     PLP = read_file('Library/Language/'+config['LangPack']+'.yml')
     num = 0
-    BotVersion = '1.6-Beta'
+    BotVersion = '2.0-release'
     HotFix = True
     Sbot = Bot()
     from botmain import BDSServer,Window
