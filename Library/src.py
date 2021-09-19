@@ -210,7 +210,7 @@ def testupdate():
         log_info(PLP['Update.updating'])
         '''with open('FeHelper-20210913195839.json','r',encoding='utf8') as f:
             update = json.loads(f.read())'''
-        update = json.loads(urllib.request.urlopen('https://api.github.com/repos/HuoHuas001/Phsebot/releases').read().decode("utf-8"))
+        update = json.loads(urllib.request.urlopen('https://api.github.com/repos/HuoHuas001/Phsebot2.0/releases').read().decode("utf-8"))
         #请求更新版本号
         VERSION = ''
         BV = ''
@@ -230,13 +230,13 @@ def testupdate():
             if update[0]['body'] != '':
                 title += '\n'+PLP['Update.log']+update[0]['body']
             if mBox.askyesno(PLP['Update.title'],title):  
-                webbrowser.open('https://gitee.com/HuoHuas001/Phsebot/releases/')
+                webbrowser.open('https://github.com/HuoHuas001/Phsebot2.0/releases')
         elif VERSION > BV and 'HotFix' in update[0]['name'] and 'HotFix' not in BotVersion:
             title = PLP['Update.NewVersion']
             if update[0]['body'] != '':
                 title += '\n'+PLP['Update.log']+update[0]['body']
             if mBox.askyesno(PLP['Update.title'],title):  
-                webbrowser.open('https://gitee.com/HuoHuas001/Phsebot/releases/')
+                webbrowser.open('https://github.com/HuoHuas001/Phsebot2.0/releases')
         else:
             log_info(PLP['Update.last'])
 
@@ -624,6 +624,18 @@ class Bot():
         except Exception as e:
             log_debug(e)
 
+def reconnect():
+    disconnect()
+    log_info(PLP['Mirai.reconnect'])
+    if not Sbot.login():
+        log_error(PLP['Mirai.reconnect.faild'])
+
+def disconnect():
+    try:
+        Sbot.ws.close(0)
+    except AttributeError:
+        pass
+
     
 
 if __name__ == '__main__':
@@ -638,13 +650,13 @@ else:
     NoOut = read_file('data/NoOut.yml')
     PLP = read_file('Library/Language/'+config['LangPack']+'.yml')
     num = 0
-    BotVersion = '2.0-release'
+    BotVersion = '2.0.1-release'
     HotFix = True
-    Sbot = Bot()
     from botmain import BDSServer,Window
     server = BDSServer()
     window_root = Window()
     window_root.create_window_content()
+    Sbot = Bot()
     if Sbot.login():
         pass
     else:

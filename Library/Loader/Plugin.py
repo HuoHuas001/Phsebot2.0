@@ -66,7 +66,6 @@ def regBotCmd(cmd:str,function) -> dict:
     global cmds
     if cmd not in cmds:
         cmds[cmd] = Cmd('ordinary',cmd,function)
-        log_debug(cmds)
         return {'code':0,'msg':'register cmd success'}
     else:
         return {'code':2,'msg':'This command is registered'}

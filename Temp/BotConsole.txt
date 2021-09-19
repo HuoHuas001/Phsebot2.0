@@ -1,0 +1,353 @@
+[2021-09-19 12:30:49 INFO] 正在加载插件check
+[2021-09-19 12:30:49 INFO] 签到插件加载成功! Powered by HuoHuaX
+[DEBUG] {'check': <Library.Loader.Plugin.Cmd object at 0x0000020F842C7FC8>}
+[2021-09-19 12:30:49 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[2021-09-19 12:30:49 INFO] 已连接假人服务
+[2021-09-19 12:30:49 INFO] 内置计划任务已重新计时
+[2021-09-19 12:30:49 INFO] Phsebot was successfully started
+[2021-09-19 12:30:49 INFO] Author: HuoHuaX
+[2021-09-19 12:30:49 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[2021-09-19 12:30:49 INFO] 正在请求更新
+[2021-09-19 12:30:51 INFO] 该版本是最新版本
+[2021-09-19 12:31:51 INFO] 正在加载插件check
+[2021-09-19 12:31:51 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 12:31:51 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[2021-09-19 12:31:51 INFO] 已连接假人服务
+[2021-09-19 12:31:51 INFO] 内置计划任务已重新计时
+[2021-09-19 12:31:51 INFO] Phsebot was successfully started
+[2021-09-19 12:31:51 INFO] Author: HuoHuaX
+[2021-09-19 12:31:51 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[2021-09-19 12:31:51 INFO] 正在请求更新
+[DEBUG] <urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>
+[2021-09-19 12:32:12 ERRO] 获取更新时失败
+[2021-09-19 12:33:21 INFO] 3544175039 登录成功
+[2021-09-19 12:33:21 INFO] 正在加载插件check
+[2021-09-19 12:33:21 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 12:33:21 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[2021-09-19 12:33:21 INFO] 已连接假人服务
+[2021-09-19 12:33:21 INFO] 内置计划任务已重新计时
+[2021-09-19 12:33:21 INFO] Phsebot was successfully started
+[2021-09-19 12:33:21 INFO] Author: HuoHuaX
+[2021-09-19 12:33:21 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[2021-09-19 12:33:21 INFO] 正在请求更新
+[2021-09-19 12:33:23 INFO] 该版本是最新版本
+[2021-09-19 12:33:57 INFO] 正在执行Exit事件
+[2021-09-19 12:33:57 INFO] 正在释放Mirai资源，请稍后
+[2021-09-19 12:38:57 INFO] 3544175039 登录成功
+[2021-09-19 12:38:57 INFO] 正在加载插件check
+[2021-09-19 12:38:57 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 12:38:57 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[2021-09-19 12:38:57 INFO] 已连接假人服务
+[2021-09-19 12:38:57 INFO] 内置计划任务已重新计时
+[2021-09-19 12:38:57 INFO] Phsebot was successfully started
+[2021-09-19 12:38:57 INFO] Author: HuoHuaX
+[2021-09-19 12:38:57 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[2021-09-19 12:38:57 INFO] 正在请求更新
+[2021-09-19 12:39:01 INFO] 正在执行Exit事件
+[2021-09-19 12:39:01 INFO] 正在释放Mirai资源，请稍后
+[2021-09-19 12:41:48 INFO] 3544175039 登录成功
+[2021-09-19 12:41:48 INFO] 正在加载插件check
+[2021-09-19 12:41:48 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 12:41:48 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[2021-09-19 12:41:48 INFO] 已连接假人服务
+[2021-09-19 12:41:48 INFO] 内置计划任务已重新计时
+[2021-09-19 12:41:48 INFO] Phsebot was successfully started
+[2021-09-19 12:41:48 INFO] Author: HuoHuaX
+[2021-09-19 12:41:48 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[2021-09-19 12:41:48 INFO] 正在请求更新
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 13:47:23 INFO] 正在加载插件check
+[2021-09-19 13:47:23 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 13:47:23 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 13:47:25 ERRO] 无法连接到假人服务
+[2021-09-19 13:47:25 INFO] 内置计划任务已重新计时
+[2021-09-19 13:47:25 INFO] Phsebot was successfully started
+[2021-09-19 13:47:25 INFO] Author: HuoHuaX
+[2021-09-19 13:47:25 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+
+[DEBUG] 'Bot' object has no attribute 'ws'
+[2021-09-19 13:47:27 INFO] 该版本是最新版本
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 13:48:21 INFO] 正在加载插件check
+[2021-09-19 13:48:21 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 13:48:21 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 13:48:23 ERRO] 无法连接到假人服务
+[2021-09-19 13:48:23 INFO] 内置计划任务已重新计时
+[2021-09-19 13:48:23 INFO] Phsebot was successfully started
+[2021-09-19 13:48:23 INFO] Author: HuoHuaX
+[2021-09-19 13:48:23 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+
+[DEBUG] 'Bot' object has no attribute 'ws'
+[2021-09-19 13:48:24 INFO] 该版本是最新版本
+[2021-09-19 13:49:22 INFO] 正在执行Exit事件
+[2021-09-19 13:49:22 INFO] 正在释放Mirai资源，请稍后
+[2021-09-19 13:51:04 INFO] 3544175039 登录成功
+[2021-09-19 13:51:04 INFO] 正在加载插件check
+[2021-09-19 13:51:04 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 13:51:04 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 13:51:06 ERRO] 无法连接到假人服务
+[2021-09-19 13:51:06 INFO] 内置计划任务已重新计时
+[2021-09-19 13:51:06 INFO] Phsebot was successfully started
+[2021-09-19 13:51:06 INFO] Author: HuoHuaX
+[2021-09-19 13:51:06 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+
+[2021-09-19 13:51:07 INFO] 该版本是最新版本
+[2021-09-19 13:55:30 INFO] 3544175039 登录成功
+[2021-09-19 13:55:30 INFO] 正在加载插件check
+[2021-09-19 13:55:30 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 13:55:30 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 13:55:32 ERRO] 无法连接到假人服务
+[2021-09-19 13:55:32 INFO] 内置计划任务已重新计时
+[2021-09-19 13:55:32 INFO] Phsebot was successfully started
+[2021-09-19 13:55:32 INFO] Author: HuoHuaX
+[2021-09-19 13:55:32 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+
+[DEBUG] Invalid close opcode.
+[2021-09-19 13:55:41 INFO] 3544175039 登录成功
+[2021-09-19 13:55:49 INFO] 3544175039 登录成功
+[2021-09-19 13:56:12 INFO] 3544175039 登录成功
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:42:23 INFO] 正在加载插件check
+[2021-09-19 18:42:23 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 18:42:23 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:42:25 ERRO] 无法连接到假人服务
+[2021-09-19 18:42:25 INFO] 内置计划任务已重新计时
+[2021-09-19 18:42:25 INFO] Phsebot was successfully started
+[2021-09-19 18:42:25 INFO] Author: HuoHuaX
+[2021-09-19 18:42:25 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[DEBUG] 'Bot' object has no attribute 'ws'
+[2021-09-19 18:42:26 INFO] 该版本是最新版本
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:42:57 INFO] 正在加载插件check
+[2021-09-19 18:42:57 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 18:42:57 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:42:59 ERRO] 无法连接到假人服务
+[2021-09-19 18:42:59 INFO] 内置计划任务已重新计时
+[2021-09-19 18:42:59 INFO] Phsebot was successfully started
+[2021-09-19 18:42:59 INFO] Author: HuoHuaX
+[2021-09-19 18:42:59 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[DEBUG] 'Bot' object has no attribute 'ws'
+
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:45:36 INFO] 正在加载插件check
+[2021-09-19 18:45:36 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 18:45:36 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:45:38 ERRO] 无法连接到假人服务
+[2021-09-19 18:45:38 INFO] 内置计划任务已重新计时
+[2021-09-19 18:45:38 INFO] Phsebot was successfully started
+[2021-09-19 18:45:38 INFO] Author: HuoHuaX
+[2021-09-19 18:45:38 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[DEBUG] 'Bot' object has no attribute 'ws'
+[2021-09-19 18:45:39 INFO] 该版本是最新版本
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:46:33 INFO] 正在加载插件check
+[2021-09-19 18:46:33 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 18:46:33 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:46:35 ERRO] 无法连接到假人服务
+[2021-09-19 18:46:35 INFO] 内置计划任务已重新计时
+[2021-09-19 18:46:35 INFO] Phsebot was successfully started
+[2021-09-19 18:46:35 INFO] Author: HuoHuaX
+[2021-09-19 18:46:35 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+
+EBUG] 'Bot' object has no attribute 'ws'
+[DEBUG] 'Bot' object has no attribute 'ws'
+[2021-09-19 18:46:36 INFO] 该版本是最新版本
+[DEBUG] 'Bot' object has no attribute 'ws'
+[DEBUG] 'Bot' object has no attribute 'ws'
+[DEBUG] 'Bot' object has no attribute 'ws'
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:52:40 INFO] 正在加载插件check
+[2021-09-19 18:52:40 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 18:52:40 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:52:42 ERRO] 无法连接到假人服务
+[2021-09-19 18:52:42 INFO] 内置计划任务已重新计时
+[2021-09-19 18:52:42 INFO] Phsebot was successfully started
+[2021-09-19 18:52:42 INFO] Author: HuoHuaX
+[2021-09-19 18:52:42 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:53:56 INFO] 正在加载插件check
+[2021-09-19 18:53:56 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 18:53:56 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:53:58 ERRO] 无法连接到假人服务
+[2021-09-19 18:53:58 INFO] 内置计划任务已重新计时
+[2021-09-19 18:53:58 INFO] Phsebot was successfully started
+[2021-09-19 18:53:58 INFO] Author: HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:54:49 INFO] 正在加载插件check
+[2021-09-19 18:54:49 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 18:54:49 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:54:51 ERRO] 无法连接到假人服务
+[2021-09-19 18:54:51 INFO] 内置计划任务已重新计时
+[2021-09-19 18:54:51 INFO] Phsebot was successfully started
+[2021-09-19 18:54:51 INFO] Author: HuoHuaX
+[2021-09-19 18:54:51 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+
+[2021-09-19 18:54:52 INFO] 该版本是最新版本
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:55:40 INFO] 3544175039 登录成功
+[2021-09-19 18:57:14 INFO] 3544175039 登录成功
+[2021-09-19 18:57:14 INFO] 正在加载插件check
+[2021-09-19 18:57:14 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 18:57:14 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:57:16 ERRO] 无法连接到假人服务
+[2021-09-19 18:57:16 INFO] 内置计划任务已重新计时
+[2021-09-19 18:57:16 INFO] Phsebot was successfully started
+[2021-09-19 18:57:16 INFO] Author: HuoHuaX
+[2021-09-19 18:57:16 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+
+[2021-09-19 18:57:18 INFO] 该版本是最新版本
+[2021-09-19 18:57:22 ERRO] 您已断开连接
+[2021-09-19 18:58:31 INFO] 3544175039 登录成功
+[2021-09-19 18:58:31 INFO] 正在加载插件check
+[2021-09-19 18:58:31 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 18:58:31 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 18:58:33 ERRO] 无法连接到假人服务
+[2021-09-19 18:58:33 INFO] 内置计划任务已重新计时
+[2021-09-19 18:58:33 INFO] Phsebot was successfully started
+[2021-09-19 18:58:33 INFO] Author: HuoHuaX
+[2021-09-19 18:58:33 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+
+[2021-09-19 18:58:34 INFO] 该版本是最新版本
+[2021-09-19 18:58:38 ERRO] 您已断开连接
+[2021-09-19 18:58:44 INFO] 3544175039 登录成功
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:09 INFO] 正在加载插件check
+[2021-09-19 19:02:09 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 19:02:09 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:11 ERRO] 无法连接到假人服务
+[2021-09-19 19:02:11 INFO] 内置计划任务已重新计时
+[2021-09-19 19:02:11 INFO] Phsebot was successfully started
+[2021-09-19 19:02:11 INFO] Author: HuoHuaX
+[2021-09-19 19:02:11 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[2021-09-19 19:02:11 INFO] 正在重连中
+
+[2021-09-19 19:02:12 INFO] 该版本是最新版本
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:15 ERRO] 重连失败
+[2021-09-19 19:02:15 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:19 ERRO] 重连失败
+[2021-09-19 19:02:19 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:24 ERRO] 重连失败
+[2021-09-19 19:02:24 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:28 ERRO] 重连失败
+[2021-09-19 19:02:28 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:32 ERRO] 重连失败
+[2021-09-19 19:02:32 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:36 ERRO] 重连失败
+[2021-09-19 19:02:36 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:40 ERRO] 重连失败
+[2021-09-19 19:02:40 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:44 ERRO] 重连失败
+[2021-09-19 19:02:45 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:49 ERRO] 重连失败
+[2021-09-19 19:02:49 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:53 ERRO] 重连失败
+[2021-09-19 19:02:53 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:02:57 ERRO] 重连失败
+[2021-09-19 19:02:57 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:01 ERRO] 重连失败
+[2021-09-19 19:03:01 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:05 ERRO] 重连失败
+[2021-09-19 19:03:06 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:19 INFO] 正在加载插件check
+[2021-09-19 19:03:19 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 19:03:20 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:22 ERRO] 无法连接到假人服务
+[2021-09-19 19:03:22 INFO] 内置计划任务已重新计时
+[2021-09-19 19:03:22 INFO] Phsebot was successfully started
+[2021-09-19 19:03:22 INFO] Author: HuoHuaX
+[2021-09-19 19:03:22 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[2021-09-19 19:03:22 INFO] 正在重连中
+
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:26 ERRO] 重连失败
+[2021-09-19 19:03:26 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:30 ERRO] 重连失败
+[2021-09-19 19:03:30 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:34 ERRO] 重连失败
+[2021-09-19 19:03:34 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:38 ERRO] 重连失败
+[2021-09-19 19:03:38 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:42 ERRO] 重连失败
+[2021-09-19 19:03:42 INFO] 正在重连中
+[DEBUG] <urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>
+[2021-09-19 19:03:43 ERRO] 获取更新时失败
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:47 ERRO] 重连失败
+[2021-09-19 19:03:47 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:51 ERRO] 重连失败
+[2021-09-19 19:03:51 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:55 ERRO] 重连失败
+[2021-09-19 19:03:55 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:03:59 ERRO] 重连失败
+[2021-09-19 19:03:59 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:04:03 ERRO] 重连失败
+[2021-09-19 19:04:03 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:04:08 ERRO] 重连失败
+[2021-09-19 19:04:08 INFO] 正在重连中
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:04:12 ERRO] 重连失败
+[2021-09-19 19:04:12 INFO] 正在重连中
+[2021-09-19 19:04:14 INFO] 3544175039 登录成功
+[2021-09-19 19:52:36 INFO] 正在执行Exit事件
+[2021-09-19 19:52:36 INFO] 正在释放Mirai资源，请稍后
+[2021-09-19 19:55:14 INFO] 3544175039 登录成功
+[2021-09-19 19:55:14 INFO] 正在加载插件check
+[2021-09-19 19:55:14 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-19 19:55:14 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-19 19:55:16 ERRO] 无法连接到假人服务
+[2021-09-19 19:55:16 INFO] 内置计划任务已重新计时
+[2021-09-19 19:55:16 INFO] Phsebot was successfully started
+[2021-09-19 19:55:16 INFO] Author: HuoHuaX
+[2021-09-19 19:55:16 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[2021-09-19 19:55:17 INFO] 该版本是最新版本

@@ -87,6 +87,9 @@ Mirai.change.NoPermissions: '已尝试修改群名片，但没有权限'
 Mirai.change.insideError: '修改群名片时出现了内部错误'
 Mirai.card.shield: '已尝试发出卡片，但可能遭遇屏蔽'
 Mirai.card.insideError: '发送卡片时出现了内部错误'
+Mirai.close: '您已断开连接'
+Mirai.reconnect: '正在重连中'
+Mirai.reconnect.faild: '重连失败'
 Exit.title: '退出'
 Exit.message: '您即将关闭Phsebot，确认吗？'
 Exit.runExit: '正在执行Exit事件'
@@ -98,3 +101,6 @@ Start.FakePlayer.Connected: '已连接假人服务'
 Start.FakePlayer.Failed: '无法连接到假人服务'
 Plugin.load: '插件加载器已加载,加载器类型：%TYPE%,作者：%AUTHOR%'
 Plugin.loading: '正在加载插件%plugin%'
+Menu.Mirai.title: Mirai菜单
+Menu.Mirai.ReConnect: 重连Mirai
+Menu.Mirai.DisConnnect: 断开Mirai

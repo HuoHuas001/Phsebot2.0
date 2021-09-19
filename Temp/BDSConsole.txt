@@ -4279,3 +4279,114 @@ b'money query msz728\r\x00'
 Money: 
 b'money query nmsl\r\x00'
 Money: 2
+Active code page: 65001
+[Info] Loading Symbols
+[Info] FastDlsymInited <201665>
+[Chakra] LiteLoader.dll Injected.
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
+[2021-09-19 19:52:07 INFO][LL] Loading plugins 
+[2021-09-19 19:52:08 INFO][LL] Plugin hpmail.dll loaded 
+[2021-09-19 19:52:08 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-09-19 19:52:08 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[2021-09-19 19:52:08 INFO][LL] Plugin LLMoney.dll loaded 
+[OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.0
+[OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.txt
+[OutputFilter] 作者：yqs112358   首发平台：MineBBS
+[OutputFilter] 欲联系作者可前往MineBBS论坛
+[2021-09-19 19:52:08 INFO][LL] Plugin OutputFilter.dll loaded 
+[2021-09-19 19:52:08 INFO][LL] Plugin llmod_chat.dll loaded 
+[2021-09-19 19:52:08 INFO][LL] Plugin BDSPyrunner.dll loaded 
+[CrashLogger] CrashLogger loaded.
+[2021-09-19 19:52:08 INFO][LL] Plugin CrashLogger.dll loaded 
+[2021-09-19 19:52:08 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
+     _       _  _         __   __  _                        _             
+    | |     (_)| |        \ \ / / | |                      | |            
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   
+
+
+      =========   LiteXLoader Script Plugin Loader   =========
+
+[LiteXLoader.Js][Info] LXL for Js loaded
+[LiteXLoader.Js][Info] Version 0.5.4
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded.
+[LiteXLoader.Js][Info] Loading plugins...
+[LiteXLoader.Js][Info] 0 Js plugins loaded in all.
+[LiteXLoader.Lua][Info] LXL for Lua loaded
+[LiteXLoader.Lua][Info] Version 0.5.4
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
+[LiteXLoader.Lua][Info] Loading plugins...
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.
+[2021-09-19 19:52:20 INFO][MONEY] Loaded version:  210714 
+____Chat v1.3____Load successed! by.yanhy2000
+[2021-09-19 19:52:20 INFO][LL] 8 plugin(s) loaded 
+[BDSpyrunner] 1.7.4a loaded.
+[BDSpyrunner] loading Bed_wa
+[BDSpyrunner] loading AutoUpdat
+[INFO] 自动检测更新加载完
+[BDSpyrunner] loading cras
+NO LOG FILE! - setting up server logging..
+[2021-09-19 19:52:22 INFO] Starting Serve
+[2021-09-19 19:52:22 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.
+[2021-09-19 19:52:22 INFO] Session ID d00749cb-d6d3-4f2c-90fe-299ada2f044
+[2021-09-19 19:52:23 INFO] Level Name: Bedrock leve
+[2021-09-19 19:52:23 INFO] Game mode: 0 Surviva
+[2021-09-19 19:52:23 INFO] Difficulty: 1 EAS
+[INFO] opening worlds/Bedrock level/d
+[INFO] IPv4 supported, port: 1913
+[INFO] IPv6 supported, port: 1913
+[INFO] IPv4 supported, port: 6426
+[INFO] IPv6 supported, port: 6426
+[LiteLoader] Registering cmd
+RegisteringCommand > mai
+RegisteringCommand > mone
+RegisteringCommand > versio
+[LiteXLoader.Js][Info] Builtin Cmds Registered
+[LiteXLoader.Lua][Info] Builtin Cmds Registered
+[2021-09-19 19:52:32 INFO][LL] LiteLoader is distributed under the GPLv3 License
+[2021-09-19 19:52:32 INFO][LL] Github: https://git.io/JOyw4 | Version: 1.1.1 | Based on BedrockX Project
+[2021-09-19 19:52:32 INFO][LL] 感谢旋律云(rhymc.com)对本项目的支持 | Thanks to [rhymc.com] for supporting this project
+[INFO] Server started
+[Liteloader] Failed to get updates(0
+Active code page: 65001
+[Info] Loading Symbols
+[Info] FastDlsymInited <201665>
+[Chakra] LiteLoader.dll Injected.
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
+[2021-09-19 19:55:29 INFO][LL] Loading plugins 
+[2021-09-19 19:55:29 INFO][LL] Plugin hpmail.dll loaded 
+[2021-09-19 19:55:29 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-09-19 19:55:29 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[2021-09-19 19:55:29 INFO][LL] Plugin LLMoney.dll loaded 
+[OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.0
+[OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.txt
+[OutputFilter] 作者：yqs112358   首发平台：MineBBS
+[OutputFilter] 欲联系作者可前往MineBBS论坛
+[2021-09-19 19:55:29 INFO][LL] Plugin OutputFilter.dll loaded 
+[2021-09-19 19:55:29 INFO][LL] Plugin llmod_chat.dll loaded 
+[2021-09-19 19:55:29 INFO][LL] Plugin BDSPyrunner.dll loaded 
+[CrashLogger] CrashLogger loaded.
+[2021-09-19 19:55:29 INFO][LL] Plugin CrashLogger.dll loaded 
+[2021-09-19 19:55:29 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
+     _       _  _         __   __  _                        _             
+    | |     (_)| |        \ \ / / | |                      | |            
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   
+
+
+      =========   LiteXLoader Script Plugin Loader   =========
+
+[LiteXLoader.Js][Info] LXL for Js loaded
+[LiteXLoader.Js][Info] Version 0.5.4
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded.
+[LiteXLoader.Js][Info] Loading plugins...
+[LiteXLoader.Js][Info] 0 Js plugins loaded in all.
+[LiteXLoader.Lua][Info] LXL for Lua loaded
+[LiteXLoader.Lua][Info] Version 0.5.4
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
+[LiteXLoader.Lua][Info] Loading plugins...
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.

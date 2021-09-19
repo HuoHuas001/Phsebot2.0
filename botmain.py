@@ -24,12 +24,14 @@ from Library.src import *
 from Library.Tool import *
 from Library.FakePlayer import *
 from Library.window import *
+from websocket import WebSocketProtocolException,WebSocketConnectionClosedException
 
 #输出控制台
 class WriteConsole():
     def write(self,string):
         self.i = 0
         try:
+            from Library.src import window_root
             ft = tf.Font(family='微软雅黑',size=10)
             a = str(self.i+1)+'.0'
             window_root.sc.tag_add('tag',END)
@@ -50,6 +52,7 @@ class WriteConsole():
                 window_root.sc.tag_config('tag3',foreground='#11A1C5',font=ft)
                 window_root.sc.insert(END,string+'\n','tag3')
             window_root.sc.configure(state='disabled')
+            window_root.sc.see(END)
             if config['AutoRecordBot']:
                 with open('Temp/BotConsole.txt','a',encoding='utf8') as f:
                     f.write(string)
@@ -145,11 +148,11 @@ class Window():
         self.runserverb.grid(column=0,row=5)
         ttk.Label(ServerUse, text=PLP['BDSUI.ShowInfo.Action.config'],width=17).grid(column=1, row=5)
 
-        self.runserverc = ttk.Button(ServerUse,text=">",width=2)   #,command=runfileserver
+        self.runserverc = ttk.Button(ServerUse,text=">",width=2,command=server.runfileserver)   #
         self.runserverc.grid(column=0,row=6)
         ttk.Label(ServerUse, text=PLP['BDSUI.ShowInfo.Action.file'],width=17).grid(column=1, row=6)
 
-        self.stoper = ttk.Button(ServerUse,text=">",width=2)   #,command=stoperd
+        self.stoper = ttk.Button(ServerUse,text=">",width=2,command=server.stoperd)   #
         self.stoper.grid(column=0,row=7)
         ttk.Label(ServerUse, text=PLP['BDSUI.ShowInfo.Action.stop'],width=17,foreground='red').grid(column=1, row=7)
         self.stoper.configure(state='disabled')
@@ -237,12 +240,21 @@ class Window():
         def configw():
             pw = PopupDialog(self.win)
             self.win.wait_window(pw)
+        def exit():
+            os._exit(0)
 
         fileMenu = Menu(menuBar, tearoff=0)
         fileMenu.add_command(label=PLP['Menu.config'],command=configw)
         fileMenu.add_separator()
-        fileMenu.add_command(label=PLP['Menu.exit'], command=self.on_closing)
+        fileMenu.add_command(label=PLP['Menu.exit'], command=exit)
+
+        MiraiMenu = Menu(menuBar, tearoff=0)
+        MiraiMenu.add_command(label=PLP['Menu.Mirai.ReConnect'],command=reconnect)
+        MiraiMenu.add_command(label=PLP['Menu.Mirai.DisConnnect'],command=disconnect)
+
         menuBar.add_cascade(label=PLP['Menu.title'], menu=fileMenu)
+        menuBar.add_cascade(label=PLP['Menu.Mirai.title'], menu=MiraiMenu)
+        
 
     def on_closing(self):
         if mBox.askyesno(PLP['Exit.title'],PLP['Exit.message']):
@@ -254,6 +266,7 @@ class Window():
                 except Exception as e:
                     log_debug(e)
             log_info(PLP['Exit.release'])
+            self.win.destroy()
             os._exit(0)
 
     def insertscrc(self,line):
@@ -630,7 +643,7 @@ class BDSServer():
         #开服
         if text == 'start':
             if not self.getBDSPoll():
-                self.RunServer
+                self.RunServer()
             else:
                 if Language['ServerRunning'] != False:
                     for i in config['Group']:
@@ -970,17 +983,26 @@ def usegroupregular():
             if by == '群消息':
                 regular['Group'].append({'regular':r,'perm':perm,'run':cmd})
         conn.close()
+        j = {}
         try:
             j = json.loads(Sbot.ws.recv())
             #log_debug(j)
         except ConnectionResetError as e:
             log_debug(e)
             mBox.showerror(PLP['Mirai.title'],PLP['Mirai.close'])
-            break
-        except Exception as e:
+            #break
+        except AttributeError as e:
+            from Library.src import reconnect
+            reconnect()
+        except WebSocketProtocolException as e:
+            log_error(PLP['Mirai.close'])
+        except WebSocketConnectionClosedException:
+            pass
+
+        '''except Exception as e:
             log_debug(e)
             mBox.showerror(PLP['Mirai.title'],PLP['Mirai.insideError'])
-            break
+            #break'''
         if 'data' in j and 'type' in j['data'] and j['syncId'] != '123':
             if j['data']['type'] == "GroupMessage":
                 group = j['data']["sender"]['group']['id']
@@ -1148,7 +1170,7 @@ def usegroupregular():
                             if Language['LeftGroup'] != False:
                                 sendGroupMsg(group,Language['LeftGroup'].replace(r'%xboxid%',xboxid))
                             server.Botruncmd('whitelist remove "%s"' % xboxid)
-        elif j['syncId'] == '123' and 'data' in j:
+        elif 'syncId' in j and j['syncId'] == '123' and 'data' in j :
             try:
                 ij = j['data']
                 if ij['code'] == 0 and ij['messageId'] == -1:
@@ -1157,7 +1179,7 @@ def usegroupregular():
                 log_debug(e)
                 log_error(PLP['Mirai.send.insideError'])
 
-        elif j['syncId'] == '1234' and 'data' in j:
+        elif  'syncId' in j and j['syncId'] == '1234' and 'data' in j:
             try:
                 ij = j['data']
                 if ij['code'] == 10:
@@ -1166,7 +1188,7 @@ def usegroupregular():
                 log_debug(e)
                 log_error(PLP['Mirai.change.insideError'])
             
-        elif j['syncId'] == '12345' and 'data' in j:
+        elif  'syncId' in j and j['syncId'] == '12345' and 'data' in j:
             try:
                 ij = j['data']
                 if ij['messageId'] == -1:
@@ -1258,6 +1280,7 @@ cd "%s"
     
     #更新窗口
     try:
+
         window_root.win.mainloop()
     except KeyboardInterrupt as e:
         window_root.on_closing()
