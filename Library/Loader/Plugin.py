@@ -99,7 +99,6 @@ def SendGroup(group:int,text:str):
     :param group: 指定的群号
     :param text: 发送的文本
     '''
-
     if group in config['Group']:
         sendGroupMsg(group,text)
         return {'code':0,'msg':'Send message success'}
@@ -127,11 +126,11 @@ def getXboxID(qqid) -> str:
 
 #注册一个事件
 def regEvent(Event:str,function) -> dict:
-    global Events
     '''注册一个事件
     :param Event: 事件名称
     :param function: 回调函数
     '''
+    global Events
     if Event in Events:
         Events[Event].append(function)
         return {'code':0,'msg':'register event success'}

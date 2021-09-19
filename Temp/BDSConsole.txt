@@ -4034,3 +4034,248 @@ There are 5/10 players online
 nmsl, te st, w d nmd, nm, nmsl
 There are 5/10 players online
 nmsl, te st, w d nmd, nm, nmsl
+[INFO] Running AutoCompaction..
+Active code page: 65001
+[Info] Loading Symbols
+[Info] FastDlsymInited <201665>
+[Chakra] LiteLoader.dll Injected.
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
+[2021-09-19 12:04:51 INFO][LL] Loading plugins 
+[2021-09-19 12:04:51 INFO][LL] Plugin hpmail.dll loaded 
+[2021-09-19 12:04:51 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-09-19 12:04:52 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[2021-09-19 12:04:52 INFO][LL] Plugin LLMoney.dll loaded 
+[OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.0
+[OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.txt
+[OutputFilter] 作者：yqs112358   首发平台：MineBBS
+[OutputFilter] 欲联系作者可前往MineBBS论坛
+[2021-09-19 12:04:52 INFO][LL] Plugin OutputFilter.dll loaded 
+[2021-09-19 12:04:52 INFO][LL] Plugin llmod_chat.dll loaded 
+[2021-09-19 12:04:52 INFO][LL] Plugin BDSPyrunner.dll loaded 
+[CrashLogger] CrashLogger loaded.
+[2021-09-19 12:04:52 INFO][LL] Plugin CrashLogger.dll loaded 
+[2021-09-19 12:04:52 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
+     _       _  _         __   __  _                        _             
+    | |     (_)| |        \ \ / / | |                      | |            
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   
+
+
+      =========   LiteXLoader Script Plugin Loader   =========
+
+[LiteXLoader.Js][Info] LXL for Js loaded
+[LiteXLoader.Js][Info] Version 0.5.4
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded.
+[LiteXLoader.Js][Info] Loading plugins...
+[LiteXLoader.Js][Info] 0 Js plugins loaded in all.
+[LiteXLoader.Lua][Info] LXL for Lua loaded
+[LiteXLoader.Lua][Info] Version 0.5.4
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
+[LiteXLoader.Lua][Info] Loading plugins...
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.
+[2021-09-19 12:05:00 INFO][MONEY] Loaded version:  210714 
+____Chat v1.3____Load successed! by.yanhy2000
+[2021-09-19 12:05:00 INFO][LL] 8 plugin(s) loaded 
+[BDSpyrunner] 1.7.4a loaded.
+[BDSpyrunner] loading Bed_wa
+[BDSpyrunner] loading AutoUpdat
+[INFO] 自动检测更新加载完
+[BDSpyrunner] loading cras
+NO LOG FILE! - setting up server logging..
+[2021-09-19 12:05:01 INFO] Starting Serve
+[2021-09-19 12:05:01 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.
+[2021-09-19 12:05:01 INFO] Session ID 5b9adff7-c625-4846-9c0c-032414f1861
+[2021-09-19 12:05:01 INFO] Level Name: Bedrock leve
+[2021-09-19 12:05:02 INFO] Game mode: 0 Surviva
+[2021-09-19 12:05:02 INFO] Difficulty: 1 EAS
+[INFO] opening worlds/Bedrock level/d
+[INFO] IPv4 supported, port: 1913
+[INFO] IPv6 supported, port: 1913
+[INFO] IPv4 supported, port: 6204
+[INFO] IPv6 supported, port: 6205
+[LiteLoader] Registering cmd
+RegisteringCommand > mai
+RegisteringCommand > mone
+RegisteringCommand > versio
+[LiteXLoader.Js][Info] Builtin Cmds Registered
+[LiteXLoader.Lua][Info] Builtin Cmds Registered
+[2021-09-19 12:05:09 INFO][LL] LiteLoader is distributed under the GPLv3 License
+[2021-09-19 12:05:09 INFO][LL] Github: https://git.io/JOyw4 | Version: 1.1.1 | Based on BedrockX Project
+[2021-09-19 12:05:09 INFO][LL] 感谢旋律云(rhymc.com)对本项目的支持 | Thanks to [rhymc.com] for supporting this project
+[INFO] Server started
+[Liteloader] Failed to get updates(0
+[INFO] Player connected: w d nmd, xuid: -757025094079976971
+[INFO] Player connected: nmsl？, xuid: -608680652457960678
+[INFO] Player connected: nmsl, xuid: -766600840841734409
+[INFO] Player connected: te st, xuid: -720806869055744808
+[INFO] Player connected: nm, xuid: -826115280144365989
+b'money query msz728\r\x00'
+Money: 
+Active code page: 65001
+[Info] Loading Symbols
+[Info] FastDlsymInited <201665>
+[Chakra] LiteLoader.dll Injected.
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
+[2021-09-19 12:06:09 INFO][LL] Loading plugins 
+[2021-09-19 12:06:09 INFO][LL] Plugin hpmail.dll loaded 
+[2021-09-19 12:06:09 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-09-19 12:06:09 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[2021-09-19 12:06:09 INFO][LL] Plugin LLMoney.dll loaded 
+[OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.0
+[OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.txt
+[OutputFilter] 作者：yqs112358   首发平台：MineBBS
+[OutputFilter] 欲联系作者可前往MineBBS论坛
+[2021-09-19 12:06:09 INFO][LL] Plugin OutputFilter.dll loaded 
+[2021-09-19 12:06:09 INFO][LL] Plugin llmod_chat.dll loaded 
+[2021-09-19 12:06:09 INFO][LL] Plugin BDSPyrunner.dll loaded 
+[CrashLogger] CrashLogger loaded.
+[2021-09-19 12:06:09 INFO][LL] Plugin CrashLogger.dll loaded 
+[2021-09-19 12:06:09 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
+     _       _  _         __   __  _                        _             
+    | |     (_)| |        \ \ / / | |                      | |            
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   
+
+
+      =========   LiteXLoader Script Plugin Loader   =========
+
+[LiteXLoader.Js][Info] LXL for Js loaded
+[LiteXLoader.Js][Info] Version 0.5.4
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded.
+[LiteXLoader.Js][Info] Loading plugins...
+[LiteXLoader.Js][Info] 0 Js plugins loaded in all.
+[LiteXLoader.Lua][Info] LXL for Lua loaded
+[LiteXLoader.Lua][Info] Version 0.5.4
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
+[LiteXLoader.Lua][Info] Loading plugins...
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.
+[2021-09-19 12:06:18 INFO][MONEY] Loaded version:  210714 
+____Chat v1.3____Load successed! by.yanhy2000
+[2021-09-19 12:06:18 INFO][LL] 8 plugin(s) loaded 
+[BDSpyrunner] 1.7.4a loaded.
+[BDSpyrunner] loading Bed_wa
+[BDSpyrunner] loading AutoUpdat
+[INFO] 自动检测更新加载完
+[BDSpyrunner] loading cras
+NO LOG FILE! - setting up server logging..
+[2021-09-19 12:06:19 INFO] Starting Serve
+[2021-09-19 12:06:19 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.
+[2021-09-19 12:06:19 INFO] Session ID cde3f742-eb0f-405f-b544-9a10135c201
+[2021-09-19 12:06:19 INFO] Level Name: Bedrock leve
+[2021-09-19 12:06:19 INFO] Game mode: 0 Surviva
+[2021-09-19 12:06:19 INFO] Difficulty: 1 EAS
+[INFO] opening worlds/Bedrock level/d
+[INFO] IPv4 supported, port: 1913
+[INFO] IPv6 supported, port: 1913
+[INFO] IPv4 supported, port: 6108
+[INFO] IPv6 supported, port: 6109
+[LiteLoader] Registering cmd
+RegisteringCommand > mai
+RegisteringCommand > mone
+RegisteringCommand > versio
+[LiteXLoader.Js][Info] Builtin Cmds Registered
+[LiteXLoader.Lua][Info] Builtin Cmds Registered
+[2021-09-19 12:06:26 INFO][LL] LiteLoader is distributed under the GPLv3 License
+[2021-09-19 12:06:26 INFO][LL] Github: https://git.io/JOyw4 | Version: 1.1.1 | Based on BedrockX Project
+[2021-09-19 12:06:26 INFO][LL] 感谢旋律云(rhymc.com)对本项目的支持 | Thanks to [rhymc.com] for supporting this project
+[INFO] Server started
+[Liteloader] Failed to get updates(0
+[INFO] Player connected: nm, xuid: -826115280144365989
+[INFO] Player connected: nmsl, xuid: -766600840841734409
+[INFO] Player connected: nmsl？, xuid: -608680652457960678
+[INFO] Player connected: te st, xuid: -720806869055744808
+[INFO] Player connected: w d nmd, xuid: -757025094079976971
+Active code page: 65001
+[Info] Loading Symbols
+[Info] FastDlsymInited <201665>
+[Chakra] LiteLoader.dll Injected.
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
+[2021-09-19 12:06:55 INFO][LL] Loading plugins 
+[2021-09-19 12:06:55 INFO][LL] Plugin hpmail.dll loaded 
+[2021-09-19 12:06:56 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-09-19 12:06:56 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[2021-09-19 12:06:56 INFO][LL] Plugin LLMoney.dll loaded 
+[OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.0
+[OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.txt
+[OutputFilter] 作者：yqs112358   首发平台：MineBBS
+[OutputFilter] 欲联系作者可前往MineBBS论坛
+[2021-09-19 12:06:56 INFO][LL] Plugin OutputFilter.dll loaded 
+[2021-09-19 12:06:56 INFO][LL] Plugin llmod_chat.dll loaded 
+[2021-09-19 12:06:56 INFO][LL] Plugin BDSPyrunner.dll loaded 
+[CrashLogger] CrashLogger loaded.
+[2021-09-19 12:06:56 INFO][LL] Plugin CrashLogger.dll loaded 
+[2021-09-19 12:06:56 INFO][HMail] HMail加载完成 Powered By HuoHuaX 
+     _       _  _         __   __  _                        _             
+    | |     (_)| |        \ \ / / | |                      | |            
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   
+
+
+      =========   LiteXLoader Script Plugin Loader   =========
+
+[LiteXLoader.Js][Info] LXL for Js loaded
+[LiteXLoader.Js][Info] Version 0.5.4
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded.
+[LiteXLoader.Js][Info] Loading plugins...
+[LiteXLoader.Js][Info] 0 Js plugins loaded in all.
+[LiteXLoader.Lua][Info] LXL for Lua loaded
+[LiteXLoader.Lua][Info] Version 0.5.4
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
+[LiteXLoader.Lua][Info] Loading plugins...
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.
+[2021-09-19 12:07:03 INFO][MONEY] Loaded version:  210714 
+____Chat v1.3____Load successed! by.yanhy2000
+[2021-09-19 12:07:03 INFO][LL] 8 plugin(s) loaded 
+[BDSpyrunner] 1.7.4a loaded.
+[BDSpyrunner] loading Bed_wa
+[BDSpyrunner] loading AutoUpdat
+[INFO] 自动检测更新加载完
+[BDSpyrunner] loading cras
+NO LOG FILE! - setting up server logging..
+[2021-09-19 12:07:04 INFO] Starting Serve
+[2021-09-19 12:07:04 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.
+[2021-09-19 12:07:04 INFO] Session ID 815fa784-ad39-499b-9896-4495eb93fb4
+[2021-09-19 12:07:04 INFO] Level Name: Bedrock leve
+[2021-09-19 12:07:04 INFO] Game mode: 0 Surviva
+[2021-09-19 12:07:04 INFO] Difficulty: 1 EAS
+[INFO] opening worlds/Bedrock level/d
+[INFO] IPv4 supported, port: 1913
+[INFO] IPv6 supported, port: 1913
+[INFO] IPv4 supported, port: 5124
+[INFO] IPv6 supported, port: 5124
+[LiteLoader] Registering cmd
+RegisteringCommand > mai
+RegisteringCommand > mone
+RegisteringCommand > versio
+[LiteXLoader.Js][Info] Builtin Cmds Registered
+[LiteXLoader.Lua][Info] Builtin Cmds Registered
+[2021-09-19 12:07:09 INFO][LL] LiteLoader is distributed under the GPLv3 License
+[2021-09-19 12:07:09 INFO][LL] Github: https://git.io/JOyw4 | Version: 1.1.1 | Based on BedrockX Project
+[2021-09-19 12:07:09 INFO][LL] 感谢旋律云(rhymc.com)对本项目的支持 | Thanks to [rhymc.com] for supporting this project
+[INFO] Server started
+[Liteloader] Failed to get updates(0
+[INFO] Player connected: nmsl, xuid: -766600840841734409
+[INFO] Player connected: w d nmd, xuid: -757025094079976971
+[INFO] Player connected: nm, xuid: -826115280144365989
+[INFO] Player connected: te st, xuid: -720806869055744808
+[INFO] Player connected: nmsl？, xuid: -608680652457960678
+b'money query msz728\r\x00'
+Money: 
+b'money add nmsl 10\r\x00'
+add succes
+b'list\r\x00'
+There are 5/10 players online
+te st, w d nmd, nm, nmsl？, nms
+b'list\r\x00'
+There are 5/10 players online
+nmsl？, te st, nmsl, w d nmd, n
+b'money query msz728\r\x00'
+Money: 
+b'money query nmsl\r\x00'
+Money: 2

@@ -395,7 +395,7 @@ class BDSServer():
         #使用控制台正则
         try:
             updateLine = line
-            #back = useconsoleregular(updateLine)
+            back = useconsoleregular(updateLine)
             #玩家退服
             if re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != []:
                 r = re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
@@ -422,8 +422,8 @@ class BDSServer():
                     for g in config["Group"]:
                         sendGroupMsg(g,Language['PlayerJoin'].replace('%player%',r[0][0]).replace(r'%xuid%',r[0][1]))
 
-            '''if back['Type'] == 'Cmd':
-                Botruncmd(back['Cmd'])'''
+            if back['Type'] == 'Cmd':
+                self.Botruncmd(back['Cmd'])
         except OSError as e:
             log_debug(e)
         
