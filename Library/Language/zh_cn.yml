@@ -104,3 +104,6 @@ Plugin.loading: '正在加载插件%plugin%'
 Menu.Mirai.title: Mirai菜单
 Menu.Mirai.ReConnect: 重连Mirai
 Menu.Mirai.DisConnnect: 断开Mirai
+mcsm.enable: '已开启MCSM模式，URL连接地址为:%url%'
+mcsm.startserver: '已向mcsm请求开启服务器'
+mcsm.stopserver: '已向mcsm请求关闭服务器'

@@ -26,6 +26,13 @@ from Library.FakePlayer import *
 from Library.window import *
 from websocket import WebSocketProtocolException,WebSocketConnectionClosedException
 
+#检测是否启用mcsm版本
+if config['mcsm']['enable']:
+    from Library.mcsm.getlog import *
+    from Library.mcsm.http_req import *
+    wsinit()
+    
+
 #输出控制台
 class WriteConsole():
     def write(self,string):
@@ -61,7 +68,7 @@ class WriteConsole():
             pass
 
 writeconsole = WriteConsole()
-sys.stdout = writeconsole
+#sys.stdout = writeconsole
 
 class Window():
     def __init__(self) -> None:
@@ -323,29 +330,48 @@ class BDSServer():
     def RunServer(self) -> None:
         from Library.src import Sbot
         from Library.src import window_root
-        self.NormalStop = False
+        if not config['mcsm']['enable']:
+            self.NormalStop = False
 
-        #窗口
-        window_root.nameEntered.configure(state='normal')
-        window_root.action.configure(state='normal')
-        window_root.scrc.delete(1.0,'end')
-        window_root.runserverb.configure(state='disabled')
-        window_root.runserverc.configure(state='disabled')
-        window_root.stoper.configure(state='normal')
-        window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.Running']))
+            #窗口
+            window_root.nameEntered.configure(state='normal')
+            window_root.action.configure(state='normal')
+            window_root.scrc.delete(1.0,'end')
+            window_root.runserverb.configure(state='disabled')
+            window_root.runserverc.configure(state='disabled')
+            window_root.stoper.configure(state='normal')
+            window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.Running']))
 
-        #新版控制台
-        self.bds = subprocess.Popen('Temp\\run.bat', stdout=subprocess.PIPE,stderr=subprocess.PIPE,stdin=-1,bufsize=1,shell=True)
-        self.show = threading.Thread(target=self.insert_info)
-        self.show.setName('ShowBDSConsole')
-        self.show.start()
+            #新版控制台
+            self.bds = subprocess.Popen('Temp\\run.bat', stdout=subprocess.PIPE,stderr=subprocess.PIPE,stdin=-1,bufsize=1,shell=True)
+            self.show = threading.Thread(target=self.insert_info)
+            self.show.setName('ShowBDSConsole')
+            self.show.start()
 
-        self.check = threading.Thread(target=self.checkBDS)
-        self.check.setName('CheckBDS')
-        self.check.start()
-        if Language['Starting'] != False:
-            for i in config['Group']:
-                sendGroupMsg(i,Language['Starting'])
+            self.check = threading.Thread(target=self.checkBDS)
+            self.check.setName('CheckBDS')
+            self.check.start()
+            if Language['Starting'] != False:
+                for i in config['Group']:
+                    sendGroupMsg(i,Language['Starting'])
+        else:
+            self.NormalStop = False
+            #窗口
+            window_root.nameEntered.configure(state='normal')
+            window_root.action.configure(state='normal')
+            window_root.scrc.delete(1.0,'end')
+            window_root.runserverb.configure(state='disabled')
+            window_root.runserverc.configure(state='disabled')
+            window_root.stoper.configure(state='normal')
+            window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.Running']))
+            window_root.scrc.insert(END,'[Phsebot] '+PLP['mcsm.startserver']+'\n')
+            s = startServer(config['mcsm']['serverName'])
+            if s['status'] != 200:
+                window_root.scrc.insert(END,'[Phsebot] '+s['error']+'\n')
+            self.check = threading.Thread(target=self.checkBDS)
+            self.check.setName('CheckBDS')
+            self.check.start()
+            
         from Library.Loader.Plugin import Events
         for e in Events['StartingServer']:
             try:
@@ -382,9 +408,18 @@ class BDSServer():
             line = line.decode('gbk')
         #删除颜色代码
         colorre = r'\[(.+?)m'
+        colorre2 = r'\[(.+?)m'
         linec = re.findall(colorre,line)
+        lineb = re.findall(colorre2,line)
         for i in linec:
+            line = line.replace('[m ','')
             line = line.replace('\033['+i+'m','')
+
+        for i in lineb:
+            line = line.replace('[m ','')
+            line = line.replace('\x1b['+i+'m','')
+
+
 
         #捕捉玩家列表
         pl = re.findall(r'^There\sare(.+?)\/(.+?)\sp',line)
@@ -576,13 +611,16 @@ class BDSServer():
 
     def getBDSPoll(self) -> bool:
         #获取bds是否运行中
-        try:
-            if self.bds.poll() == None:
-                return True
-            else:
+        if not config['mcsm']['enable']:
+            try:
+                if self.bds.poll() == None:
+                    return True
+                else:
+                    return False
+            except:
                 return False
-        except:
-            return False
+        else:
+            getServer(config['mcsm']['serverName'])
 
     #输出list名单
     def outList(self):
@@ -615,25 +653,27 @@ class BDSServer():
         if text == None:
             cmd = window_root.nameEntered.get()
             window_root.nameEntered.delete(0, 'end')
-        
-        if self.getBDSPoll():
-            from Library.Loader.Plugin import Events
-            for e in Events['RunCmd']:
-                try:
-                    e(cmd)
-                except Exception as e:
-                    log_debug(e)
-            if '\r\n' not in cmd:
-                cmd += '\r\n'
-            self.bds.stdin.write(cmd.encode('utf8'))
-            self.bds.stdin.flush()
-            if cmd == 'stop':
-                self.NormalStop = True
-                self.Started = False
+        if not config['mcsm']['enable']:
+            if self.getBDSPoll():
+                from Library.Loader.Plugin import Events
+                for e in Events['RunCmd']:
+                    try:
+                        e(cmd)
+                    except Exception as e:
+                        log_debug(e)
+                if '\r\n' not in cmd:
+                    cmd += '\r\n'
+                self.bds.stdin.write(cmd.encode('utf8'))
+                self.bds.stdin.flush()
+                if cmd == 'stop':
+                    self.NormalStop = True
+                    self.Started = False
+            else:
+                if Language['ServerNotRunning']:
+                    for i in config['Group']:
+                        sendGroupMsg(i,Language['ServerNotRunning'])
         else:
-            if Language['ServerNotRunning']:
-                for i in config['Group']:
-                    sendGroupMsg(i,Language['ServerNotRunning'])
+            sendCmd(config['mcsm']['serverName'],cmd)
 
     def Botruncmd(self,text:str):
         global NormalStop,Started
@@ -821,83 +861,122 @@ class BDSServer():
 
     def checkBDS(self):
         from Library.src import window_root
-        while True:
-            time.sleep(1)
-            if not self.getBDSPoll() and self.NormalStop == True:
-                window_root.runserverb.configure(state='normal')
-                window_root.runserverc.configure(state='normal')
-                window_root.stoper.configure(state='disabled')
-                window_root.scrc.insert('end','[INFO] %s' % PLP['BDSContorl.Poll.stop'])
-                window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.NoRunning']))
-                window_root.GameFile.configure(text=PLP['BDSUI.World'])
-                window_root.GameVersion.configure(text=PLP['BDSUI.Version'])
-                window_root.action.configure(state='disabled')
-                window_root.nameEntered.configure(state='disabled')
-                break
+        if not config['mcsm']['enable']:
+            while True:
+                time.sleep(1)
+                if not self.getBDSPoll() and self.NormalStop == True:
+                    window_root.runserverb.configure(state='normal')
+                    window_root.runserverc.configure(state='normal')
+                    window_root.stoper.configure(state='disabled')
+                    window_root.scrc.insert('end','[INFO] %s' % PLP['BDSContorl.Poll.stop'])
+                    window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.NoRunning']))
+                    window_root.GameFile.configure(text=PLP['BDSUI.World'])
+                    window_root.GameVersion.configure(text=PLP['BDSUI.Version'])
+                    window_root.action.configure(state='disabled')
+                    window_root.nameEntered.configure(state='disabled')
+                    break
 
-            elif not self.getBDSPoll() and self.NormalStop == False and config['AutoRestart']:
-                if Language['AbendServer'] != False:
-                    for i in config['Group']:
-                        sendGroupMsg(i,Language['AbendServer'])
-                if Language['RestartServer'] != False:
-                    for i in config['Group']:
-                        sendGroupMsg(i,Language['RestartServer'])
-                window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.NoRunning']))
-                window_root.GameFile.configure(text=PLP['BDSUI.World'])
-                window_root.GameVersion.configure(text=PLP['BDSUI.Version'])
-                if config['MaxAutoRestart'] > self.Restart:
-                    self.RunServer()
-                    self.Restart += 1
-                else:
-                    for i in config['Group']:
-                        sendGroupMsg(i,Language['MaxRestart'])
-                    self.Restart = 0
-                break
+                elif not self.getBDSPoll() and self.NormalStop == False and config['AutoRestart']:
+                    if Language['AbendServer'] != False:
+                        for i in config['Group']:
+                            sendGroupMsg(i,Language['AbendServer'])
+                    if Language['RestartServer'] != False:
+                        for i in config['Group']:
+                            sendGroupMsg(i,Language['RestartServer'])
+                    window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.NoRunning']))
+                    window_root.GameFile.configure(text=PLP['BDSUI.World'])
+                    window_root.GameVersion.configure(text=PLP['BDSUI.Version'])
+                    if config['MaxAutoRestart'] > self.Restart:
+                        self.RunServer()
+                        self.Restart += 1
+                    else:
+                        for i in config['Group']:
+                            sendGroupMsg(i,Language['MaxRestart'])
+                        self.Restart = 0
+                    break
 
-            elif not self.getBDSPoll() and self.NormalStop == False and config['AutoRestart'] == False:
-                if Language['AbendServer'] != False:
-                    for i in config['Group']:
-                        sendGroupMsg(i,Language['AbendServer'])
-                window_root.runserverb.configure(state='normal')
-                window_root.runserverc.configure(state='normal')
-                window_root.stoper.configure(state='disabled')
-                window_root.scrc.insert('end','[INFO] %s' % PLP['BDSContorl.Poll.stop'])
-                window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.NoRunning']))
-                window_root.GameFile.configure(text=PLP['BDSUI.World'])
-                window_root.GameVersion.configure(text=PLP['BDSUI.Version'])
-                window_root.action.configure(state='disabled')
-                window_root.nameEntered.configure(state='disabled')
-                break
+                elif not self.getBDSPoll() and self.NormalStop == False and config['AutoRestart'] == False:
+                    if Language['AbendServer'] != False:
+                        for i in config['Group']:
+                            sendGroupMsg(i,Language['AbendServer'])
+                    window_root.runserverb.configure(state='normal')
+                    window_root.runserverc.configure(state='normal')
+                    window_root.stoper.configure(state='disabled')
+                    window_root.scrc.insert('end','[INFO] %s' % PLP['BDSContorl.Poll.stop'])
+                    window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.NoRunning']))
+                    window_root.GameFile.configure(text=PLP['BDSUI.World'])
+                    window_root.GameVersion.configure(text=PLP['BDSUI.Version'])
+                    window_root.action.configure(state='disabled')
+                    window_root.nameEntered.configure(state='disabled')
+                    break
+        else:
+            while True:
+                time.sleep(5)
+                get = getServer(config['mcsm']['serverName'])
+                if not get['status']:
+                    window_root.runserverb.configure(state='normal')
+                    window_root.runserverc.configure(state='normal')
+                    window_root.stoper.configure(state='disabled')
+                    window_root.scrc.insert('end','[INFO] %s' % PLP['BDSContorl.Poll.stop'])
+                    window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.NoRunning']))
+                    window_root.GameFile.configure(text=PLP['BDSUI.World'])
+                    window_root.GameVersion.configure(text=PLP['BDSUI.Version'])
+                    window_root.action.configure(state='disabled')
+                    window_root.nameEntered.configure(state='disabled')
+                    break
 
     def stoperd(self):
         from Library.src import window_root
         answer = mBox.askyesno(PLP['BDSUI.ForceStop.title'], PLP['BDSUI.ForceStop.message']) 
         if answer == True:
-            self.NormalStop = True
-            subprocess.Popen("cmd.exe /k taskkill /F /T /PID %i" % self.bds.pid,stdout=subprocess.PIPE)  
-            if Language['ForcedStop'] != False:
-                for i in config['Group']:
-                    sendGroupMsg(i,Language['ForcedStop'])
-            window_root.action.configure(state='disabled')
-            window_root.nameEntered.configure(state='disabled')
-            from Library.Loader.Plugin import Events
-            for e in Events['ForcedStop']:
-                try:
-                    e()
-                except Exception as e:
-                    log_debug(e)
+            if not config['mcsm']['enable']:
+                self.NormalStop = True
+                subprocess.Popen("cmd.exe /k taskkill /F /T /PID %i" % self.bds.pid,stdout=subprocess.PIPE)  
+                if Language['ForcedStop'] != False:
+                    for i in config['Group']:
+                        sendGroupMsg(i,Language['ForcedStop'])
+                window_root.action.configure(state='disabled')
+                window_root.nameEntered.configure(state='disabled')
+                from Library.Loader.Plugin import Events
+                for e in Events['ForcedStop']:
+                    try:
+                        e()
+                    except Exception as e:
+                        log_debug(e)
+            else:
+                window_root.scrc.insert(END,'[Phsebot] '+PLP['mcsm.stopserver'])
+                s = stopServer(config['mcsm']['serverName'])
+                if s['status'] != 200:
+                    window_root.scrc.insert(END,'[Phsebot] '+s['error']+'\n')
+                
     
     def runfileserver(self):
         from Library.src import window_root
-        window_root.scrc.delete(1.0,'end')
-        self.bds = os.system("start Temp/run.bat")
-        window_root.runserverb.configure(state='disabled')
-        window_root.runserverc.configure(state='disabled')
-        window_root.stoper.configure(state='normal')
-        window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.Running']))
-        c = threading.Thread(target=self.checkBDS)
-        c.setName('CheckBDS')
-        c.start()
+        if not config['mcsm']['enable']:
+            window_root.scrc.delete(1.0,'end')
+            self.bds = os.system("start Temp/run.bat")
+            window_root.runserverb.configure(state='disabled')
+            window_root.runserverc.configure(state='disabled')
+            window_root.stoper.configure(state='normal')
+            window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.Running']))
+            c = threading.Thread(target=self.checkBDS)
+            c.setName('CheckBDS')
+            c.start()
+        else:
+            window_root.scrc.delete(1.0,'end')
+            window_root.scrc.insert(END,'[Phsebot] '+PLP['mcsm.startserver']+'\n')
+            s = startServer(config['mcsm']['serverName'])
+            if s['status'] != 200:
+                window_root.scrc.insert(END,'[Phsebot] '+s['error']+'\n')
+            
+            window_root.runserverb.configure(state='disabled')
+            window_root.runserverc.configure(state='disabled')
+            window_root.stoper.configure(state='normal')
+            window_root.ServerNow.configure(text='%s %s' % (PLP['BDSUI.State'],PLP['Server.Running']))
+            self.check = threading.Thread(target=self.checkBDS)
+            self.check.setName('CheckBDS')
+            self.check.start()
+            
 
 #控制台正则匹配
 def useconsoleregular(text):
@@ -997,6 +1076,8 @@ def usegroupregular():
         except WebSocketProtocolException as e:
             log_error(PLP['Mirai.close'])
         except WebSocketConnectionClosedException:
+            pass
+        except JSONDecodeError:
             pass
 
         '''except Exception as e:

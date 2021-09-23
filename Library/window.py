@@ -6,7 +6,7 @@ class Editregular(tk.Toplevel):
         self.title('Phsebot - %s' % PLP['EditRegular.title'])
         self.content = content
         self.parent = parent # 显式地保留父窗口
-        self.iconbitmap(r'Library/Images/bot.ico')
+        #self.iconbitmap(r'Library/Images/bot.ico')
         self.geometry('400x205')
         self.tf = tf
         self.resizable(0,0)
