@@ -104,6 +104,14 @@ Plugin.loading: '正在加载插件%plugin%'
 Menu.Mirai.title: Mirai菜单
 Menu.Mirai.ReConnect: 重连Mirai
 Menu.Mirai.DisConnnect: 断开Mirai
-mcsm.enable: '已开启MCSM模式，URL连接地址为:%url%'
 mcsm.startserver: '已向mcsm请求开启服务器'
 mcsm.stopserver: '已向mcsm请求关闭服务器'
+mcsm.tokenError.title: '错误'
+mcsm.tokenError.msg: '连接到mcsm时token错误'
+mcsm.nameError.title: '错误'
+mcsm.nameError.msg: '连接到mcsm时ServerName错误'
+mcsm.connectError: '连接到mcsm时出现了错误'
+mcsm.connectSuccess: '连接到mcsm成功'
+mcsm.disconnect: 'mcsm已断开连接'
+mcsm.menu.title: 'MCSM'
+mcsm.menu.reconnect: '重连mcsm服务'

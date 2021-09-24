@@ -24,14 +24,7 @@ from Library.src import *
 from Library.Tool import *
 from Library.FakePlayer import *
 from Library.window import *
-from websocket import WebSocketProtocolException,WebSocketConnectionClosedException
-
-#检测是否启用mcsm版本
-if config['mcsm']['enable']:
-    from Library.mcsm.getlog import *
-    from Library.mcsm.http_req import *
-    wsinit()
-    
+from websocket import WebSocketProtocolException,WebSocketConnectionClosedException    
 
 #输出控制台
 class WriteConsole():
@@ -68,7 +61,7 @@ class WriteConsole():
             pass
 
 writeconsole = WriteConsole()
-#sys.stdout = writeconsole
+sys.stdout = writeconsole
 
 class Window():
     def __init__(self) -> None:
@@ -259,8 +252,15 @@ class Window():
         MiraiMenu.add_command(label=PLP['Menu.Mirai.ReConnect'],command=reconnect)
         MiraiMenu.add_command(label=PLP['Menu.Mirai.DisConnnect'],command=disconnect)
 
+        if config['mcsm']['enable']:
+            McsmMenu = Menu(menuBar, tearoff=0)
+            from Library.mcsm.getlog import reconnect_ws
+            McsmMenu.add_command(label=PLP['mcsm.menu.reconnect'],command=reconnect_ws)
+
         menuBar.add_cascade(label=PLP['Menu.title'], menu=fileMenu)
         menuBar.add_cascade(label=PLP['Menu.Mirai.title'], menu=MiraiMenu)
+        if config['mcsm']['enable']:
+            menuBar.add_cascade(label=PLP['mcsm.menu.title'], menu=McsmMenu)
         
 
     def on_closing(self):
@@ -274,11 +274,17 @@ class Window():
                     log_debug(e)
             log_info(PLP['Exit.release'])
             self.win.destroy()
+            if config['mcsm']['enable']:
+                from Library.mcsm.getlog import exit_ws
+                exit_ws()
             os._exit(0)
 
     def insertscrc(self,line):
-        self.scrc.configure(state='normal')
-        self.scrc.insert(END,line)
+        try:
+            self.scrc.configure(state='normal')
+            self.scrc.insert(END,line)
+        except Exception as e:
+            log_debug(e)
 
 #Plugin类
 class Plugin():
@@ -330,6 +336,7 @@ class BDSServer():
     def RunServer(self) -> None:
         from Library.src import Sbot
         from Library.src import window_root
+        from Library.mcsm.http_req import startServer,stopServer,getServer,sendCmd
         if not config['mcsm']['enable']:
             self.NormalStop = False
 
@@ -610,6 +617,7 @@ class BDSServer():
                     log_debug(e)
 
     def getBDSPoll(self) -> bool:
+        from Library.mcsm.http_req import startServer,stopServer,getServer,sendCmd
         #获取bds是否运行中
         if not config['mcsm']['enable']:
             try:
@@ -673,6 +681,7 @@ class BDSServer():
                     for i in config['Group']:
                         sendGroupMsg(i,Language['ServerNotRunning'])
         else:
+            from Library.mcsm.http_req import startServer,stopServer,getServer,sendCmd
             sendCmd(config['mcsm']['serverName'],cmd)
 
     def Botruncmd(self,text:str):
@@ -910,6 +919,7 @@ class BDSServer():
                     window_root.nameEntered.configure(state='disabled')
                     break
         else:
+            from Library.mcsm.http_req import startServer,stopServer,getServer,sendCmd
             while True:
                 time.sleep(5)
                 get = getServer(config['mcsm']['serverName'])
@@ -927,6 +937,7 @@ class BDSServer():
 
     def stoperd(self):
         from Library.src import window_root
+        from Library.mcsm.http_req import startServer,stopServer,getServer,sendCmd
         answer = mBox.askyesno(PLP['BDSUI.ForceStop.title'], PLP['BDSUI.ForceStop.message']) 
         if answer == True:
             if not config['mcsm']['enable']:
@@ -944,7 +955,7 @@ class BDSServer():
                     except Exception as e:
                         log_debug(e)
             else:
-                window_root.scrc.insert(END,'[Phsebot] '+PLP['mcsm.stopserver'])
+                window_root.scrc.insert(END,'[Phsebot] '+PLP['mcsm.stopserver']+'\n')
                 s = stopServer(config['mcsm']['serverName'])
                 if s['status'] != 200:
                     window_root.scrc.insert(END,'[Phsebot] '+s['error']+'\n')
@@ -1305,7 +1316,12 @@ if __name__ == '__main__':
     updv.setName('UpDateBot')
     updv.start()
     
-    
+    #检测是否启用mcsm版本
+    if config['mcsm']['enable']:
+        from Library.mcsm.getlog import *
+        from Library.mcsm.http_req import *
+        wsinit()
+
     #写入bat
     with open('Temp\\run.bat','w',encoding='utf8') as f:
         lines = '''@echo off

@@ -1,8 +1,15 @@
-import websockets
-import asyncio
+import websocket
+import time
+import json
 from Library.src import *
 import threading
-Log_Line = []
+def exit_ws():
+    wss.send(json.dumps(
+        {'type':'exit',
+        'token':config['mcsm']['wsToken'],
+        'name':config['mcsm']['serverName']
+        }))
+
 def runthisserver(servers):
     from Library.mcsm.http_req import getServer
     from Library.src import window_root,server
@@ -21,40 +28,70 @@ def runthisserver(servers):
         server.check.setName('CheckBDS')
         server.check.start()
 
-
-def websocket_log(url = '0.0.0.0',port = 23334):
-    global Log_Line
-    async def recv_log(websocket, path):
-        global Log_Line
+def recvLog():
+    while True:
+        time.sleep(0.1)
+        rj = {'type':''}
         try:
-            async for message in websocket:
-                msg = json.loads(message)
-                if msg['type'] == 'log' and msg['server'] == config['mcsm']['serverName']:
-                    runthisserver(msg['server'])
-                    logs = msg['log'].replace('\r','')
-                    l = logs.split('\n')
-                    for i in l:
-                        if '\n' not in i:
-                            ls = i+'\n'
-                        else:
-                            ls = i
-                        Log_Line.append(ls)
-                        from Library.src import server
-                        server.insertscr(ls.encode('utf8'))
+            rj = json.loads(wss.recv())
         except Exception as e:
             log_debug(e)
+            if str(e) == '[WinError 10054] 远程主机强迫关闭了一个现有的连接。':
+                log_error(PLP['mcsm.disconnect'])
+                break
+            elif str(e) == 'socket is already closed.':
+                log_error(PLP['mcsm.disconnect'])
+                break
 
-    new_loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(new_loop)
-    loop = asyncio.get_event_loop()
-    log_info(PLP['mcsm.enable'].replace(r'%url%','ws://%s:%i' % (url,port)))
-    try:
-        loop.run_until_complete(websockets.serve(recv_log, url, port))
-        loop.run_forever()
-    except Exception as e:
-        log_debug(e)
+        #判断消息
+        if rj['type'] == 'error':
+            if rj['msg'] == 'token error':
+                mBox.showerror(PLP['mcsm.tokenError.title'],PLP['mcsm.tokenError.msg'])
+            elif rj['msg'] == 'name error':
+                mBox.showerror(PLP['mcsm.nameError.title'],PLP['mcsm.nameError.msg'])
+
+        elif rj['type'] == 'heart':
+            wss.send(json.dumps(rj))
+
+        elif rj['type'] == 'msg':
+            from Library.src import server
+            l = '[Phsebot] '+rj['msg']+'\n'
+            server.insertscr(l.encode('utf8'))
+
+        elif rj['type'] == 'log':
+            from Library.src import server
+            runthisserver(config['mcsm']['serverName'])
+            logs = rj['log'].replace('\r','').replace('\n\n','\n').split('\n')
+            for i in logs:
+                if i != '':
+                    ls = i + '\n'
+                    server.insertscr(ls.encode('utf8'))
 
 def wsinit():
-    wls = threading.Thread(target=websocket_log,args=(config['mcsm']['recvLog']['url'],config['mcsm']['recvLog']['port']))
-    wls.setDaemon(True)
-    wls.start()
+    try:
+        global wss,recvl
+        wss = websocket.create_connection('ws://%s:%i' % (config['mcsm']['recvLog']['url'],config['mcsm']['recvLog']['port']))
+        wss.send(json.dumps({'type':'connect','token':config['mcsm']['wsToken'],'name':config['mcsm']['serverName']}))
+        log_info(PLP['mcsm.connectSuccess'])
+        recvl = threading.Thread(target=recvLog)
+        recvl.setDaemon(True)
+        recvl.setName('Listen_MCSM')
+        recvl.start()
+    except Exception as e:
+        log_debug(e)
+        log_error(PLP['mcsm.connectError'])
+
+def reconnect_ws():
+    global wss
+    try:
+        wss.close()
+    except:
+        pass
+
+    if recvl in threading.enumerate():
+        wss = websocket.create_connection('ws://%s:%i' % (config['mcsm']['recvLog']['url'],config['mcsm']['recvLog']['port']))
+        wss.send(json.dumps({'type':'connect','token':config['mcsm']['wsToken'],'name':config['mcsm']['serverName']}))
+        log_info(PLP['mcsm.connectSuccess'])
+    else:
+        wsinit()
+    

@@ -117,12 +117,13 @@ mcsm:
   #连接url
   URL: http://127.0.0.1:23333
   #APIKey
-  APIKey: e4bb11b86acf4404aa90b985c4c7842e
+  APIKey: 0ea5f85e22654bd08f0645cac1f1886b
   #服务器名称
   serverName: bedrock
-  #mcsm的安装路径
-  #mcsmPath: 'C:\Users\23510\Downloads\MCSManager_8.6.23_Win64'
+  #ws服务的token
+  wsToken: '114514'
   #收到log的地址
   recvLog:
-    url: '0.0.0.0'
+    url: '127.0.0.1'
     port: 23334
+

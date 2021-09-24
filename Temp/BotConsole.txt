@@ -2177,3 +2177,23 @@ EBUG] 'Bot' object has no attribute 'ws'
 
 [DEBUG] [36m23:54:54[m [[34mINFO [m] 启动完成 (2.53s)！如需帮助，请输入 "help" 或 "?"
 
+[2021-09-24 22:14:02 INFO] 3544175039 登录成功
+[2021-09-24 22:14:02 INFO] 连接到mcsm成功
+[2021-09-24 22:14:02 INFO] 正在加载插件check
+[2021-09-24 22:14:02 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-24 22:14:02 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-24 22:14:04 ERRO] 无法连接到假人服务
+[2021-09-24 22:14:04 INFO] 内置计划任务已重新计时
+[2021-09-24 22:14:04 INFO] Phsebot was successfully started
+[2021-09-24 22:14:04 INFO] Author: HuoHuaX
+[2021-09-24 22:14:04 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[DEBUG] Expecting value: line 1 column 1 (char 0)
+[DEBUG] Connection to remote host was lost.
+[DEBUG] socket is already closed.
+[2021-09-24 22:14:04 ERRO] mcsm已断开连接
+[2021-09-24 22:14:07 INFO] 该版本是最新版本
+[2021-09-24 22:14:13 INFO] 连接到mcsm成功
+[2021-09-24 22:14:48 WARN] 消息已发送，但可能遭到屏蔽
+[2021-09-24 22:16:24 INFO] 连接到mcsm成功
+[DEBUG] Expecting value: line 1 column 1 (char 0)
