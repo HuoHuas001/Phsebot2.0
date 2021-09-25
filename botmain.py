@@ -61,7 +61,7 @@ class WriteConsole():
             pass
 
 writeconsole = WriteConsole()
-sys.stdout = writeconsole
+#sys.stdout = writeconsole
 
 class Window():
     def __init__(self) -> None:
@@ -274,9 +274,15 @@ class Window():
                     log_debug(e)
             log_info(PLP['Exit.release'])
             self.win.destroy()
+            #安全退出事件
+            if server.getBDSPoll():
+                server.Runcmd('stop')
+            
+            #发出exit事件
             if config['mcsm']['enable']:
                 from Library.mcsm.getlog import exit_ws
                 exit_ws()
+                
             os._exit(0)
 
     def insertscrc(self,line):

@@ -1,17 +1,28 @@
 from datetime import datetime
 import json
 import yaml
+import os
+from tkinter import messagebox as mBox
 from colorama import init,Fore,Back,Style
 init(autoreset=True)
 
 def read_file(file):
     with open(file,'r',encoding='utf-8') as f:
         if '.json' in file:
-            content = f.read()
-            return json.loads(content)
+            try:
+                content = f.read().replace('\\n','\n')
+                return json.loads(content)
+            except Exception as e:
+                mBox.showerror('Error','Error parsing %s file:\n%s' % (file,str(e)))
+                os._exit(1)
+
         elif '.yml' in file:
-            content = f.read()
-            return yaml.load(content, Loader=yaml.FullLoader)
+            try:
+                content = f.read().replace('\\n','\n')
+                return yaml.load(content, Loader=yaml.FullLoader)
+            except Exception as e:
+                mBox.showerror('Error','Error parsing %s file:\n%s' % (file,str(e)))
+                os._exit(1)
 
 config = read_file('data/config.yml')
 

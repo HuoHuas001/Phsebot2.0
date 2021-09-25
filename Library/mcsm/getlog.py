@@ -3,12 +3,22 @@ import time
 import json
 from Library.src import *
 import threading
+import hashlib
 def exit_ws():
     wss.send(json.dumps(
         {'type':'exit',
         'token':config['mcsm']['wsToken'],
         'name':config['mcsm']['serverName']
-        }))
+        }
+    )
+)
+
+def get_md5_value(src):
+    myMd5 = hashlib.md5()
+    myMd5.update(src)
+    myMd5_Digest = myMd5.hexdigest()
+    return myMd5_Digest
+
 
 def runthisserver(servers):
     from Library.mcsm.http_req import getServer
@@ -70,8 +80,9 @@ def recvLog():
 def wsinit():
     try:
         global wss,recvl
+        md5token = get_md5_value(config['mcsm']['wsToken'].encode('utf8'))
         wss = websocket.create_connection('ws://%s:%i' % (config['mcsm']['recvLog']['url'],config['mcsm']['recvLog']['port']))
-        wss.send(json.dumps({'type':'connect','token':config['mcsm']['wsToken'],'name':config['mcsm']['serverName']}))
+        wss.send(json.dumps({'type':'connect','token':str(md5token),'name':config['mcsm']['serverName']}))
         log_info(PLP['mcsm.connectSuccess'])
         recvl = threading.Thread(target=recvLog)
         recvl.setDaemon(True)

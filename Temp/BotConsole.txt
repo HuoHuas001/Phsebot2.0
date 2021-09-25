@@ -2197,3 +2197,18 @@ EBUG] 'Bot' object has no attribute 'ws'
 [2021-09-24 22:14:48 WARN] 消息已发送，但可能遭到屏蔽
 [2021-09-24 22:16:24 INFO] 连接到mcsm成功
 [DEBUG] Expecting value: line 1 column 1 (char 0)
+[2021-09-25 18:32:23 INFO] 3544175039 登录成功
+[2021-09-25 18:32:23 INFO] 连接到mcsm成功
+[2021-09-25 18:32:23 INFO] 正在加载插件check
+[2021-09-25 18:32:23 INFO] 签到插件加载成功! Powered by HuoHuaX
+[2021-09-25 18:32:23 INFO] 插件加载器已加载,加载器类型：official,作者：HuoHuaX
+[DEBUG] [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+[2021-09-25 18:32:25 ERRO] 无法连接到假人服务
+[2021-09-25 18:32:25 INFO] 内置计划任务已重新计时
+[2021-09-25 18:32:25 INFO] Phsebot was successfully started
+[2021-09-25 18:32:25 INFO] Author: HuoHuaX
+[2021-09-25 18:32:25 INFO] Special Thanks McPlus Yanhy2000 strong support for this project
+[2021-09-25 18:32:26 INFO] 该版本是最新版本
+[DEBUG] Expecting value: line 1 column 1 (char 0)
+[2021-09-25 18:33:01 INFO] 正在执行Exit事件
+[2021-09-25 18:33:01 INFO] 正在释放Mirai资源，请稍后
