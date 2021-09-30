@@ -56,26 +56,29 @@ class Server:
         else:
             from Library.mcsm.http_req import getServer
             get = getServer(config['mcsm']['serverName'])
-            if get['status'] and 'max_player' in get:
-                maxp = get["max_players"]
-                now = get["current_players"]
-                motd = get['motd']
-                ver = get['version']
-                returnDict = {
-                    "status":'online',
-                    "ip": self.ip,
-                    "port": self.port,
-                    "name": motd,
-                    "protocol": '',
-                    "version": ver,
-                    "online": str(now),
-                    "upperLimit": str(maxp),
-                    "save": 'world',
-                    "gamemode": '',
-                    "difficulty": '',
-                    "port_ipv6": '19133',
-                    "delay": 0
-                }
+            if get != {}:
+                if get['status'] and 'max_player' in get:
+                    maxp = get["max_players"]
+                    now = get["current_players"]
+                    motd = get['motd']
+                    ver = get['version']
+                    returnDict = {
+                        "status":'online',
+                        "ip": self.ip,
+                        "port": self.port,
+                        "name": motd,
+                        "protocol": '',
+                        "version": ver,
+                        "online": str(now),
+                        "upperLimit": str(maxp),
+                        "save": 'world',
+                        "gamemode": '',
+                        "difficulty": '',
+                        "port_ipv6": '19133',
+                        "delay": 0
+                    }
+                else:
+                    return {'status':'offline'}
             else:
-                return {'status':'offline'}
+                    return {'status':'offline'}
 

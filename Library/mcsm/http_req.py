@@ -4,7 +4,11 @@ from Library.src import *
 
 
 def http_get(url):
-    return urllib.request.urlopen(url).read().decode("utf-8")
+    try:
+        return urllib.request.urlopen(url).read().decode("utf-8")
+    except Exception as e:
+        log_debug(e)
+        return '{}'
 
 def http_post(url,data):
     url = url

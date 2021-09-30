@@ -54,14 +54,17 @@ class WriteConsole():
             window_root.sc.configure(state='disabled')
             window_root.sc.see(END)
             if config['AutoRecordBot']:
-                with open('Temp/BotConsole.txt','a',encoding='utf8') as f:
+                with open('logs/BotConsole.txt','a',encoding='utf8') as f:
                     f.write(string)
         except Exception as e:
             #log_debug(e)
             pass
 
 writeconsole = WriteConsole()
+if config['AutoRecordError']:
+    sys.stderr = open('logs/ErrorLog.txt','a',encoding='utf8')
 #sys.stdout = writeconsole
+
 
 class Window():
     def __init__(self) -> None:
@@ -420,55 +423,98 @@ class BDSServer():
         except UnicodeDecodeError:
             line = line.decode('gbk')
         #删除颜色代码
-        colorre = r'\[(.+?)m'
-        colorre2 = r'\[(.+?)m'
-        linec = re.findall(colorre,line)
-        lineb = re.findall(colorre2,line)
-        for i in linec:
-            line = line.replace('[m ','')
-            line = line.replace('\033['+i+'m','')
+        try:
+            colorre = r'\[(.+?)m'
+            colorre2 = r'\[(.+?)m'
+            linec = re.findall(colorre,line)
+            lineb = re.findall(colorre2,line)
+            for i in linec:
+                line = line.replace('[m ','')
+                line = line.replace('\033['+i+'m','')
 
-        for i in lineb:
-            line = line.replace('[m ','')
-            line = line.replace('\x1b['+i+'m','')
+            for i in lineb:
+                line = line.replace('[m ','')
+                line = line.replace('\x1b['+i+'m','')
 
 
 
-        #捕捉玩家列表
-        pl = re.findall(r'^There\sare(.+?)\/(.+?)\sp',line)
-        if pl != []:
-            self.Players['Now'] = int(pl[0][0])
-            self.Players['Max'] = int(pl[0][1])
+            #捕捉玩家列表
+            pl = re.findall(r'^There\sare(.+?)\/(.+?)\sp',line)
+            if pl != []:
+                self.Players['Now'] = int(pl[0][0])
+                self.Players['Max'] = int(pl[0][1])
 
-        #存储上一个
-        if re.search(r'^There\sare(.+?)\/(.+?)\sp',self.Last) != None:
-            self.Players['Player'] = line.replace('\n','')
+            #存储上一个
+            if re.search(r'^There\sare(.+?)\/(.+?)\sp',self.Last) != None:
+                self.Players['Player'] = line.replace('\n','')
+            
+            self.Last = line
+
+            #触发自动改名
+            if config['AutoChangeBotName']['Enable'] and self.Started:
+                ChangeBotName(self.Started)
         
-        self.Last = line
+            #自定义屏蔽输出
+            if config['NoOut']:
+                #字符串
+                if NoOut['AllLine'] != None:
+                    for i in NoOut['AllLine']:
+                        if i in line:
+                            line = ''
+            
+                #替换
+                if NoOut['ReplaceLine'] != None:
+                    for i in NoOut['ReplaceLine']:
+                        line = line.replace(i,'')
 
-        #触发自动改名
-        if config['AutoChangeBotName']['Enable'] and self.Started:
-            ChangeBotName(self.Started)
-    
-        #自定义屏蔽输出
-        if config['NoOut']:
-            #字符串
-            if NoOut['AllLine'] != None:
-                for i in NoOut['AllLine']:
-                    if i in line:
+                #正则
+                if NoOut['Regular'] != None:
+                    for i in NoOut['Regular']:
+                        if re.search(i,line) != None:
+                            line = ''
+
+            #捕捉UseCmd
+            if line != '':
+                #UsePCMD
+                if 'Use PCmd: /' in line:
+                    cmd = line.replace('Use PCmd: /','').split(' ')
+                    from Library.Loader.Plugin import PluginCmd
+                    FLog = False
+                    for i in PluginCmd:
+                        if i == cmd[0]:
+                            FLog = True
+                            try:
+                                PluginCmd[i](line.replace('Use PCmd: /',''))
+                            except Exception as e:
+                                log_debug(e)
+                    if FLog:
                         line = ''
-        
-            #替换
-            if NoOut['ReplaceLine'] != None:
-                for i in NoOut['ReplaceLine']:
-                    line = line.replace(i,'')
 
-            #正则
-            if NoOut['Regular'] != None:
-                for i in NoOut['Regular']:
-                    if re.search(i,line) != None:
-                        line = ''
 
+
+                elif 'Use NCmd: /' in line:
+                    cmd = line.replace('Use NCmd: /','').split(' ')
+                    text = ''
+                    #SendAll
+                    from Library.src import Sbot
+                    if cmd[0] == 'SendAll':
+                        for i in cmd[1:]:
+                            if text == '':
+                                text += i
+                            else:
+                                text += ' '+i
+                        for i in config['Group']:
+                            Sbot.sendGroupMsg2(i,text)
+
+                    elif cmd[0] == 'Send':
+                        for i in cmd[2:]:
+                            if text == '':
+                                text += i
+                            else:
+                                text += ' '+i
+                        Sbot.sendGroupMsg2(int(cmd[1]),text)
+        except Exception as e:
+            log_debug(e)
         if line != '':
             try:
                 window_root.scrc.configure(state='normal')
@@ -476,10 +522,10 @@ class BDSServer():
                 window_root.scrc.see(END)
                 if config['AutoRecordBDS']:
                     try:
-                        with open('Temp/BDSConsole.txt','a',encoding='utf8') as f:
+                        with open('logs/BDSConsole.txt','a',encoding='utf8') as f:
                             f.write(line[:-2]+'\n')
                     except FileNotFoundError:
-                        with open('Temp/BDSConsole.txt','w',encoding='utf8') as f:
+                        with open('logs/BDSConsole.txt','w',encoding='utf8') as f:
                             f.write(line[:-2]+'\n')
                 window_root.scrc.configure(state='disabled')
                 self.inlineregular(line)
@@ -634,7 +680,11 @@ class BDSServer():
             except:
                 return False
         else:
-            getServer(config['mcsm']['serverName'])
+            serverstate = getServer(config['mcsm']['serverName'])
+            if serverstate != {}:
+                return serverstate['status']
+            else:
+                return False
 
     #输出list名单
     def outList(self):
@@ -1058,6 +1108,7 @@ def useconsoleregular(text):
 def usegroupregular():
     global sessionKey,ws
     url2 = config["BotURL"]
+
     while True:
         time.sleep(0.005)
         rt = {}
@@ -1097,10 +1148,6 @@ def usegroupregular():
         except JSONDecodeError:
             pass
 
-        '''except Exception as e:
-            log_debug(e)
-            mBox.showerror(PLP['Mirai.title'],PLP['Mirai.insideError'])
-            #break'''
         if 'data' in j and 'type' in j['data'] and j['syncId'] != '123':
             if j['data']['type'] == "GroupMessage":
                 group = j['data']["sender"]['group']['id']

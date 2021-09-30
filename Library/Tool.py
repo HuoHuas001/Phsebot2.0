@@ -150,7 +150,7 @@ class MultiListbox(Frame):
 
     def _b2motion(self, x, y):
         for l in self.lists:
-            l.scan_dragto(0, y)
+            l.scan_dragto(0, -y)
         return "break"
 
     def _scroll(self, *args):

@@ -1,0 +1,158 @@
+[MCSMANAGER] --------------------------------------------------------------
+[MCSMANAGER] [ 2021/8/4 21:23:22 ]: 服务端 bedrock 执行开启命令.
+[MCSMANAGER] --------------------------------------------------------------
+Active code page: 6500
+[Info] Loading Symbol
+[Info] FastDlsymInited <201665
+[Chakra] LiteLoader.dll Injected
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected
+[2021-09-30 21:23:25 INFO][LL] Loading plugins
+[ERROR] Json Error plugins\HMail\langpack\lang.json bad file plugins\HMail\langpack\lang.jso
+[2021-09-30 21:23:25 INFO][LL] Plugin hpmail.dll loaded
+[2021-09-30 21:23:25 INFO][LL] Plugin LiteXLoader.Js.dll loaded
+[2021-09-30 21:23:25 INFO][LL] Plugin LiteXLoader.Lua.dll loaded
+[2021-09-30 21:23:25 INFO][LL] Plugin LLMoney.dll loaded
+[OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.
+[OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.tx
+[OutputFilter] 作者：yqs112358   首发平台：MineBB
+[OutputFilter] 欲联系作者可前往MineBBS论
+[2021-09-30 21:23:25 INFO][LL] Plugin OutputFilter.dll loaded
+[2021-09-30 21:23:25 INFO][LL] Plugin llmod_chat.dll loaded
+[2021-09-30 21:23:25 INFO][LL] Plugin BDSPyrunner.dll loaded
+[CrashLogger] CrashLogger loaded
+[2021-09-30 21:23:25 INFO][LL] Plugin CrashLogger.dll loaded
+[2021-09-30 21:23:25 INFO][HMail] HMail加载完成 Powered By HuoHuaX
+     _       _  _         __   __  _                        _            
+    | |     (_)| |        \ \ / / | |                      | |           
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |  
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|  
+      =========   LiteXLoader Script Plugin Loader   ========
+[LiteXLoader.Js][Info] LXL for Js loade
+[LiteXLoader.Js][Info] Version 0.5.
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded
+[LiteXLoader.Js][Info] Loading plugins..
+[LiteXLoader.Js][Info] 0 Js plugins loaded in all
+[LiteXLoader.Lua][Info] LXL for Lua loade
+[LiteXLoader.Lua][Info] Version 0.5.
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded
+[LiteXLoader.Lua][Info] Loading plugins..
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all
+[2021-09-30 21:23:25 INFO][MONEY] Loaded version:  210714
+____Chat v1.3____Load successed! by.yanhy200
+[2021-09-30 21:23:25 INFO][LL] 8 plugin(s) loaded
+[BDSpyrunner] 1.7.4a loaded
+[BDSpyrunner] 服务端版本非最新版，继续使用可能出现未知问
+[BDSpyrunner] The server version is not the latest version, unknown problems may occur if you continue to use i
+[BDSpyrunner] loading Bed_wa
+[BDSpyrunner] loading AutoUpdat
+[INFO] 自动检测更新加载完
+[BDSpyrunner] loading cras
+NO LOG FILE! - setting up server logging..
+[2021-09-30 21:23:26 INFO] Starting Serve
+[2021-09-30 21:23:26 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.
+[2021-09-30 21:23:26 INFO] Session ID e8b801a3-ea85-497a-a015-22c8ee997ad
+[2021-09-30 21:23:26 INFO] Level Name: Bedrock leve
+[2021-09-30 21:23:26 INFO] Game mode: 0 Surviva
+[2021-09-30 21:23:26 INFO] Difficulty: 1 EAS
+[INFO] opening worlds/Bedrock level/d
+[INFO] IPv4 supported, port: 
+[INFO] IPv6 supported, port: 
+[CrashLogger] CrashLogger Daemon Process attached
+[Crashed!
+-- Unhandled Exception in ->
+-- Exception Code: 0xC000000
+-- Minidump generated in Directory ./logs/Cras
+[TrackBack] Function ???????? at 0x???????
+[TrackBack] Function ServerInstance::initializeServer at 0x7FF6BC43A130  [bedrock_server.exe
+[TrackBack] Function DedicatedServer::start at 0x7FF6BC01B0E0  [bedrock_server.exe
+[TrackBack] Function main at 0x7FF6BC048C80  [bedrock_server.exe
+[TrackBack] Function Event::addEventListener at 0x7FFF6C851D00  [LiteLoader.dll
+[TrackBack] Function __scrt_common_main_seh at 0x7FF6BD1EACA8  [bedrock_server.exe
+[TrackBack] Function BaseThreadInitThunk at 0x7FFFC5326D40  [KERNEL32.DLL
+[TrackBack] Function RtlUserThreadStart at 0x7FFFC5F64C40  [ntdll.dll
+[MCSMANAGER] --------------------------------------------------------------
+[MCSMANAGER] [ 2021/8/4 21:24:11 ]: 服务端 bedrock 执行开启命令.
+[MCSMANAGER] --------------------------------------------------------------
+Active code page: 6500
+[Info] Loading Symbol
+[Info] FastDlsymInited <201665
+[Chakra] LiteLoader.dll Injected
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected
+[2021-09-30 21:24:13 INFO][LL] Loading plugins
+[ERROR] Json Error plugins\HMail\langpack\lang.json bad file plugins\HMail\langpack\lang.jso
+[2021-09-30 21:24:13 INFO][LL] Plugin hpmail.dll loaded
+[2021-09-30 21:24:13 INFO][LL] Plugin LiteXLoader.Js.dll loaded
+[2021-09-30 21:24:13 INFO][LL] Plugin LiteXLoader.Lua.dll loaded
+[2021-09-30 21:24:13 INFO][LL] Plugin LLMoney.dll loaded
+[OutputFilter] OutputFilter输出过滤工具-已装载  当前版本：1.0.
+[OutputFilter] 过滤内容文件在 .\plugins\OutputFilter\banlist.tx
+[OutputFilter] 作者：yqs112358   首发平台：MineBB
+[OutputFilter] 欲联系作者可前往MineBBS论
+[2021-09-30 21:24:13 INFO][LL] Plugin OutputFilter.dll loaded
+[2021-09-30 21:24:13 INFO][LL] Plugin llmod_chat.dll loaded
+[2021-09-30 21:24:13 INFO][LL] Plugin BDSPyrunner.dll loaded
+[CrashLogger] CrashLogger loaded
+[2021-09-30 21:24:13 INFO][LL] Plugin CrashLogger.dll loaded
+[2021-09-30 21:24:13 INFO][HMail] HMail加载完成 Powered By HuoHuaX
+     _       _  _         __   __  _                        _            
+    | |     (_)| |        \ \ / / | |                      | |           
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |  
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|  
+      =========   LiteXLoader Script Plugin Loader   ========
+[LiteXLoader.Js][Info] LXL for Js loade
+[LiteXLoader.Js][Info] Version 0.5.
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded
+[LiteXLoader.Js][Info] Loading plugins..
+[LiteXLoader.Js][Info] 0 Js plugins loaded in all
+[LiteXLoader.Lua][Info] LXL for Lua loade
+[LiteXLoader.Lua][Info] Version 0.5.
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded
+[LiteXLoader.Lua][Info] Loading plugins..
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all
+[2021-09-30 21:24:14 INFO][MONEY] Loaded version:  210714
+____Chat v1.3____Load successed! by.yanhy200
+[2021-09-30 21:24:14 INFO][LL] 8 plugin(s) loaded
+[BDSpyrunner] 1.7.4a loaded
+[BDSpyrunner] 服务端版本非最新版，继续使用可能出现未知问
+[BDSpyrunner] The server version is not the latest version, unknown problems may occur if you continue to use i
+[BDSpyrunner] loading Bed_wa
+[BDSpyrunner] loading AutoUpdat
+[INFO] 自动检测更新加载完
+[BDSpyrunner] loading cras
+NO LOG FILE! - setting up server logging..
+[2021-09-30 21:24:14 INFO] Starting Serve
+[2021-09-30 21:24:14 INFO] Version 1.17.11.01 with LiteLoaderBDS 1.1.
+[2021-09-30 21:24:14 INFO] Session ID 30ecf3fb-1fde-408a-95c9-5c4b04ecd2b
+[2021-09-30 21:24:14 INFO] Level Name: Bedrock leve
+[2021-09-30 21:24:14 INFO] Game mode: 0 Surviva
+[2021-09-30 21:24:14 INFO] Difficulty: 1 EAS
+[INFO] opening worlds/Bedrock level/d
+[INFO] IPv4 supported, port: 1913
+[INFO] IPv6 supported, port: 1913
+[INFO] IPv4 supported, port: 5412
+[INFO] IPv6 supported, port: 5412
+[LiteLoader] Registering cmd
+RegisteringCommand > mai
+RegisteringCommand > mone
+RegisteringCommand > versio
+[LiteXLoader.Js][Info] Builtin Cmds Registered
+[LiteXLoader.Lua][Info] Builtin Cmds Registered
+[2021-09-30 21:24:16 INFO][LL] LiteLoader is distributed under the GPLv3 License
+[2021-09-30 21:24:16 INFO][LL] Github: https://git.io/JOyw4 | Version: 1.1.1 | Based on BedrockX Project
+[2021-09-30 21:24:16 INFO][LL] 感谢旋律云(rhymc.com)对本项目的支持 | Thanks to [rhymc.com] for supporting this project
+[INFO] Server started
+[Liteloader] Failed to get updates(0
+[Phsebot] connect succes
+There are 0/10 players online
+[Phsebot] connect succes
+There are 0/10 players online
+[CrashLogger] CrashLogger Daemon Process attached
+[MCSMANAGER] --------------------------------------------------------------
+[MCSMANAGER] [ 2021/8/4 21:34:21 ]: 服务端 bedrock 执行开启命令.
+[MCSMANAGER] --------------------------------------------------------------
+Active code page: 6500
+There are 0/10 players online

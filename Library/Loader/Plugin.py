@@ -34,6 +34,9 @@ Events = {
     'Exit':[],#程序退出 -> 无
     'Running':[]#程序开启 -> 无
 }
+PluginCmd = {
+
+}
 class Cmd():
     def __init__(self,ctype:str,command:str,func):
         self.type = ctype
@@ -151,6 +154,8 @@ def getlistT():
 
 #返回在线的玩家列表
 def getList() -> dict:
+    '''返回在线的玩家列表
+    '''
     Runcmd('list')
     l = MyThread(getlistT)
     l.start()
@@ -159,6 +164,19 @@ def getList() -> dict:
     log_debug(result)
     result['Player'] = result['Player'].split(', ')
     return result
+
+#注册一个Pcmd
+def regPCmd(cmd_main:str,function) -> dict:
+    '''注册一个PCmd
+    :param cmd_main: 命令关键字
+    :param function: 回调函数
+    '''
+    global PluginCmd
+    if cmd_main not in PluginCmd:
+        PluginCmd[cmd_main] = Cmd('plugincmd',cmd,function)
+        return {'code':0,'msg':'register cmd success'}
+    else:
+        return {'code':2,'msg':'This command is registered'}
 
 
 #加载的插件

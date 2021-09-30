@@ -52,7 +52,7 @@ def recvLog():
             elif str(e) == 'socket is already closed.':
                 log_error(PLP['mcsm.disconnect'])
                 break
-
+        print(rj)
         #判断消息
         if rj['type'] == 'error':
             if rj['msg'] == 'token error':

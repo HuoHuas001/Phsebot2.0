@@ -59,6 +59,9 @@ LowLog: info
 #最大重启次数
 MaxAutoRestart: 3
 
+#最大重连次数
+MaxReconnect: 3
+
 #启用输出屏蔽功能
 NoOut: true
 
@@ -108,6 +111,7 @@ AutoChangeBotName:
 #自动记录后台日志
 AutoRecordBDS: true
 AutoRecordBot: true
+AutoRecordError: true
 
 
 #MCSM面板（可选）
@@ -127,3 +131,23 @@ mcsm:
     url: '127.0.0.1'
     port: 23334
 
+#UsePCMD服务
+UsePCmd: true
+#UseNCMD服务
+UseNCmd: true
+
+#HttpService服务
+HttpService:
+  #启用此功能
+  enable: true
+  #地址
+  Url:
+    host: '0.0.0.0'
+    port: 8999
+  #能开启的服务
+  EnableService:
+    GetXboxid: true
+    GetQQid: true
+    SendAll: true
+    Send: true
+    Card: true

@@ -545,7 +545,7 @@ def ChangeBotName(Started):
 
 class Bot():
     def __init__(self) -> None:
-        pass
+        self.reconnect_N = 0
 
     def login(self):
         try:
@@ -629,6 +629,7 @@ def reconnect():
     log_info(PLP['Mirai.reconnect'])
     if not Sbot.login():
         log_error(PLP['Mirai.reconnect.faild'])
+        Sbot.reconnect_N += 1
 
 def disconnect():
     try:
