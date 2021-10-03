@@ -1175,7 +1175,9 @@ def usegroupregular():
                     #验证正则
                     for b in regular['Group']:
                         p = re.findall(b['regular'],msg)
+                        print(p)
                         if p != []:
+                            
                             if type(p[0]) == tuple:
                                 if len(p[0]) == 1:
                                     cmd = b['run'].replace('$1',p[0][0])

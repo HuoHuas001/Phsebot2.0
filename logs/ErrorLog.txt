@@ -1,0 +1,21 @@
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Users\23510\AppData\Local\Programs\Python\Python37\lib\tkinter\__init__.py", line 1705, in __call__
+    return self.func(*args)
+  File "E:\MCServer\Phsebot2.0\botmain.py", line 385, in RunServer
+    if s['status'] != 200:
+KeyError: 'status'
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Users\23510\AppData\Local\Programs\Python\Python37\lib\tkinter\__init__.py", line 1705, in __call__
+    return self.func(*args)
+  File "E:\MCServer\Phsebot2.0\Library\mcsm\getlog.py", line 101, in reconnect_ws
+    if recvl in threading.enumerate():
+NameError: name 'recvl' is not defined
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Users\23510\AppData\Local\Programs\Python\Python37\lib\tkinter\__init__.py", line 1705, in __call__
+    return self.func(*args)
+  File "E:\MCServer\Phsebot2.0\botmain.py", line 281, in on_closing
+    if server.getBDSPoll():
+NameError: name 'server' is not defined
