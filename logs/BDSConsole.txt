@@ -489,3 +489,168 @@ NO LOG FILE! - setting up server logging..
 [TrackBack] Function __scrt_common_main_seh at 0x7FF7210DACA8  [bedrock_server.exe
 [TrackBack] Function BaseThreadInitThunk at 0x7FFDE6726D40  [KERNEL32.DLL
 [TrackBack] Function RtlUserThreadStart at 0x7FFDE7A44C40  [ntdll.dll
+Active code page: 65001
+[Info] Loading Symbols
+[Error] HealthCheck Failed <0000000000000000!=00007FF7E09F9100>
+[Info] FastDlsymInited <210187>
+[Chakra] LiteLoader.dll Injected.
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
+[2021-10-06 00:48:06 INFO][LL] Loading plugins 
+[CrashLogger] CrashLogger loaded.
+[2021-10-06 00:48:06 INFO][LL] Plugin CrashLogger.dll loaded 
+[2021-10-06 00:48:11 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-10-06 00:48:11 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[2021-10-06 00:48:11 INFO][LL] Plugin LLMoney.dll loaded 
+[2021-10-06 00:48:11 INFO][LL] Plugin BackupHelper.dll loaded 
+     _       _  _         __   __  _                        _             
+    | |     (_)| |        \ \ / / | |                      | |            
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   
+
+
+      =========   LiteXLoader Script Plugin Loader   =========
+
+[LiteXLoader.Js][Info] LXL for Js loaded
+[LiteXLoader.Js][Info] Version 0.5.5
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded.
+[LiteXLoader.Js][Info] Loading plugins...
+     _    _  _____       _ _     _ 
+    | |  | |/ ____|     (_) |   | |
+    | |__| | |  __ _   _ _| | __| |
+    |  __  | | |_ | | | | | |/ _` |
+    | |  | | |__| | |_| | | | (_| |
+    |_|  |_|\_____|\__,_|_|_|\__,_|
+    
+    
+[HGuild][2021-10-06 00:48:12 Info] Loading HGuild V3.0.2
+[HGuild][2021-10-06 00:48:12 Info] HGuild by HuoHuaX
+[HGuild][2021-10-06 00:48:12 Info] Requesting authorization,please wait
+[LiteXLoader.Js][Info] [公会]HGuild302.lxl.js loaded.
+[LiteXLoader.Js][Info] 1 Js plugins loaded in all.
+[LiteXLoader.Lua][Info] LXL for Lua loaded
+[LiteXLoader.Lua][Info] Version 0.5.5
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
+[LiteXLoader.Lua][Info] Loading plugins...
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.
+[2021-10-06 00:48:12 INFO][MONEY] Loaded version:  210922 
+[BackupHelper] BackupHelper存档备份助手-已装载  当前版本：2.0.2
+[BackupHelper] OP/后台命令： backup 开始备份
+[BackupHelper] OP/后台命令： backup reload 重新加载配置文件
+[BackupHelper] 作者：yqs112358   首发平台：MineBBS
+[BackupHelper] 欲联系作者可前往MineBBS论坛
+[2021-10-06 00:48:12 INFO][LL] 5 plugin(s) loaded 
+NO LOG FILE! - setting up server logging...
+[2021-10-06 00:48:12:597 INFO] Starting Server
+[2021-10-06 00:48:12:597 INFO] Version 1.17.30.04 with LiteLoaderBDS 1.2.0
+[2021-10-06 00:48:12:598 INFO] Session ID edef75b6-d211-45ee-a20f-ea81cf220dcf
+[2021-10-06 00:48:12:614 INFO] Level Name: Bedrock level
+[2021-10-06 00:48:12:667 INFO] Game mode: 0 Survival
+[2021-10-06 00:48:12:667 INFO] Difficulty: 1 EASY
+[INFO] opening worlds/Bedrock level/db
+[INFO] IPv4 supported, port: 19132
+[INFO] IPv6 supported, port: 19133
+[LiteLoader] Registering cmds
+RegisteringCommand > money
+RegisteringCommand > money_s
+RegisteringCommand > version
+[LiteXLoader.Js][Info] Builtin Cmds Registered.
+[LiteXLoader.Lua][Info] Builtin Cmds Registered.
+[2021-10-06 00:48:18 INFO][LL] LiteLoader is distributed under the GPLv3 License 
+[2021-10-06 00:48:18 INFO][LL] Thanks to rhymc.com for supporting this project 
+[INFO] Server started.
+[INFO] IPv4 supported, port: 57992
+[INFO] IPv6 supported, port: 57993
+[HGuild][2021-10-06 00:48:18 Info] 开始计时0点清理active
+[HGuild][2021-10-06 00:48:18 Info] 正在请求更新
+[HGuild][2021-10-06 00:48:18 Info] HGuild Loaded.
+[HGuild][2021-10-06 00:48:18 Info] 您的版本是最新版本
+[2021-10-06 00:48:19 INFO][LL] [Liteloader] Found a new version:  1.2.4   Fixed `liteloader::getIP` by @xiaoqch 
+Active code page: 65001
+[Info] Loading Symbols
+[Error] HealthCheck Failed <0000000000000000!=00007FF7E09F9100>
+[Info] FastDlsymInited <210187>
+[Chakra] LiteLoader.dll Injected.
+[Chakra] plugins/LiteXLoader/LXLAutoUpdate.dll Injected.
+[2021-10-06 00:49:31 INFO][LL] Loading plugins 
+[CrashLogger] CrashLogger loaded.
+[2021-10-06 00:49:31 INFO][LL] Plugin CrashLogger.dll loaded 
+[2021-10-06 00:49:31 INFO][LL] Plugin LiteXLoader.Js.dll loaded 
+[2021-10-06 00:49:32 INFO][LL] Plugin LiteXLoader.Lua.dll loaded 
+[2021-10-06 00:49:32 INFO][LL] Plugin LLMoney.dll loaded 
+[2021-10-06 00:49:32 INFO][LL] Plugin BackupHelper.dll loaded 
+     _       _  _         __   __  _                        _             
+    | |     (_)| |        \ \ / / | |                      | |            
+    | |      _ | |_  ___   \ V /  | |      ___    __ _   __| |  ___  _ __ 
+    | |     | || __|/ _ \   > <   | |     / _ \  / _` | / _` | / _ \| '__|
+    | |____ | || |_|  __/  / . \  | |____| (_) || (_| || (_| ||  __/| |   
+    |______||_| \__|\___| /_/ \_\ |______|\___/  \__,_| \__,_| \___||_|   
+
+
+      =========   LiteXLoader Script Plugin Loader   =========
+
+[LiteXLoader.Js][Info] LXL for Js loaded
+[LiteXLoader.Js][Info] Version 0.5.5
+[LiteXLoader.Js][Info] Dependence BaseLib.js Loaded.
+[LiteXLoader.Js][Info] Loading plugins...
+     _    _  _____       _ _     _ 
+    | |  | |/ ____|     (_) |   | |
+    | |__| | |  __ _   _ _| | __| |
+    |  __  | | |_ | | | | | |/ _` |
+    | |  | | |__| | |_| | | | (_| |
+    |_|  |_|\_____|\__,_|_|_|\__,_|
+    
+    
+[HGuild][2021-10-06 00:49:32 Info] Loading HGuild V3.0.2
+[HGuild][2021-10-06 00:49:32 Info] HGuild by HuoHuaX
+[HGuild][2021-10-06 00:49:32 Info] Requesting authorization,please wait
+[LiteXLoader.Js][Info] [公会]HGuild302.lxl.js loaded.
+[LiteXLoader.Js][Info] 1 Js plugins loaded in all.
+[LiteXLoader.Lua][Info] LXL for Lua loaded
+[LiteXLoader.Lua][Info] Version 0.5.5
+[LiteXLoader.Lua][Info] Dependence BaseLib.lua Loaded.
+[LiteXLoader.Lua][Info] Loading plugins...
+[LiteXLoader.Lua][Info] 0 Lua plugins loaded in all.
+[2021-10-06 00:49:32 INFO][MONEY] Loaded version:  210922 
+[BackupHelper] BackupHelper存档备份助手-已装载  当前版本：2.0.2
+[BackupHelper] OP/后台命令： backup 开始备份
+[BackupHelper] OP/后台命令： backup reload 重新加载配置文件
+[BackupHelper] 作者：yqs112358   首发平台：MineBBS
+[BackupHelper] 欲联系作者可前往MineBBS论坛
+[2021-10-06 00:49:32 INFO][LL] 5 plugin(s) loaded 
+NO LOG FILE! - setting up server logging...
+[2021-10-06 00:49:32:358 INFO] Starting Server
+[2021-10-06 00:49:32:358 INFO] Version 1.17.30.04 with LiteLoaderBDS 1.2.0
+[2021-10-06 00:49:32:358 INFO] Session ID 64beb625-4f86-4365-8058-8d2382aeb998
+[2021-10-06 00:49:32:360 INFO] Level Name: Bedrock level
+[2021-10-06 00:49:32:367 INFO] Game mode: 0 Survival
+[2021-10-06 00:49:32:367 INFO] Difficulty: 1 EASY
+[INFO] opening worlds/Bedrock level/db
+[INFO] IPv4 supported, port: 19132
+[INFO] IPv6 supported, port: 19133
+[LiteLoader] Registering cmds
+RegisteringCommand > money
+RegisteringCommand > money_s
+RegisteringCommand > version
+[LiteXLoader.Js][Info] Builtin Cmds Registered.
+[LiteXLoader.Lua][Info] Builtin Cmds Registered.
+[2021-10-06 00:49:33 INFO][LL] LiteLoader is distributed under the GPLv3 License 
+[2021-10-06 00:49:33 INFO][LL] Thanks to rhymc.com for supporting this project 
+[INFO] Server started.
+[INFO] IPv4 supported, port: 63794
+[INFO] IPv6 supported, port: 63795
+[HGuild][2021-10-06 00:49:34 Info] 开始计时0点清理active
+[HGuild][2021-10-06 00:49:34 Info] 正在请求更新
+[HGuild][2021-10-06 00:49:34 Info] HGuild Loaded.
+[HGuild][2021-10-06 00:49:34 Info] 您的版本是最新版本
+[2021-10-06 00:49:34 INFO][LL] [Liteloader] Found a new version:  1.2.4   Fixed `liteloader::getIP` by @xiaoqch 
+[BackupHelper] 备份已启动
+[BackupHelper] 备份最长保存时间：7天
+[BackupHelper] Fail to locate old backups.
+Saving...
+[BackupHelper] 已抓取到BDS待备份文件清单。正在处理...
+[BackupHelper] 正在复制文件...
+[BackupHelper] 压缩过程可能花费相当长的时间，请耐心等待
+[BackupHelper] 备份成功结束
+[BackupHelper] Changes to the level are resumed.

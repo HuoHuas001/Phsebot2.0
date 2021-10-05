@@ -725,8 +725,8 @@ class BDSServer():
                         e(cmd)
                     except Exception as e:
                         log_debug(e)
-                if '\r\n' not in cmd:
-                    cmd += '\r\n'
+                if '\n' not in cmd:
+                    cmd += '\n'
                 self.bds.stdin.write(cmd.encode('utf8'))
                 self.bds.stdin.flush()
                 if cmd == 'stop':
@@ -742,7 +742,7 @@ class BDSServer():
 
     def Botruncmd(self,text:str):
         global NormalStop,Started
-        result=text+'\r\n'
+        result=text+'\n'
         cmd = result
 
         #开服
@@ -1175,7 +1175,7 @@ def usegroupregular():
                     #验证正则
                     for b in regular['Group']:
                         p = re.findall(b['regular'],msg)
-                        print(p)
+                        #print(p)
                         if p != []:
                             
                             if type(p[0]) == tuple:
