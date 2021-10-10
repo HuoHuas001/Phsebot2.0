@@ -37,7 +37,7 @@ def crontab():
             croncomment.append({'time':time,'cmd':cmd,'cron':i['cron']})
         except CroniterNotAlphaError as e:
             log_debug(e)
-            log_error(i['cron'],PLP['Cron.parsefaild'])
+            log_error(i['cron']+' '+PLP['Cron.parsefaild'])
         except CroniterBadCronError as e:
             log_debug(e)
             log_error(i['cron'],PLP['Cron.parsefaild'])

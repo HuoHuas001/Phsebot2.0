@@ -63,7 +63,7 @@ class WriteConsole():
 writeconsole = WriteConsole()
 if config['AutoRecordError']:
     sys.stderr = open('logs/ErrorLog.txt','a',encoding='utf8')
-#sys.stdout = writeconsole
+sys.stdout = writeconsole
 
 
 class Window():
@@ -697,6 +697,7 @@ class BDSServer():
     def cardlist(self):
         time.sleep(1)
         if config['ServerInfoCard']['Enable']:
+            from Library.src import Sbot
             card = config['ServerInfoCard']['CardJson']
             #改变
             card = card.replace('%Online%',str(self.Players['Now']))

@@ -509,21 +509,7 @@ def replacegroup(string,qqnick,qqid):
         .replace(r'%sec%',sec)
     return s
 
-def send_app(ws,group,code):
-    msgjson = {
-        "target":group,
-        "messageChain":[{
-    "type": "App",
-    "content": code
-}]
-    }
-    mj = {
-        "syncId": 12345,
-        "command": "sendGroupMessage",
-        "subCommand": None,
-        "content": msgjson
-    }
-    ws.send(json.dumps(mj))
+
 
 
 
@@ -623,6 +609,22 @@ class Bot():
             self.ws.send(json.dumps(mj))
         except Exception as e:
             log_debug(e)
+            
+    def send_app(self,group,code):
+        msgjson = {
+            "target":group,
+            "messageChain":[{
+        "type": "App",
+        "content": code
+    }]
+        }
+        mj = {
+            "syncId": 12345,
+            "command": "sendGroupMessage",
+            "subCommand": None,
+            "content": msgjson
+        }
+        self.ws.send(json.dumps(mj))
 
 def reconnect():
     disconnect()
