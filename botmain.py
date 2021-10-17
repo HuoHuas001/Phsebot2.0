@@ -278,8 +278,12 @@ class Window():
             log_info(PLP['Exit.release'])
             self.win.destroy()
             #安全退出事件
-            if server.getBDSPoll():
-                server.Runcmd('stop')
+            from Library.src import server
+            try:
+                if server.getBDSPoll():
+                    server.Runcmd('stop')
+            except:
+                pass
             
             #发出exit事件
             if config['mcsm']['enable']:
@@ -339,7 +343,8 @@ class BDSServer():
         self.Players = {
             "Now":0,
             "Max":0,
-            "Player":''
+            "Player":[],
+            "tps":20.0
         }
 
     def RunServer(self) -> None:
@@ -444,9 +449,14 @@ class BDSServer():
                 self.Players['Now'] = int(pl[0][0])
                 self.Players['Max'] = int(pl[0][1])
 
-            #存储上一个
+            #捕捉tps
+            tps = re.findall(r'\[INFO\]\sTPS:(.+?)[\r]',line)
+            if tps != []:
+                self.Players['tps'] = float(tps[0])
+
+            '''#存储上一个
             if re.search(r'^There\sare(.+?)\/(.+?)\sp',self.Last) != None:
-                self.Players['Player'] = line.replace('\n','')
+                self.Players['Player'] = line.replace('\n','')'''
             
             self.Last = line
 
@@ -541,6 +551,7 @@ class BDSServer():
             #玩家退服
             if re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != []:
                 r = re.findall(r'^\[INFO\]\sPlayer\sdisconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
+                self.Players['Player'].remove(r[0][0])
                 from Library.Loader.Plugin import Events
                 for e in Events['PlayerExit']:
                     try:
@@ -554,6 +565,7 @@ class BDSServer():
             #玩家进服
             if re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine) != []:
                 r = re.findall(r'^\[INFO\]\sPlayer\sconnected:\s(.+?),\sxuid:\s(.+?)$',updateLine)
+                self.Players['Player'].append(r[0][0])
                 from Library.Loader.Plugin import Events
                 for e in Events['PlayerJoin']:
                     try:
@@ -680,17 +692,26 @@ class BDSServer():
             except:
                 return False
         else:
-            serverstate = getServer(config['mcsm']['serverName'])
-            if serverstate != {}:
-                return serverstate['status']
-            else:
+            try:
+                serverstate = getServer(config['mcsm']['serverName'])
+                if serverstate != {}:
+                    return serverstate['status']
+                else:
+                    return False
+            except:
                 return False
 
     #输出list名单
     def outList(self):
         time.sleep(1)
         if Language['OnlineList'] != False:
-            l = Language['OnlineList'].replace(r'%Online%',str(self.Players['Now'])).replace(r'%Max%',str(self.Players['Max'])).replace(r'%Player%',self.Players['Player'])
+            pl = ''
+            for i in self.Players['Player']:
+                if(pl == ''):
+                    pl += i
+                else:
+                    pl += ' '+i
+            l = Language['OnlineList'].replace(r'%Online%',str(self.Players['Now'])).replace(r'%Max%',str(self.Players['Max'])).replace(r'%Player%',pl)
             for i in config['Group']:
                 sendGroupMsg(i,l)
 
@@ -702,7 +723,14 @@ class BDSServer():
             #改变
             card = card.replace('%Online%',str(self.Players['Now']))
             card = card.replace('%Max%',str(self.Players["Max"]))
-            card = card.replace('%Players%',self.Players['Player'])
+            card = card.replace('%Tps%',str(self.Players['tps']))
+            pl = ''
+            for i in self.Players['Player']:
+                if(pl == ''):
+                    pl += i
+                else:
+                    pl += ' '+i
+            card = card.replace('%Players%',pl)
             #替换logo
             if config['ServerInfoCard']['Logo'] != '':
                 card = card.replace(r'%Logo%','https:\/\/z3.ax1x.com\/2021\/09\/09\/hOPbZQ.png')
@@ -794,6 +822,7 @@ class BDSServer():
         elif 'cardlist' == text:
             if self.getBDSPoll():
                 self.Runcmd('list')
+                self.Runcmd('tps')
                 cl = threading.Thread(target=self.cardlist)
                 cl.setName('CardList')
                 cl.start()
@@ -829,6 +858,7 @@ class BDSServer():
         elif 'outlist' == text:
             if self.getBDSPoll():
                 self.Runcmd('list')
+                self.Runcmd('tps')
                 cl = threading.Thread(target=self.outList)
                 cl.setName('OutList')
                 cl.start()

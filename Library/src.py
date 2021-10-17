@@ -610,6 +610,7 @@ class Bot():
         except Exception as e:
             log_debug(e)
             
+    #发送卡片
     def send_app(self,group,code):
         msgjson = {
             "target":group,
